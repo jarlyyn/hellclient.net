@@ -1,6 +1,6 @@
 namespace Hellclient.Core.Contexts;
-
-public class MainContext
+using Hellclient.Core.Models;
+public partial class MainContext
 {
-    public MainContext Instance { get; set; } = new MainContext();
+    public static MainContext Instance { get; set; } = new MainContext();
 }
