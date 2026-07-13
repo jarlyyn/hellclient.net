@@ -1,0 +1,36 @@
+#System config file
+#服务器的网页界面的监听地址
+#如果本地打开可以使用  Addr="127.0.0.1:4355"
+#如果在VPS上需要外部打开时可以使用 Addr=":4355"
+#从外部打开时，请开启Username和Password设置帐号密码
+Addr=":4355"
+#网页和网盘方式登陆的帐号
+Username=""
+#网页和网盘方式登陆的密码
+Password=""
+#Hellclient网络的交换机地址
+#连入后可以在将各个客户端的广播Broadcast功能消息进行转发
+#一般用于全游戏找人/联合执行命令
+#服务程序地址可以在 https://github.com/hellclient-scripts/hellclientswitch 下载和安装
+#连接形式为Switch="ws://USERNAME:PASSWORD@HOST:PORT/PATH"
+Switch=""
+#对外的网址，用于通知时传递对外链接
+URL="http://127.0.0.1:4355"
+
+
+#DefaultServer 创建游戏时的默认主机地址
+#格式为 www.example.com:5555
+DefaultServer=""
+#默认字符集，可以空字符串,UTF8,GBK,BIG5
+DefaultCharset=""
+
+#最大命令记录数，小于等于0则为程序默认
+MaxHistory=0
+#最大历史记录数，小于等于0则为程序默认
+MaxLines=0
+#最大屏幕显示行数，小于等于0则为程序默认
+LinesPerScreen=0
+#最大多行匹配行数，等于0则为程序默认,小于0为禁用
+MaxRecent=0
+#返回给服务器的客户端信息，留空不返回
+TerminalType="Hellclient"
