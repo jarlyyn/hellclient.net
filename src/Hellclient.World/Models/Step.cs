@@ -1,4 +1,4 @@
-namespace Hellclient.Mapper.Models;
+namespace Hellclient.World.Models;
 
 public class Step
 {

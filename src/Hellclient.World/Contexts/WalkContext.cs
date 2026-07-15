@@ -1,7 +1,7 @@
-using Hellclient.Mapper.Models;
-using Path = Hellclient.Mapper.Models.Path;
+using Hellclient.World.Models;
+using Path = Hellclient.World.Models.Path;
 
-namespace Hellclient.Mapper.Contexts;
+namespace Hellclient.World.Contexts;
 
 public class WalkContext
 {
