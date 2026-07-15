@@ -7,8 +7,4 @@
     <PublishAot>true</PublishAot>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Tomlyn" Version="2.10.1" />
-      <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
-  </ItemGroup>
 </Project>
