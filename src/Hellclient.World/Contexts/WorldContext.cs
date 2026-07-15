@@ -1,3 +1,5 @@
+using Hellclient.World.Adapters;
+using Hellclient.World.Interfaces;
 using Hellclient.World.Models;
 
 namespace Hellclient.World.Contexts;
@@ -11,4 +13,5 @@ public class WorldContext
 
     public WorldData Data { get; set; } = new WorldData();
     public WorldEventBus EventBus { get; set; } = new WorldEventBus();
+    public IScriptEngine ScriptEngine { get; set; } = new NopScriptEngine();
 }
