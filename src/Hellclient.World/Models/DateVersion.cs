@@ -1,4 +1,4 @@
-namespace Hellclient.Core.Models;
+namespace Hellclient.World.Models;
 
 public class DateVersion
 {

@@ -1,7 +1,6 @@
 using Hellclient.World.Contexts;
 using Hellclient.World.Interfaces;
 using Hellclient.World.Models;
-using Hellclient.World.Shared;
 using Timer = Hellclient.World.Models.Timer;
 
 namespace Hellclient.World.Shared;
