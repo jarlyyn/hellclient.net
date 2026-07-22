@@ -1,4 +1,4 @@
-namespace Hellclient.Core.Types;
+namespace Hellclient.World.Types;
 public class SystemConfig
 {
     public string Addr { get; set; } = string.Empty;

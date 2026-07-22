@@ -2,6 +2,12 @@
 using Hellclient.World.Types;
 using Hellclient.World.Cores;
 using Hellclient.World.Utils;
+using Hellclient.Core.Utils;
+using Hellclient.Application;
+
+Application.Instance.Init();
+Application.Instance.Config();
+
 CharsetUtil.InstallEncodingProvider();
 var world=new World("test");
 world.Context.Data.Charset = CharsetUtil.GBK;

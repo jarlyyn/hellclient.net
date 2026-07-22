@@ -1,8 +1,8 @@
 using Tomlyn.Serialization;
-using Hellclient.Core.Types;
+using Hellclient.World.Types;
 using System.Text.Json.Serialization;
 
-namespace Hellclient.Core.Infras.Compoments.Toml;
+namespace Hellclient.World.Infras.Components;
 
 [TomlSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.Unspecified,

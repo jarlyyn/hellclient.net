@@ -6,6 +6,7 @@
 
 appdata/
 config/
+de bug/
 
 # dotenv files
 .env

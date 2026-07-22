@@ -1,4 +1,4 @@
-namespace Hellclient.Core.Types;
+namespace Hellclient.World.Types;
 
 public static class SendTo
 {
