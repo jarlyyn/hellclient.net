@@ -1,3 +1,4 @@
+using Hellclient.World.Configs;
 using Hellclient.World.States;
 using Hellclient.World.Types;
 
@@ -6,9 +7,9 @@ namespace Hellclient.World.Cores;
 public partial class World
 {
     public string ID { get => Context.ID; }
-    public int GetMaxHistory() => Context.MaxHistory;
-    public int GetMaxLines() => Context.MaxLines;
-    public int GetMaxRecent() => Context.MaxRecent;
+    public int GetMaxHistory() => AppConfig.System.MaxHistory;
+    public int GetMaxLines() => AppConfig.System.MaxLines;
+    public int GetMaxRecent() => AppConfig.System.MaxRecent;
     public string GetHost()=>Context.Data.Host;
 	public void SetHost(string host)=>Context.Data.Host=host;
 	public string GetPort()=>Context.Data.Port;

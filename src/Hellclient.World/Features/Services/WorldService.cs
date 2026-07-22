@@ -2,9 +2,14 @@ using Hellclient.World.States;
 
 namespace Hellclient.World.Features.Services;
 
-public class WorldService
+public interface IWorldService
 {
-    public static WorldService Instance { get; set; } = new WorldService();
+    public void InstallTo(WorldContext context);
+    public IConnService ConnService { get; set; }
+    public IAutomationService AutomationService { get; set; }
+}
+public class WorldService : IWorldService
+{
     public void InstallTo(WorldContext context)
     {
         ConnService.InstallTo(context);
