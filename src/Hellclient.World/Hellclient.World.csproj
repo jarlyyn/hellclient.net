@@ -6,6 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-      <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
+    <PackageReference Include="Microlithix.AnsiParser" Version="1.0.0" />
   </ItemGroup>
 </Project>

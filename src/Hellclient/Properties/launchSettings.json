@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Hellclient": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TEST_HOST": "43.137.4.108",
+        "TEST_PORT": "4001"
+      }
+    }
+  }
+}

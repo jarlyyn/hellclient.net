@@ -1,4 +1,4 @@
-using Hellclient.World.Shared;
+using Hellclient.World.Cores;
 
 namespace Hellclient.V8ScriptEngine.Context;
 
