@@ -1,4 +1,4 @@
-namespace Hellclient.Core.Models;
+namespace Hellclient.Core.Types;
 
 public class UserPassword
 {

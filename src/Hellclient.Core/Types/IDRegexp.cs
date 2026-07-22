@@ -1,0 +1,1 @@
+namespace Hellclient.Core.Types;

@@ -1,6 +1,6 @@
 using Hellclient.World.Cores;
 
-namespace Hellclient.V8ScriptEngine.Context;
+namespace Hellclient.V8ScriptEngine.Features.States;
 
 public class V8EngineContext
 {

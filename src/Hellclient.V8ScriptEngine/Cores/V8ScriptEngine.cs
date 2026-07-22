@@ -1,10 +1,9 @@
-using Hellclient.V8ScriptEngine.Context;
-using Hellclient.World.Types;
+using Hellclient.V8ScriptEngine.Features.States;
 using Hellclient.World.Types;
 using Hellclient.World.Cores;
 using Timer = Hellclient.World.Types.Timer;
 
-namespace Hellclient.V8ScriptEngine;
+namespace Hellclient.Cores;
 
 public class V8ScriptEngine : IScriptEngine
 {
