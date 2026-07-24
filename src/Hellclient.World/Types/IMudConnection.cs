@@ -14,4 +14,5 @@ public interface IMudConnection
     public EventHandler? OnDisconnected { get; set; }
     public EventHandler? OnConnected { get; set; }
     public bool IsConnected();
+    public Task SendTelnetCommand(TelnetCommand command);
 }

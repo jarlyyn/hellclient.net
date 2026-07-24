@@ -6,8 +6,8 @@
 
 appdata/
 config/
-de bug/
-
+debug/
+.vscode/
 # dotenv files
 .env
 
@@ -20,6 +20,8 @@ de bug/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+
+launchSettings.json
 
 # Mono auto generated files
 mono_crash.*

@@ -1,3 +1,5 @@
+using Hellclient.World.Infras.Adapters;
+
 namespace Hellclient.World.Types;
 
 public class Word
@@ -15,40 +17,40 @@ public class Word
 public class Line
 {
     //通过Print打印
-    const int LineTypePrint = 0;
+    public const int LineTypePrint = 0;
 
     //系统信息
-    const int LineTypeSystem = 1;
+    public const int LineTypeSystem = 1;
 
     //收到的真实信息
-    const int LineTypeReal = 2;
+    public const int LineTypeReal = 2;
 
     //输入回显
-    const int LineTypeEcho = 3;
+    public const int LineTypeEcho = 3;
 
     //输入行类型
-    const int LineTypePrompt = 4;
+    public const int LineTypePrompt = 4;
 
     //发出的本地广播
-    const int LineTypeLocalBroadcastOut = 5;
+    public const int LineTypeLocalBroadcastOut = 5;
 
     //发出的全局广播
-    const int LineTypeGlobalBroadcastOut = 6;
+    public const int LineTypeGlobalBroadcastOut = 6;
 
     //收到的本地广播
-    const int LineTypeLocalBroadcastIn = 7;
+    public const int LineTypeLocalBroadcastIn = 7;
 
     //收到的全局广播
-    const int LineTypeGlobalBroadcastIn = 8;
+    public const int LineTypeGlobalBroadcastIn = 8;
 
     //Websocket发出的请求的信息
-    const int LineTypeRequest = 9;
+    public const int LineTypeRequest = 9;
 
     //Websocket收到的响应的信息
-    const int LineTypeResponse = 10;
+    public const int LineTypeResponse = 10;
 
     //收到mud发来的非文本信息
-    const int LineTypeSubneg = 11;
+    public const int LineTypeSubneg = 11;
 
     public List<Word> Words { get; set; } = [];
     public string ID { get; set; } = string.Empty;
@@ -63,5 +65,31 @@ public class Line
     public string ToPlainText()
     {
         return string.Join("", Words.Select(w => w.Text));
+    }
+    public void RemoveTail(int length)
+    {
+        while (length > 0 && Words.Count > 0)
+        {
+            var lastWord = Words.Last();
+            if (lastWord.Text.Length <= length)
+            {
+                length -= lastWord.Text.Length;
+                Words.RemoveAt(Words.Count - 1);
+            }
+            else
+            {
+                lastWord.Text = lastWord.Text.Substring(0, lastWord.Text.Length - length);
+                length = 0;
+            }
+        }
+    }
+    public static Line New()
+    {
+        return new Line
+        {
+            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+            Words = [],
+            ID = SimpleID.Instance.GenerateID(),
+        };
     }
 }

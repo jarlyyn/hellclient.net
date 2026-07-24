@@ -7,14 +7,23 @@ namespace Hellclient.World.Helpers;
 public static class AnsiHelpers
 {
     private static readonly AnsiStringParser parser = new();
-    public static Line Parse(string input)
+    public static Line? Parse(string input)
     {
         var result = new Line();
         if (string.IsNullOrEmpty(input))
         {
             return result;
         }
-        var elements = parser.Parse(input);
+        List<IAnsiStringParserElement> elements;
+        try
+        {
+            elements = parser.Parse(input);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
         var current = new Word();
         foreach (var element in elements)
         {
@@ -26,9 +35,6 @@ public static class AnsiHelpers
                     current = new Word();
                     break;
                 case AnsiControlString control:
-                    switch (control.Type)
-                    {
-                    }
                     break;
                 case AnsiControlSequence cs:
                     switch (cs.Function)
@@ -36,13 +42,15 @@ public static class AnsiHelpers
                         case "m":
                             applyFunctionM(current, result, cs);
                             break;
-                        case "k":
+                        case "K":
                             applyFunctionK(current, result, cs);
                             break;
-                        case "j":
+                        case "J":
                             applyFunctionJ(current, result, cs);
                             break;
-
+                        case "D":
+                            applyFunctionD(current, result, cs);
+                            break;
                         default:
                             break;
                     }
@@ -51,7 +59,15 @@ public static class AnsiHelpers
                     break;
             }
         }
+
         return result;
+    }
+    private static void applyFunctionD(Word w, Line line, AnsiControlSequence cs)
+    {
+        foreach (var param in cs.Parameters)
+        {
+            line.RemoveTail(param.Value);
+        }
     }
     private static void applyFunctionM(Word w, Line line, AnsiControlSequence cs)
     {
@@ -204,6 +220,9 @@ public static class AnsiHelpers
                 case 1:
                 case 2:
                     line.Words.Clear();
+                    break;
+                default:
+                    Console.WriteLine($"Unknown ANSI control sequence function K parameter: {param.Value}");
                     break;
             }
         }

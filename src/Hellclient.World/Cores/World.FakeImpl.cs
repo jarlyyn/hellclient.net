@@ -21,7 +21,6 @@ public partial class World
     public Dictionary<string, string> GetParamComments() => [];
     public void SetParamComment(string key, string comment) { }
     public string GetCharset() => string.Empty;
-    public void SetCharset(string charset) { }
     public long GetReadyAt() => 0L;
     public int GetPosition() => 0;
     public void SetPosition(int position) { }
@@ -48,7 +47,6 @@ public partial class World
     public void RequestTrustDomains(Authorization authorization) { }
     public object GetPluginOptions() => new object();
     public void DoReloadPermissions() { }
-    public void DoSend(Command command) { }
     public void DoSendToQueue(Command command) { }
     public void DoExecute(string message) { }
     public (byte[] Data, Exception? Error) DoEncode() => (Array.Empty<byte>(), null);
@@ -58,15 +56,6 @@ public partial class World
     public void DoUseScript(string scriptPath) { }
     public List<RequiredParam> GetRequiredParams() => [];
     public void DoRunScript(string script) { }
-    public void DoPrint(string msg) { }
-    public void DoPrintSystem(string msg) { }
-    public void DoPrintLocalBroadcastIn(string msg) { }
-    public void DoPrintGlobalBroadcastIn(string msg) { }
-    public void DoPrintLocalBroadcastOut(string msg) { }
-    public void DoPrintGlobalBroadcastOut(string msg) { }
-    public void DoPrintSubneg(string msg) { }
-    public void DoPrintRequest(string msg) { }
-    public void DoPrintResponse(string msg) { }
 
     public int DoDiscardQueue(bool force) => 0;
     public void DoLockQueue() { }
@@ -167,22 +156,6 @@ public partial class World
     public (string, string) GetScriptCaller() => (string.Empty, string.Empty);
     public void DoStopEvaluatingTriggers() { }
 
-    public int GetMetronomeBeats() => 0;
-    public void SetMetronomeBeats(int beats) { }
-    public void DoResetMetronome() { }
-    public int GetMetronomeSpace() => 0;
-    public string[] GetMetronomeQueue() => Array.Empty<string>();
-    public bool DoDiscardMetronome(bool force) => false;
-    public void DoLockMetronomeQueue() { }
-    public void DoFullMetronome() { }
-    public void DoFullTickMetronome() { }
-    public void SetMetronomeInterval(TimeSpan interval) { }
-    public TimeSpan GetMetronomeInterval() => TimeSpan.Zero;
-    public void SetMetronomeTick(TimeSpan tick) { }
-    public TimeSpan GetMetronomeTick() => TimeSpan.Zero;
-    public void DoPushMetronome(List<Command> cmds, bool grouped) { }
-    public void DoMetronomeSend(Command cmds) { }
-    public void DoMetronomeLock() { }
     public void DoSendResponseToScript(Message msg) { }
 
     public int GetHUDSize() => 0;

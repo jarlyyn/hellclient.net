@@ -3,9 +3,9 @@ using Hellclient.World.Types;
 
 namespace Hellclient.World.Infras.Adapters;
 //实现go版本的SimpleID
-public class SimpleID : IUniqueid
+public class SimpleID
 {
-    public SimpleID Instance { get; set; } = new SimpleID();
+    public static SimpleID Instance { get; set; } = new SimpleID();
     public SimpleID()
     {
         var random = new Random((int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());

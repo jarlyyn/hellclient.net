@@ -13,5 +13,6 @@ public class WorldContext
     public IScriptEngine ScriptEngine { get; set; } = new NopScriptEngine();
     public IMudConnection Connection { get; set; } = new Telnet();
     public IConvert Convert { get; set; } = new Convert();
+    public Metronome Metronome { get; set; } = new Metronome();
 
 }

@@ -12,6 +12,10 @@ public class CharsetUtil
     }
     public static byte[] FromUtf8(string charset, string data)
     {
+        if (data == null)
+        {
+            return Array.Empty<byte>();
+        }
         switch (charset)
         {
             case "gbk":

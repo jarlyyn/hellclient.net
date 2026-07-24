@@ -1,7 +1,6 @@
 using System.Net.Sockets;
 using System.Text;
 using Hellclient.World.Types;
-using Hellclient.World.Types;
 
 namespace Hellclient.World.Infras.Components;
 
@@ -110,12 +109,8 @@ public class Telnet : IMudConnection
     {
         OnDisconnected?.Invoke(this, EventArgs.Empty);
     }
-    public async Task Connect(string host, int port)
+    private async Task listen()
     {
-        Host = host;
-        Port = port;
-        await _client.ConnectAsync(host, port);
-        _ = Connected();
         using (NetworkStream stream = _client.GetStream())
         {
             _stream = stream;
@@ -150,6 +145,15 @@ public class Telnet : IMudConnection
             }
 
         }
+
+    }
+    public async Task Connect(string host, int port)
+    {
+        Host = host;
+        Port = port;
+        await _client.ConnectAsync(host, port);
+        await Connected();
+        _ = listen();
     }
     public async Task Disconnect()
     {
@@ -170,7 +174,7 @@ public class Telnet : IMudConnection
     {
         return _client.Connected;
     }
-    public async Task SendCommand(TelnetCommand command)
+    public async Task SendTelnetCommand(TelnetCommand command)
     {
 
         await Send(command.ToByteArray());
