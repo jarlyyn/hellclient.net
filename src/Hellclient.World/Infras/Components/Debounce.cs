@@ -1,5 +1,56 @@
 namespace Hellclient.World.Infras.Components;
 
+public class DebounceTimer
+{
+    public DebounceTimer(double interval)
+    {
+        _timer = new System.Timers.Timer(interval)
+        {
+            AutoReset = false
+        };
+    }
+    public void Reset(double interval)
+    {
+        lock (_lock)
+        {
+            if (_timer is not null)
+            {
+                _timer.Interval = interval;
+                _timer.Stop();
+                _timer.Start();
+            }
+        }
+    }
+    public void Discard()
+    {
+        lock (_lock)
+        {
+            if (_timer is null)
+            {
+                return;
+            }
+            _timer = null;
+            _timer?.Dispose();
+        }
+    }
+    public void Bind(Func<DebounceTimer, Task> callback)
+    {
+        lock (_lock)
+        {
+            if (_timer is null)
+            {
+                return;
+            }
+            _timer.Elapsed += async (sender, e) =>
+            {
+                await callback(this);
+            };
+        }
+    }
+    private System.Timers.Timer? _timer;
+    private object _lock = new();
+
+}
 public class Debounce
 
 {
@@ -17,7 +68,7 @@ public class Debounce
     //Leading if the callback should be called before the duration
     public bool Leading { get; set; }
 
-    private System.Timers.Timer? _timer;
+    private DebounceTimer? _timer;
     public Action? Callback { get; set; }
     public static TimeSpan MinTimeSpan { get; } = TimeSpan.FromMilliseconds(1);
 
@@ -35,9 +86,7 @@ public class Debounce
         {
             _deadLine = DateTime.Now;
         }
-        _timer.Interval = (Duration > MinTimeSpan ? Duration : MinTimeSpan).TotalMilliseconds;
-        _timer.Stop();
-        _timer.Start();
+        _timer.Reset((Duration > MinTimeSpan ? Duration : MinTimeSpan).TotalMilliseconds);
         return true;
     }
     public async Task<bool> Exec()
@@ -63,7 +112,7 @@ public class Debounce
             {
                 duration = Duration;
             }
-            _timer.Interval = duration.TotalMilliseconds;
+            _timer.Reset(duration.TotalMilliseconds);
             success = true;
         }
         if (success)
@@ -72,13 +121,10 @@ public class Debounce
         }
         if (_timer is not null)
         {
-            Reset();
             return false;
         }
-        _timer = new System.Timers.Timer(Duration.TotalMilliseconds)
-        {
-            AutoReset = false
-        };
+        _timer = new DebounceTimer(Duration.TotalMilliseconds);
+
         if (MaxDuration > TimeSpan.Zero)
         {
             _deadLine = DateTime.Now.Add(MaxDuration);
@@ -92,22 +138,22 @@ public class Debounce
         {
             Callback?.Invoke();
         }
-        _timer.Elapsed += async (sender, e) => await run(sender as System.Timers.Timer);
+        _timer.Bind(run);
         return Leading;
     }
-    private async Task run(System.Timers.Timer? timer)
+    private async Task run(DebounceTimer timer)
     {
-        if (timer is null)
-        {
-            return;
-        }
-        timer.Dispose();
+        timer.Discard();
         Callback?.Invoke();
 
     }
     public void Discard()
     {
-        _timer?.Dispose();
+        if (_timer is null)
+        {
+            return;
+        }
+        _timer?.Discard();
         _timer = null;
     }
 }
