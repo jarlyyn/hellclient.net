@@ -15,4 +15,6 @@ public class WorldContext
     public IConvert Convert { get; set; } = new Convert();
     public Metronome Metronome { get; set; } = new Metronome();
 
+    public required Info Info { get; set; }
+
 }

@@ -36,7 +36,11 @@ public class Ring<T> where T : class
     {
         return GetRecentItems(_count);
     }
-    public void FLush()
+    public int Count()
+    {
+        return _count;
+    }
+    public void Flush()
     {
         _items.Clear();
         _index = 0;
@@ -71,5 +75,44 @@ public class Ring<T> where T : class
             }
         }
         return result;
+    }
+    public T? GetCurrentItem()
+    {
+        if (_items.Count == 0)
+        {
+            return null;
+        }
+        var currentIndex = (_index - 1 + _items.Count) % _items.Count;
+        return _items[currentIndex];
+    }
+    public int DeleteItems(int count)
+    {
+        if (count <= 0 || _count == 0)
+        {
+            return 0;
+        }
+        if (count > _count)
+        {
+            count = _count;
+        }
+        var deletedCount = 0;
+        var currentIndex = (_index + _items.Count) % _items.Count;
+        while (deletedCount < count)
+        {
+            currentIndex = (currentIndex - 1 + _items.Count) % _items.Count;
+            if (_items[currentIndex] != null)
+            {
+                _items[currentIndex] = null;
+                deletedCount++;
+                _count--;
+            }
+            if (currentIndex == _index)
+            {
+                currentIndex = 0;
+                break;
+            }
+        }
+        _index = currentIndex;
+        return deletedCount;
     }
 }

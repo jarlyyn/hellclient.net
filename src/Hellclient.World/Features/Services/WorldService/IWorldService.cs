@@ -9,4 +9,6 @@ public interface IWorldService
     public IConnService ConnService { get; set; }
     public IAutomationService AutomationService { get; set; }
     public IMetronomeService MetronomeService { get; set; }
+    public IInfoService InfoService { get; set; }
+
 }

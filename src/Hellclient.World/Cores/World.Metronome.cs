@@ -11,7 +11,7 @@ public partial class World
     public void SetMetronomeBeats(int beats) => Service.MetronomeService.SetBeats(Context, beats);
     public void DoResetMetronome() => Service.MetronomeService.Reset(Context);
     public int GetMetronomeSpace() => Service.MetronomeService.Space(Context);
-    public string[] GetMetronomeQueue() => Service.MetronomeService.Queue(Context).ToArray();
+    public List<string> GetMetronomeQueue() => Service.MetronomeService.Queue(Context);
     public bool DoDiscardMetronome(bool force) => Service.MetronomeService.Discard(Context, force);
     public void DoLockMetronomeQueue() => Service.MetronomeService.LockQueue(Context);
     public void DoFullMetronome() => Service.MetronomeService.Full(Context);

@@ -58,8 +58,8 @@ public interface IWorld
     public ClientInfo? GetClientInfo();
     public WorldData? GetWorldData();
     public ScriptData? GetScriptData();
-    public void SetPermissions(string[] permissions);
-    public string[] GetPermissions();
+    public void SetPermissions(List<string> permissions);
+    public List<string> GetPermissions();
     public void RequestPermissions(Authorization authorization);
     public string GetScriptID();
     public void SetScriptID(string scriptID);
@@ -125,7 +125,7 @@ public interface IWorld
     public (string Value, bool Found, bool Valid) GetTimerInfo(string name, int infotype);
     public (bool Updated, bool Found, bool Valid) SetTimerOption(string name, string option, string value);
     public bool HasNamedTimer(string name);
-    public string[] DoListTimerNames(bool byUser);
+    public List<string> DoListTimerNames(bool byUser);
     public bool AddTimer(Timer timer, bool byUser);
     public int DoUpdateTimer(Timer timer);
     public void DoSendAliasToScript(string message, Alias alias, Matcher result);
@@ -144,7 +144,7 @@ public interface IWorld
     public (string Value, bool Found, bool Valid) GetAliasInfo(string name, int infotype);
     public (bool Updated, bool Found, bool Valid) SetAliasOption(string name, string option, string value);
     public bool HasNamedAlias(string name);
-    public string[] DoListAliasNames(bool byUser);
+    public List<string> DoListAliasNames(bool byUser);
     public bool AddAlias(Alias alias, bool byUser);
     public int DoUpdateAlias(Alias alias);
 
@@ -162,7 +162,7 @@ public interface IWorld
     public (string Value, bool Found, bool Valid) GetTriggerInfo(string name, int infotype);
     public (bool Updated, bool Found, bool Valid) SetTriggerOption(string name, string option, string value);
     public bool HasNamedTrigger(string name);
-    public string[] DoListTriggerNames(bool byUser);
+    public List<string> DoListTriggerNames(bool byUser);
     public bool AddTrigger(Trigger trigger, bool byUser);
     public int DoUpdateTrigger(Trigger trigger);
     public void DoSendTriggerToScript(Line line, Trigger trigger, Matcher result);
@@ -172,7 +172,7 @@ public interface IWorld
     public void DoAssist();
     public void DoMultiLinesAppend(string line);
     public void DoMultiLinesFlush();
-    public string[] DoMultiLinesLast(int count);
+    public List<string> DoMultiLinesLast(int count);
     public int GetLinesInBufferCount();
     public List<Line> GetRecentLines(int count);
     public Line? GetLine(int idx);
@@ -184,7 +184,7 @@ public interface IWorld
     public void UpdateLastActive();
     public long GetLastActive();
     public void AddHistory(string value);
-    public string[] GetHistories();
+    public List<string> GetHistories();
     public void FlushHistories();
     public void HandleConnReceive(byte[] msg);
     public void HandleConnError(Exception err);
@@ -202,7 +202,7 @@ public interface IWorld
     public void SetMetronomeBeats(int beats);
     public void DoResetMetronome();
     public int GetMetronomeSpace();
-    public string[] GetMetronomeQueue();
+    public List<string> GetMetronomeQueue();
     public bool DoDiscardMetronome(bool force);
     public void DoLockMetronomeQueue();
     public void DoFullMetronome();

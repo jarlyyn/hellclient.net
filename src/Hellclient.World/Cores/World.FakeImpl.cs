@@ -24,13 +24,10 @@ public partial class World
     public long GetReadyAt() => 0L;
     public int GetPosition() => 0;
     public void SetPosition(int position) { }
-    public List<Line> GetCurrentLines() => [];
-    public Line? GetPrompt() => null;
-    public ClientInfo? GetClientInfo() => null;
     public WorldData? GetWorldData() => null;
     public ScriptData? GetScriptData() => null;
-    public void SetPermissions(string[] permissions) { }
-    public string[] GetPermissions() => Array.Empty<string>();
+    public void SetPermissions(List<string> permissions) { }
+    public List<string> GetPermissions() =>new();
     public void RequestPermissions(Authorization authorization) { }
     public string GetScriptID() => string.Empty;
     public void SetScriptID(string scriptID) { }
@@ -59,9 +56,6 @@ public partial class World
 
     public int DoDiscardQueue(bool force) => 0;
     public void DoLockQueue() { }
-    public void DoOmitOutput() { }
-    public void DoDeleteLines(int count) { }
-    public int GetLineCount() => 0;
     public void DoSendHUDClickToScript(Click click) { }
     public void DoSendBroadcastToScript(Broadcast broadcast) { }
     public bool HandleBuffer(byte[] buffer) => false;
@@ -85,7 +79,7 @@ public partial class World
     public (string Value, bool Found, bool Valid) GetTimerInfo(string name, int infotype) => (string.Empty, false, false);
     public (bool Updated, bool Found, bool Valid) SetTimerOption(string name, string option, string value) => (false, false, false);
     public bool HasNamedTimer(string name) => false;
-    public string[] DoListTimerNames(bool byUser) => Array.Empty<string>();
+    public List<string> DoListTimerNames(bool byUser) =>new();
     public bool AddTimer(Timer timer, bool byUser) => false;
     public int DoUpdateTimer(Timer timer) => 0;
     public void DoSendAliasToScript(string message, Alias alias, Matcher result) { }
@@ -104,7 +98,7 @@ public partial class World
     public (string Value, bool Found, bool Valid) GetAliasInfo(string name, int infotype) => (string.Empty, false, false);
     public (bool Updated, bool Found, bool Valid) SetAliasOption(string name, string option, string value) => (false, false, false);
     public bool HasNamedAlias(string name) => false;
-    public string[] DoListAliasNames(bool byUser) => Array.Empty<string>();
+    public List<string> DoListAliasNames(bool byUser) =>new();
     public bool AddAlias(Alias alias, bool byUser) => false;
     public int DoUpdateAlias(Alias alias) => 0;
 
@@ -122,7 +116,7 @@ public partial class World
     public (string Value, bool Found, bool Valid) GetTriggerInfo(string name, int infotype) => (string.Empty, false, false);
     public (bool Updated, bool Found, bool Valid) SetTriggerOption(string name, string option, string value) => (false, false, false);
     public bool HasNamedTrigger(string name) => false;
-    public string[] DoListTriggerNames(bool byUser) => Array.Empty<string>();
+    public List<string> DoListTriggerNames(bool byUser) =>new();
     public bool AddTrigger(Trigger trigger, bool byUser) => false;
     public int DoUpdateTrigger(Trigger trigger) => 0;
     public void DoSendTriggerToScript(Line line, Trigger trigger, Matcher result) { }
@@ -132,20 +126,8 @@ public partial class World
     public void DoAssist() { }
     public void DoMultiLinesAppend(string line) { }
     public void DoMultiLinesFlush() { }
-    public string[] DoMultiLinesLast(int count) => Array.Empty<string>();
-    public int GetLinesInBufferCount() => 0;
-    public List<Line> GetRecentLines(int count) => [];
-    public Line? GetLine(int idx) => null;
+    public List<string> DoMultiLinesLast(int count) =>new();
     public IMapper? GetMapper() => null;
-    public int GetPriority() => 0;
-    public void SetPriority(int priority) { }
-    public List<Line> GetSummary() => [];
-    public void SetSummary(List<Line> lines) { }
-    public void UpdateLastActive() { }
-    public long GetLastActive() => 0L;
-    public void AddHistory(string value) { }
-    public string[] GetHistories() => Array.Empty<string>();
-    public void FlushHistories() { }
     public void HandleConnReceive(byte[] msg) { }
     public void HandleConnError(Exception err) { }
     public void HandleConnPrompt(byte[] msg) { }

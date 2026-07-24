@@ -14,4 +14,6 @@ public class WorldService : IWorldService
     public IAutomationService AutomationService { get; set; } = new AutomationService();
 
     public IMetronomeService MetronomeService { get; set; } = new MetronomeService();
+
+    public IInfoService InfoService { get; set; } = new InfoService();
 }
