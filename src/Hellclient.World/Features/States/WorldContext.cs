@@ -10,7 +10,6 @@ public class WorldContext
 {
     public SemaphoreSlim Lock { get; set; } = new SemaphoreSlim(1, 1);
     public string ID { get; set; } = string.Empty;
-    public WorldData Data { get; set; } = new WorldData();
     public WorldEventBus EventBus { get; set; } = new WorldEventBus();
     public IScriptEngine ScriptEngine { get; set; } = new NopScriptEngine();
     public IMudConnection Connection { get; set; } = new Telnet();

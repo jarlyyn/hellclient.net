@@ -60,8 +60,8 @@ public class ConnService : IConnService
     }
     public async Task Connect(WorldContext context)
     {
-        context.Convert.Charset = context.Data.Charset;
-        await context.Connection.Connect(context.Data.Host, int.TryParse(context.Data.Port, out int port) ? port : 0);
+        context.Convert.Charset = context.Config.Data.Charset;
+        await context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0);
     }
     public void Stop(WorldContext context)
     {
@@ -94,7 +94,7 @@ public class ConnService : IConnService
         {
             return;
         }
-        var bytes = CharsetUtil.FromUtf8(context.Data.Charset, cmd.Message);
+        var bytes = CharsetUtil.FromUtf8(context.Config.Data.Charset, cmd.Message);
         if (cmd.Echo)
         {
             DoPrintEcho(context, cmd);

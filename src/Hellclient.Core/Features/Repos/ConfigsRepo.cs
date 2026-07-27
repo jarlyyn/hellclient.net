@@ -15,6 +15,22 @@ public class ConfigsRepo : IConfigsRepo
     {
         var content=System.IO.File.ReadAllText(System.IO.Path.Combine(Deployment.Instance.ConfigPath,"system.toml"));
         var systemConfig = TomlSerializer.Deserialize<SystemConfig>(content,TomlContext.Default.SystemConfig);
+        if (systemConfig.MaxHistory <= 0)
+        {
+            systemConfig.MaxHistory = SystemConfig.DefaultMaxHistory;
+        }
+        if (systemConfig.MaxLines <= 0)
+        {
+            systemConfig.MaxLines = SystemConfig.DefaultMaxLines;
+        }
+        if (systemConfig.MaxRecent <= 0)
+        {
+            systemConfig.MaxRecent = SystemConfig.DefaultMaxRecent;
+        }
+        if (systemConfig.LinesPerScreen <= 0)
+        {
+            systemConfig.LinesPerScreen = SystemConfig.DefaultLinesPerScreen;
+        }
         return systemConfig!;
     }
 }

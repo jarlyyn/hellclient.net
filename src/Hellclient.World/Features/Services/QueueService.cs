@@ -80,7 +80,7 @@ public class QueueService : IQueueService
     }
     private void delay(WorldContext context)
     {
-        var delay = context.Data.QueueDelay;
+        var delay = context.Config.Data.QueueDelay;
         if (delay > 0)
         {
             context.Queue.Pending = true;
