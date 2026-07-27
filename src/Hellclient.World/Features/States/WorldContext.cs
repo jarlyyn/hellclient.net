@@ -20,5 +20,5 @@ public class WorldContext
     public required Info Info { get; set; }
 
     public HUD HUD { get; set; } = new HUD();
-
+    public WorldConfig Config { get; set; } = new WorldConfig();
 }

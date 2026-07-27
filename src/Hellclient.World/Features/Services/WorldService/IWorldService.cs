@@ -12,4 +12,5 @@ public interface IWorldService
     public IInfoService InfoService { get; set; }
     public IQueueService QueueService { get; set; }
     public IHUDService HudService { get; set; }
+    public IConfigService ConfigService { get; set; }
 }

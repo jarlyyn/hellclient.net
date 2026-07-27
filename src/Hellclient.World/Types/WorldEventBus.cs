@@ -13,6 +13,6 @@ public class WorldEventBus
         public EventHandler? QueueDelayUpdatedEvent { get; set; }
 
         public EventHandler<List<Line>>? HUDContentEvent { get; set; }
-
         public EventHandler<DiffLines>? HUDUpdateEvent { get; set; }
+        public EventHandler? ReadyEvent { get; set; }
 }

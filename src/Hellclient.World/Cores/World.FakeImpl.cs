@@ -10,27 +10,9 @@ public partial class World
 {
     public string GetStatus() => string.Empty;
     public void SetStatus(string status) { }
-    public void SetQueueDelay(int queueDelay) { }
-
-    public int GetQueueDelay() => 0;
-    public string GetParam(string key) => string.Empty;
-    public Dictionary<string, string> GetParams() => [];
-    public void SetParam(string key, string value) { }
-    public void DeleteParam(string key) { }
-    public string GetParamComment(string key) => string.Empty;
-    public Dictionary<string, string> GetParamComments() => [];
-    public void SetParamComment(string key, string comment) { }
-    public string GetCharset() => string.Empty;
-    public long GetReadyAt() => 0L;
-    public int GetPosition() => 0;
-    public void SetPosition(int position) { }
-    public WorldData? GetWorldData() => null;
-    public ScriptData? GetScriptData() => null;
-    public void SetPermissions(List<string> permissions) { }
-    public List<string> GetPermissions() => new();
     public void RequestPermissions(Authorization authorization) { }
-    public string GetScriptID() => string.Empty;
-    public void SetScriptID(string scriptID) { }
+    public ScriptData? GetScriptData() => null;
+
     public string GetScriptType() => string.Empty;
     public string GetScriptPath() => string.Empty;
     public string GetModPath() => string.Empty;
@@ -39,8 +21,6 @@ public partial class World
     public string GetLogsPath() => string.Empty;
     public string GetScriptHome() => string.Empty;
     public void DoLog(string message) { }
-    public void SetTrusted(Trusted trusted) { }
-    public Trusted? GetTrusted() => null;
     public void RequestTrustDomains(Authorization authorization) { }
     public object GetPluginOptions() => new object();
     public void DoReloadPermissions() { }
