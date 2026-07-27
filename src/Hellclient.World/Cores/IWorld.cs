@@ -6,6 +6,7 @@ namespace Hellclient.World.Cores;
 
 public interface IWorld
 {
+    public SemaphoreSlim Lock { get;}
     public string ID { get; }
     public WorldEventBus EventBus { get; }
     public int GetMaxHistory();

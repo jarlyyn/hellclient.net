@@ -13,7 +13,6 @@ public partial class World : IWorld
         Context.ID = id;
         Service = service;
         Service.InstallTo(Context);
-        init();
 
     }
     private IWorldService Service { get; init; }

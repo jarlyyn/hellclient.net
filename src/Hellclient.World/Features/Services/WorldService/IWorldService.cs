@@ -10,5 +10,6 @@ public interface IWorldService
     public IAutomationService AutomationService { get; set; }
     public IMetronomeService MetronomeService { get; set; }
     public IInfoService InfoService { get; set; }
-
+    public IQueueService QueueService { get; set; }
+    public IHUDService HudService { get; set; }
 }

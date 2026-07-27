@@ -10,9 +10,9 @@ public partial class World
 {
     public string GetStatus() => string.Empty;
     public void SetStatus(string status) { }
-    public int GetQueueDelay() => 0;
     public void SetQueueDelay(int queueDelay) { }
-    public List<Command> GetQueue() => [];
+
+    public int GetQueueDelay() => 0;
     public string GetParam(string key) => string.Empty;
     public Dictionary<string, string> GetParams() => [];
     public void SetParam(string key, string value) { }
@@ -27,7 +27,7 @@ public partial class World
     public WorldData? GetWorldData() => null;
     public ScriptData? GetScriptData() => null;
     public void SetPermissions(List<string> permissions) { }
-    public List<string> GetPermissions() =>new();
+    public List<string> GetPermissions() => new();
     public void RequestPermissions(Authorization authorization) { }
     public string GetScriptID() => string.Empty;
     public void SetScriptID(string scriptID) { }
@@ -44,7 +44,6 @@ public partial class World
     public void RequestTrustDomains(Authorization authorization) { }
     public object GetPluginOptions() => new object();
     public void DoReloadPermissions() { }
-    public void DoSendToQueue(Command command) { }
     public void DoExecute(string message) { }
     public (byte[] Data, Exception? Error) DoEncode() => (Array.Empty<byte>(), null);
     public Exception? DoDecode(byte[] data) => null;
@@ -54,8 +53,6 @@ public partial class World
     public List<RequiredParam> GetRequiredParams() => [];
     public void DoRunScript(string script) { }
 
-    public int DoDiscardQueue(bool force) => 0;
-    public void DoLockQueue() { }
     public void DoSendHUDClickToScript(Click click) { }
     public void DoSendBroadcastToScript(Broadcast broadcast) { }
     public bool HandleBuffer(byte[] buffer) => false;
@@ -79,7 +76,7 @@ public partial class World
     public (string Value, bool Found, bool Valid) GetTimerInfo(string name, int infotype) => (string.Empty, false, false);
     public (bool Updated, bool Found, bool Valid) SetTimerOption(string name, string option, string value) => (false, false, false);
     public bool HasNamedTimer(string name) => false;
-    public List<string> DoListTimerNames(bool byUser) =>new();
+    public List<string> DoListTimerNames(bool byUser) => new();
     public bool AddTimer(Timer timer, bool byUser) => false;
     public int DoUpdateTimer(Timer timer) => 0;
     public void DoSendAliasToScript(string message, Alias alias, Matcher result) { }
@@ -98,7 +95,7 @@ public partial class World
     public (string Value, bool Found, bool Valid) GetAliasInfo(string name, int infotype) => (string.Empty, false, false);
     public (bool Updated, bool Found, bool Valid) SetAliasOption(string name, string option, string value) => (false, false, false);
     public bool HasNamedAlias(string name) => false;
-    public List<string> DoListAliasNames(bool byUser) =>new();
+    public List<string> DoListAliasNames(bool byUser) => new();
     public bool AddAlias(Alias alias, bool byUser) => false;
     public int DoUpdateAlias(Alias alias) => 0;
 
@@ -116,7 +113,7 @@ public partial class World
     public (string Value, bool Found, bool Valid) GetTriggerInfo(string name, int infotype) => (string.Empty, false, false);
     public (bool Updated, bool Found, bool Valid) SetTriggerOption(string name, string option, string value) => (false, false, false);
     public bool HasNamedTrigger(string name) => false;
-    public List<string> DoListTriggerNames(bool byUser) =>new();
+    public List<string> DoListTriggerNames(bool byUser) => new();
     public bool AddTrigger(Trigger trigger, bool byUser) => false;
     public int DoUpdateTrigger(Trigger trigger) => 0;
     public void DoSendTriggerToScript(Line line, Trigger trigger, Matcher result) { }
@@ -126,7 +123,7 @@ public partial class World
     public void DoAssist() { }
     public void DoMultiLinesAppend(string line) { }
     public void DoMultiLinesFlush() { }
-    public List<string> DoMultiLinesLast(int count) =>new();
+    public List<string> DoMultiLinesLast(int count) => new();
     public IMapper? GetMapper() => null;
     public void HandleConnReceive(byte[] msg) { }
     public void HandleConnError(Exception err) { }
@@ -140,8 +137,4 @@ public partial class World
 
     public void DoSendResponseToScript(Message msg) { }
 
-    public int GetHUDSize() => 0;
-    public void SetHUDSize(int size) { }
-    public List<Line> GetHUDContent() => [];
-    public bool UpdateHUDContent(int start, List<Line> content) => false;
 }
