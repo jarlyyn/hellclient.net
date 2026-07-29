@@ -127,7 +127,24 @@ public class Aliases
     {
         return removeAlias(id);
     }
-    public void AddAlias(List<Alias> aliases)
+    public bool AddAlias(Alias al, bool replace)
+    {
+        if (al.Name != "")
+        {
+            var name = al.PrefixedName();
+            var named = Named.TryGetValue(name, out var t) ? t : null;
+            if (named is not null)
+            {
+                if (!replace)
+                {
+                    return false;
+                }
+                removeAlias(named.Data.ID);
+            }
+        }
+        return addAlias(al);
+    }
+    public void AddAliases(List<Alias> aliases)
     {
         foreach (var al in aliases)
         {
@@ -183,7 +200,7 @@ public class Aliases
         }
         return list.Count;
     }
-    public int DoDeleteAliasByGroup(string group, bool byUser)
+    public int DoDeleteAliasGroup(string group, bool byUser)
     {
         var groupTriggers = Grouped.TryGetValue(group, out var g) ? g : null;
         if (groupTriggers is null)
@@ -210,13 +227,42 @@ public class Aliases
             return 0;
         }
         var list = groupTriggers.Values.ToList();
-        var count = list.Count;
         foreach (var t in list)
         {
             t.Data.Enabled = enable;
         }
         Disorder = true;
+        return list.Count;
+    }
+    public int DoDeleteAliasByGroup(string group, bool byUser)
+    {
+        var groupTriggers = Grouped.TryGetValue(group, out var g) ? g : null;
+        if (groupTriggers is null)
+        {
+            return 0;
+        }
+        int count = 0;
+        var list = groupTriggers.Values.ToList();
+        foreach (var t in list)
+        {
+            if (t.Data.ByUser() == byUser)
+            {
+                removeAlias(t.Data.ID);
+                count++;
+            }
+        }
         return count;
+    }
+    public bool DoEnableAliasByName(string name, bool enabled)
+    {
+        var al = Named.TryGetValue(name, out var t) ? t : null;
+        if (al is null)
+        {
+            return false;
+        }
+        al.Data.Enabled = enabled;
+        Disorder = true;
+        return true;
     }
     public List<Alias> GetAliasesByType(bool byUser)
     {

@@ -122,9 +122,9 @@ public interface IWorld
     public void DoDeleteTimerByType(bool byUser);
     public void AddTimers(List<Timer> ts);
     public void DoResetTimers();
-    public (string Value, bool Found, bool Valid) GetTimerOption(string name, string option);
-    public (string Value, bool Found, bool Valid) GetTimerInfo(string name, int infotype);
-    public (bool Updated, bool Found, bool Valid) SetTimerOption(string name, string option, string value);
+    public FoundStringResult GetTimerOption(string name, string option);
+    public FoundStringResult GetTimerInfo(string name, int infotype);
+    public FoundBoolResult SetTimerOption(string name, string option, string value);
     public bool HasNamedTimer(string name);
     public List<string> DoListTimerNames(bool byUser);
     public bool AddTimer(Timer timer, bool byUser);
@@ -139,9 +139,9 @@ public interface IWorld
     public List<Alias> GetAliasesByType(bool byUser);
     public void DoDeleteAliasByType(bool byUser);
     public void AddAliases(List<Alias> aliases);
-    public (string Value, bool Found, bool Valid) GetAliasOption(string name, string option);
-    public (string Value, bool Found, bool Valid) GetAliasInfo(string name, int infotype);
-    public (bool Updated, bool Found, bool Valid) SetAliasOption(string name, string option, string value);
+    public FoundStringResult GetAliasOption(string name, string option);
+    public FoundStringResult GetAliasInfo(string name, int infotype);
+    public FoundBoolResult SetAliasOption(string name, string option, string value);
     public bool HasNamedAlias(string name);
     public List<string> DoListAliasNames(bool byUser);
     public bool AddAlias(Alias alias, bool byUser);
@@ -157,9 +157,9 @@ public interface IWorld
     public List<Trigger> GetTriggersByType(bool byUser);
     public void DoDeleteTriggerByType(bool byUser);
     public void AddTriggers(List<Trigger> triggers);
-    public (string Value, bool Found, bool Valid) GetTriggerOption(string name, string option);
-    public (string Value, bool Found, bool Valid) GetTriggerInfo(string name, int infotype);
-    public (bool Updated, bool Found, bool Valid) SetTriggerOption(string name, string option, string value);
+    public FoundStringResult GetTriggerOption(string name, string option);
+    public FoundStringResult GetTriggerInfo(string name, int infotype);
+    public FoundBoolResult SetTriggerOption(string name, string option, string value);
     public bool HasNamedTrigger(string name);
     public List<string> DoListTriggerNames(bool byUser);
     public bool AddTrigger(Trigger trigger, bool byUser);

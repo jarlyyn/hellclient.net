@@ -150,6 +150,10 @@ public class Timers
             return list;
         }
     }
+    public bool HasNamedTimer(string name)
+    {
+        return Named.ContainsKey(name);
+    }
     public bool ResetNamedTimer(string name)
     {
         lock (All)

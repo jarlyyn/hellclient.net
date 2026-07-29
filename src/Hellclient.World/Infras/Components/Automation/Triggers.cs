@@ -6,12 +6,12 @@ namespace Hellclient.World.Components.Automation;
 
 public class Triggers
 {
-   public Dictionary<string, AutomationTrigger> All { get; set; } = new();
-   public Dictionary<string, AutomationTrigger> ByUser { get; set; } = new();
-   public Dictionary<string, AutomationTrigger> ByScript { get; set; } = new();
-   public Dictionary<string, AutomationTrigger> Named { get; set; } = new();
-   public Dictionary<string, AutomationTrigger> Temporary { get; set; } = new();
-   public Dictionary<string, Dictionary<string, AutomationTrigger>> Grouped { get; set; } = new();
+    public Dictionary<string, AutomationTrigger> All { get; set; } = new();
+    public Dictionary<string, AutomationTrigger> ByUser { get; set; } = new();
+    public Dictionary<string, AutomationTrigger> ByScript { get; set; } = new();
+    public Dictionary<string, AutomationTrigger> Named { get; set; } = new();
+    public Dictionary<string, AutomationTrigger> Temporary { get; set; } = new();
+    public Dictionary<string, Dictionary<string, AutomationTrigger>> Grouped { get; set; } = new();
     //是否需要重排
     bool Disorder { get; set; } = true;
     //缓存的有顺序的触发器队列
@@ -203,6 +203,15 @@ public class Triggers
         removeTrigger(tr.Data.ID);
         return true;
     }
+    public int DoDeleteTemporaryTriggers()
+    {
+        var list = Temporary.Values.ToList();
+        foreach (var t in list)
+        {
+            removeTrigger(t.Data.ID);
+        }
+        return list.Count;
+    }
     public int DoDeleteTriggerGroup(string group, bool byUser)
     {
         int count = 0;
@@ -249,6 +258,10 @@ public class Triggers
         }
         Disorder = true;
         return count;
+    }
+    public List<Trigger> GetTriggersByType(bool byUser)
+    {
+        return byUser ? ByUser.Values.Select(t => t.Data).ToList() : ByScript.Values.Select(t => t.Data).ToList();
     }
     public FoundStringResult GetTriggerOption(string name, string option)
     {

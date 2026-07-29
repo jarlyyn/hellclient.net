@@ -40,62 +40,7 @@ public partial class World
     public void HandleFocus() { }
     public void HandleLoseFocus() { }
     public void DoSendTimerToScript(Timer timer) { }
-    public bool DoDeleteTimer(string id) => false;
-    public bool DoDeleteTimerByName(string name) => false;
-    public int DoDeleteTemporaryTimers() => 0;
-    public int DoDeleteTimerGroup(string group, bool byUser) => 0;
-    public bool DoEnableTimerByName(string name, bool enabled) => false;
-    public int DoEnableTimerGroup(string group, bool enabled) => 0;
-    public bool DoResetNamedTimer(string name) => false;
-    public Timer? GetTimer(string name) => null;
-    public List<Timer> GetTimersByType(bool byUser) => [];
-    public void DoDeleteTimerByType(bool byUser) { }
-    public void AddTimers(List<Timer> ts) { }
-    public void DoResetTimers() { }
-    public (string Value, bool Found, bool Valid) GetTimerOption(string name, string option) => (string.Empty, false, false);
-    public (string Value, bool Found, bool Valid) GetTimerInfo(string name, int infotype) => (string.Empty, false, false);
-    public (bool Updated, bool Found, bool Valid) SetTimerOption(string name, string option, string value) => (false, false, false);
-    public bool HasNamedTimer(string name) => false;
-    public List<string> DoListTimerNames(bool byUser) => new();
-    public bool AddTimer(Timer timer, bool byUser) => false;
-    public int DoUpdateTimer(Timer timer) => 0;
 
-    public bool DoDeleteAlias(string id) => false;
-    public bool DoDeleteAliasByName(string name) => false;
-    public int DoDeleteTemporaryAliases() => 0;
-    public int DoDeleteAliasGroup(string group, bool byUser) => 0;
-    public bool DoEnableAliasByName(string name, bool enabled) => false;
-    public int DoEnableAliasGroup(string group, bool enabled) => 0;
-    public Alias? GetAlias(string name) => null;
-    public List<Alias> GetAliasesByType(bool byUser) => [];
-    public void DoDeleteAliasByType(bool byUser) { }
-    public void AddAliases(List<Alias> aliases) { }
-    public (string Value, bool Found, bool Valid) GetAliasOption(string name, string option) => (string.Empty, false, false);
-    public (string Value, bool Found, bool Valid) GetAliasInfo(string name, int infotype) => (string.Empty, false, false);
-    public (bool Updated, bool Found, bool Valid) SetAliasOption(string name, string option, string value) => (false, false, false);
-    public bool HasNamedAlias(string name) => false;
-    public List<string> DoListAliasNames(bool byUser) => new();
-    public bool AddAlias(Alias alias, bool byUser) => false;
-    public int DoUpdateAlias(Alias alias) => 0;
-
-    public bool DoDeleteTrigger(string id) => false;
-    public bool DoDeleteTriggerByName(string name) => false;
-    public int DoDeleteTemporaryTriggers() => 0;
-    public int DoDeleteTriggerGroup(string group, bool byUser) => 0;
-    public bool DoEnableTriggerByName(string name, bool enabled) => false;
-    public int DoEnableTriggerGroup(string group, bool enabled) => 0;
-    public Trigger? GetTrigger(string name) => null;
-    public List<Trigger> GetTriggersByType(bool byUser) => [];
-    public void DoDeleteTriggerByType(bool byUser) { }
-    public void AddTriggers(List<Trigger> triggers) { }
-    public (string Value, bool Found, bool Valid) GetTriggerOption(string name, string option) => (string.Empty, false, false);
-    public (string Value, bool Found, bool Valid) GetTriggerInfo(string name, int infotype) => (string.Empty, false, false);
-    public (bool Updated, bool Found, bool Valid) SetTriggerOption(string name, string option, string value) => (false, false, false);
-    public bool HasNamedTrigger(string name) => false;
-    public List<string> DoListTriggerNames(bool byUser) => new();
-    public bool AddTrigger(Trigger trigger, bool byUser) => false;
-    public int DoUpdateTrigger(Trigger trigger) => 0;
-    public MatchResult? DoGetTriggerWildcard(string name) => null;
     public void DoSendCallbackToScript(Callback cb) { }
     public void DoSendKeyUpToScript(string key) { }
     public void DoAssist() { }
@@ -110,7 +55,6 @@ public partial class World
     public void HandleTriggerError(Exception err) { }
     public void HandleScriptError(Exception err) { }
     public (string, string) GetScriptCaller() => (string.Empty, string.Empty);
-    public void DoStopEvaluatingTriggers() { }
 
     public void DoSendResponseToScript(Message msg) { }
 
