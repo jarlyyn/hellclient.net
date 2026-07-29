@@ -63,7 +63,7 @@ public interface IAutomationService
     public List<string> DoListTriggerNames(WorldContext context, bool byUser);
     public bool AddTrigger(WorldContext context, Trigger trigger, bool byUser);
     public int DoUpdateTrigger(WorldContext context, Trigger trigger);
-
+    public void DoExecute(WorldContext context, string cmd);
 }
 // 自动机服务
 // 用于管理Mud中的触发器/计时器/别名等自动化任务工作

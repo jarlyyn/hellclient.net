@@ -24,7 +24,6 @@ public partial class World
     public void RequestTrustDomains(Authorization authorization) { }
     public object GetPluginOptions() => new object();
     public void DoReloadPermissions() { }
-    public void DoExecute(string message) { }
     public (byte[] Data, Exception? Error) DoEncode() => (Array.Empty<byte>(), null);
     public Exception? DoDecode(byte[] data) => null;
     public Exception? DoReloadScript() => null;

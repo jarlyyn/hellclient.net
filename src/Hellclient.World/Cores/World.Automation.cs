@@ -62,5 +62,6 @@ public partial class World
     public int DoUpdateTrigger(Trigger trigger) => Service.AutomationService.DoUpdateTrigger(Context, trigger);
     public MatchResult? DoGetTriggerWildcard(string name) => Service.AutomationService.GetTriggerWildcard(Context, name);
     public void DoStopEvaluatingTriggers() => Service.AutomationService.DoStopEvaluatingTriggers(Context);
+    public void DoExecute(string message) => Service.AutomationService.DoExecute(Context, message);
 
 }
