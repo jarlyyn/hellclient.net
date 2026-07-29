@@ -11,7 +11,6 @@ public class WorldEventBus
         public EventHandler<List<string>>? HistoriesEvent { get; set; }
         public EventHandler<ClientInfo>? ClientInfoEvent { get; set; }
         public EventHandler? QueueDelayUpdatedEvent { get; set; }
-
         public EventHandler<List<Line>>? HUDContentEvent { get; set; }
         public EventHandler<DiffLines>? HUDUpdateEvent { get; set; }
         public EventHandler? ReadyEvent { get; set; }
