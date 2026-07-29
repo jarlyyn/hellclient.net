@@ -59,7 +59,6 @@ public partial class World
     public List<string> DoListTimerNames(bool byUser) => new();
     public bool AddTimer(Timer timer, bool byUser) => false;
     public int DoUpdateTimer(Timer timer) => 0;
-    public void DoSendAliasToScript(string message, Alias alias, Matcher result) { }
 
     public bool DoDeleteAlias(string id) => false;
     public bool DoDeleteAliasByName(string name) => false;
@@ -96,12 +95,10 @@ public partial class World
     public List<string> DoListTriggerNames(bool byUser) => new();
     public bool AddTrigger(Trigger trigger, bool byUser) => false;
     public int DoUpdateTrigger(Trigger trigger) => 0;
-    public void DoSendTriggerToScript(Line line, Trigger trigger, Matcher result) { }
-    public Matcher? DoGetTriggerWildcard(string name) => null;
+    public MatchResult? DoGetTriggerWildcard(string name) => null;
     public void DoSendCallbackToScript(Callback cb) { }
     public void DoSendKeyUpToScript(string key) { }
     public void DoAssist() { }
-    public void DoMultiLinesAppend(string line) { }
     public void DoMultiLinesFlush() { }
     public List<string> DoMultiLinesLast(int count) => new();
     public IMapper? GetMapper() => null;

@@ -129,8 +129,6 @@ public interface IWorld
     public List<string> DoListTimerNames(bool byUser);
     public bool AddTimer(Timer timer, bool byUser);
     public int DoUpdateTimer(Timer timer);
-    public void DoSendAliasToScript(string message, Alias alias, Matcher result);
-
     public bool DoDeleteAlias(string id);
     public bool DoDeleteAliasByName(string name);
     public int DoDeleteTemporaryAliases();
@@ -166,12 +164,10 @@ public interface IWorld
     public List<string> DoListTriggerNames(bool byUser);
     public bool AddTrigger(Trigger trigger, bool byUser);
     public int DoUpdateTrigger(Trigger trigger);
-    public void DoSendTriggerToScript(Line line, Trigger trigger, Matcher result);
-    public Matcher? DoGetTriggerWildcard(string name);
+    public MatchResult? DoGetTriggerWildcard(string name);
     public void DoSendCallbackToScript(Callback cb);
     public void DoSendKeyUpToScript(string key);
     public void DoAssist();
-    public void DoMultiLinesAppend(string line);
     public void DoMultiLinesFlush();
     public List<string> DoMultiLinesLast(int count);
     public int GetLinesInBufferCount();

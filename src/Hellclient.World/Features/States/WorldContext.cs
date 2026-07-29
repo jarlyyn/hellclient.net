@@ -2,6 +2,7 @@ using Hellclient.World.Infras.Adapters;
 using Hellclient.World.Types;
 using Hellclient.World.Infras.Components;
 using Convert = Hellclient.World.Infras.Components.Convert;
+using Hellclient.World.Components.Automation;
 using Hellclient.Infras.Components;
 
 namespace Hellclient.World.States;
@@ -20,4 +21,6 @@ public class WorldContext
 
     public HUD HUD { get; set; } = new HUD();
     public WorldConfig Config { get; set; } = new WorldConfig();
+
+    public Automation Automation { get; set; } = new Automation();
 }

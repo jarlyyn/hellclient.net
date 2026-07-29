@@ -43,4 +43,17 @@ public class Trigger
     public bool Italic { get; set; } = false;
     public string Variable { get; set; } = string.Empty;
     private bool byuser = false;
+    public bool ByUser()
+    {
+        return byuser;
+    }
+    public void SetByUser(bool value)
+    {
+        byuser = value;
+    }
+    public string PrefixedName()
+    {
+        return $"{(byuser ? Prefix.PrefixByUser : Prefix.PrefixByScript)}{Name}";
+    }
+
 }

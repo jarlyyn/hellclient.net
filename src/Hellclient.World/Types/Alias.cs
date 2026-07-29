@@ -35,4 +35,16 @@ public class Alias
     public bool OmitFromOutput { get; set; } = false;
     public bool OmitFromCommandHistory { get; set; } = false;
     private bool byuser = false;
+    public bool ByUser()
+    {
+        return byuser;
+    }
+    public void SetByUser(bool v)
+    {
+        byuser = v;
+    }
+    public string PrefixedName()
+    {
+        return $"{(byuser ? Prefix.PrefixByUser : Prefix.PrefixByScript)}{Name}";
+    }
 }

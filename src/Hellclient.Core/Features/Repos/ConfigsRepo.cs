@@ -15,6 +15,10 @@ public class ConfigsRepo : IConfigsRepo
     {
         var content=System.IO.File.ReadAllText(System.IO.Path.Combine(Deployment.Instance.ConfigPath,"system.toml"));
         var systemConfig = TomlSerializer.Deserialize<SystemConfig>(content,TomlContext.Default.SystemConfig);
+        if (systemConfig == null)
+        {
+            throw new Exception("Failed to load system config");
+        }
         if (systemConfig.MaxHistory <= 0)
         {
             systemConfig.MaxHistory = SystemConfig.DefaultMaxHistory;
