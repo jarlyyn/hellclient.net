@@ -17,5 +17,6 @@ public interface IWorldService
 
     public IPathService PathService { get; set; }
     public IScriptBridgeService ScriptBridgeService { get; set; }
+    public ILogService LogService { get; set; }
 
 }

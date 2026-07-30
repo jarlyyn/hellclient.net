@@ -6,6 +6,11 @@ public interface IPathService
 {
     public string GetScriptPath(WorldContext context);
     public string GetScriptHome(WorldContext context);
+    public string GetModPath(WorldContext context);
+    public string GetCorePath(WorldContext context);
+    public string GetScriptModPath(WorldContext context);
+    public string GetLogsPath(WorldContext context);
+
 }
 
 public class PathService : IPathService
@@ -19,4 +24,9 @@ public class PathService : IPathService
 
         return "";
     }
+    public string GetModPath(WorldContext context) => "";
+    public string GetCorePath(WorldContext context) => "";
+    public string GetScriptModPath(WorldContext context) => "";
+    public string GetLogsPath(WorldContext context) => "";
+
 }

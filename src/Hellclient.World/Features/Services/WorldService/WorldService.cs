@@ -29,4 +29,6 @@ public class WorldService : IWorldService
 
     public IPathService PathService { get; set; } = new PathService();
     public IScriptBridgeService ScriptBridgeService { get; set; } = new ScriptBridgeService();
+
+    public ILogService LogService { get; set; } = new LogService();
 }

@@ -30,5 +30,6 @@ public partial class World
     public void DoReloadScript() => Service.ScriptBridgeService.Reload(Context);
     public void DoSaveScript() => Service.ScriptBridgeService.Save(Context);
     public void DoUseScript(string scriptPath) => Service.ScriptBridgeService.UseScript(Context, scriptPath);
+    public string GetScriptType() => Service.ScriptService.GetScriptType(Context);
 
 }

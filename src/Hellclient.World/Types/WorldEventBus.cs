@@ -15,4 +15,7 @@ public class WorldEventBus
         public EventHandler<DiffLines>? HUDUpdateEvent { get; set; }
         public EventHandler? ReadyEvent { get; set; }
         public EventHandler<string>? StatusEvent { get; set; }
+        public EventHandler<Authorization>? RequestPermissionsEvent { get; set; }
+        public EventHandler<Authorization>? RequestTrustDomainsEvent { get; set; }
+
 }

@@ -61,7 +61,6 @@ public interface IWorld
     public ScriptData? GetScriptData();
     public void SetPermissions(List<string> permissions);
     public List<string> GetPermissions();
-    public void RequestPermissions(Authorization authorization);
     public string GetScriptID();
     public void SetScriptID(string scriptID);
     public string GetScriptType();
@@ -74,7 +73,6 @@ public interface IWorld
     public void DoLog(string message);
     public void SetTrusted(Trusted trusted);
     public Trusted? GetTrusted();
-    public void RequestTrustDomains(Authorization authorization);
     public PlainOptions GetPluginOptions();
     public void DoReloadPermissions();
     public void DoSendToConn(byte[] cmd);
@@ -184,7 +182,6 @@ public interface IWorld
     public void FlushHistories();
     public void HandleConnReceive(byte[] msg);
     public void HandleConnError(Exception err);
-    public void HandleConnPrompt(byte[] msg);
     public Task DoConnectServer();
     public Task DoCloseServer();
     public void HandleConverterError(Exception err);
