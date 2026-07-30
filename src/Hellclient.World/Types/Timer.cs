@@ -70,4 +70,9 @@ public class Timer
             ID = SimpleID.Instance.GenerateID(),
         };
     }
+    public int CompareTo(Timer other)
+    {
+        return ID.CompareTo(other.ID);
+    }
+
 }

@@ -64,4 +64,7 @@ public partial class World
     public void DoStopEvaluatingTriggers() => Service.AutomationService.DoStopEvaluatingTriggers(Context);
     public void DoExecute(string message) => Service.AutomationService.DoExecute(Context, message);
 
+    public void DoMultiLinesFlush() => Service.AutomationService.DoMultiLinesFlush(Context);
+    public List<string> DoMultiLinesLast(int count) => new();
+
 }

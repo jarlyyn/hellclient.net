@@ -13,4 +13,9 @@ public interface IWorldService
     public IQueueService QueueService { get; set; }
     public IHUDService HudService { get; set; }
     public IConfigService ConfigService { get; set; }
+    public IScriptService ScriptService { get; set; }
+
+    public IPathService PathService { get; set; }
+    public IScriptBridgeService ScriptBridgeService { get; set; }
+
 }

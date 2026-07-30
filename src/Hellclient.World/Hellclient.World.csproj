@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PublishAot>true</PublishAot>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Tomlyn" Version="2.10.1" />
     <PackageReference Include="Microlithix.AnsiParser" Version="1.0.0" />
   </ItemGroup>
 </Project>

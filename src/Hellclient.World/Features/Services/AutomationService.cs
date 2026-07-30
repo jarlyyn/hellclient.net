@@ -64,6 +64,7 @@ public interface IAutomationService
     public bool AddTrigger(WorldContext context, Trigger trigger, bool byUser);
     public int DoUpdateTrigger(WorldContext context, Trigger trigger);
     public void DoExecute(WorldContext context, string cmd);
+    public void DoMultiLinesFlush(WorldContext context);
 }
 // 自动机服务
 // 用于管理Mud中的触发器/计时器/别名等自动化任务工作
@@ -244,7 +245,7 @@ public class AutomationService : IAutomationService
         if (p != "" && cmd.StartsWith(p))
         {
             var script = cmd[p.Length..];
-            ScriptService.DoRunScript(context, script);
+            ScriptService.Run(context, script);
         }
         if (!MatchAlias(context, cmd))
         {
@@ -307,7 +308,7 @@ public class AutomationService : IAutomationService
                 DoExecute(context, message);
                 break;
             case SendTo.SendtoScript:
-                ScriptService.DoRunScript(context, message);
+                ScriptService.Run(context, message);
                 break;
             case SendTo.SendtoImmediate:
                 var icmd = Command.Create(message);
@@ -322,7 +323,7 @@ public class AutomationService : IAutomationService
                 MetronomeService.Send(context, icmd);
                 break;
             case SendTo.SendtoScriptAfterOmit:
-                ScriptService.DoRunScript(context, message);
+                ScriptService.Run(context, message);
                 break;
         }
         return false;
@@ -542,5 +543,12 @@ public class AutomationService : IAutomationService
     {
         return context.Automation.Triggers.DoUpdateTrigger(trigger);
     }
-
+    public void DoMultiLinesFlush(WorldContext context)
+    {
+        context.Automation.MultiLines.Flush();
+    }
+    public List<string> DoMultiLinesLast(WorldContext context, int count)
+    {
+        return context.Automation.MultiLines.GetRecentItems(count);
+    }
 }

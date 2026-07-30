@@ -1,5 +1,6 @@
 using Tomlyn.Serialization;
 using Hellclient.World.Types;
+using Hellclient.World.Infras.Components;
 using System.Text.Json.Serialization;
 
 namespace Hellclient.World.Infras.Components;
@@ -9,6 +10,7 @@ namespace Hellclient.World.Infras.Components;
     PreferredObjectCreationHandling = JsonObjectCreationHandling.Replace)]
 
 [TomlSerializable(typeof(SystemConfig))]
-internal partial class TomlContext : TomlSerializerContext
+[TomlSerializable(typeof(ScriptData))]
+public partial class TomlContext : TomlSerializerContext
 {
 }

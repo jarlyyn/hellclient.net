@@ -14,4 +14,5 @@ public class WorldEventBus
         public EventHandler<List<Line>>? HUDContentEvent { get; set; }
         public EventHandler<DiffLines>? HUDUpdateEvent { get; set; }
         public EventHandler? ReadyEvent { get; set; }
+        public EventHandler<string>? StatusEvent { get; set; }
 }

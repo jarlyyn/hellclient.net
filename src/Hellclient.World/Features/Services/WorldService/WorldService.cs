@@ -26,4 +26,7 @@ public class WorldService : IWorldService
     public IHUDService HudService { get; set; } = new HUDService();
     public IConfigService ConfigService { get; set; } = new ConfigService();
     public IScriptService ScriptService { get; set; } = new ScriptService();
+
+    public IPathService PathService { get; set; } = new PathService();
+    public IScriptBridgeService ScriptBridgeService { get; set; } = new ScriptBridgeService();
 }

@@ -55,5 +55,13 @@ public class Trigger
     {
         return $"{(byuser ? Prefix.PrefixByUser : Prefix.PrefixByScript)}{Name}";
     }
+    public int CompareTo(Trigger other)
+    {
+        if (Sequence != other.Sequence)
+        {
+            return Sequence.CompareTo(other.Sequence);
+        }
+        return ID.CompareTo(other.ID);
+    }
 
 }

@@ -6,7 +6,7 @@ namespace Hellclient.World.Cores;
 
 public interface IWorld
 {
-    public SemaphoreSlim Lock { get;}
+    public SemaphoreSlim Lock { get; }
     public string ID { get; }
     public WorldEventBus EventBus { get; }
     public int GetMaxHistory();
@@ -75,16 +75,16 @@ public interface IWorld
     public void SetTrusted(Trusted trusted);
     public Trusted? GetTrusted();
     public void RequestTrustDomains(Authorization authorization);
-    public object GetPluginOptions();
+    public PlainOptions GetPluginOptions();
     public void DoReloadPermissions();
     public void DoSendToConn(byte[] cmd);
     public Task DoSend(Command command);
     public void DoSendToQueue(Command command);
     public void DoExecute(string message);
-    public (byte[] Data, Exception? Error) DoEncode();
-    public Exception? DoDecode(byte[] data);
-    public Exception? DoReloadScript();
-    public Exception? DoSaveScript();
+    public byte[] DoEncode();
+    public void DoDecode(byte[] data);
+    public void DoReloadScript();
+    public void DoSaveScript();
     public void DoUseScript(string scriptPath);
     public List<RequiredParam> GetRequiredParams();
     public void DoRunScript(string script);
@@ -173,7 +173,6 @@ public interface IWorld
     public int GetLinesInBufferCount();
     public List<Line> GetRecentLines(int count);
     public Line? GetLine(int idx);
-    public IMapper? GetMapper();
     public int GetPriority();
     public void SetPriority(int priority);
     public List<Line> GetSummary();
@@ -192,7 +191,7 @@ public interface IWorld
     public void HandleCmdError(Exception err);
     public void HandleTriggerError(Exception err);
     public void HandleScriptError(Exception err);
-    public (string, string) GetScriptCaller();
+    public CreatorInfo GetScriptCaller();
     public void DoStopEvaluatingTriggers();
 
     public int GetMetronomeBeats();

@@ -47,4 +47,13 @@ public class Alias
     {
         return $"{(byuser ? Prefix.PrefixByUser : Prefix.PrefixByScript)}{Name}";
     }
+    public int CompareTo(Alias other)
+    {
+        if (Sequence != other.Sequence)
+        {
+            return Sequence.CompareTo(other.Sequence);
+        }
+        return ID.CompareTo(other.ID);
+    }
+
 }

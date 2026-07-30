@@ -23,4 +23,6 @@ public class WorldContext
     public WorldConfig Config { get; set; } = new WorldConfig();
 
     public Automation Automation { get; set; } = new Automation();
+
+    public Script Script { get; set; } = new Script();
 }

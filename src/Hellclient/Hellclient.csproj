@@ -4,8 +4,13 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
   <!-- 兼容 Hellclient的表现-->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
