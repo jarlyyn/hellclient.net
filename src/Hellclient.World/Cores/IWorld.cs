@@ -12,7 +12,6 @@ public interface IWorld
     public int GetMaxHistory();
     public int GetMaxLines();
     public int GetMaxRecent();
-    public byte[] GetConnBuffer();
     public bool GetConnConnected();
     public string GetHost();
     public void SetHost(string host);
@@ -88,14 +87,9 @@ public interface IWorld
     public void DoRunScript(string script);
     public void DoPrint(string msg);
     public void DoPrintSystem(string msg);
-    public void DoPrintLocalBroadcastIn(string msg);
-    public void DoPrintGlobalBroadcastIn(string msg);
     public void DoPrintLocalBroadcastOut(string msg);
     public void DoPrintGlobalBroadcastOut(string msg);
-    public void DoPrintSubneg(string msg);
     public void DoPrintRequest(string msg);
-    public void DoPrintResponse(string msg);
-
     public int DoDiscardQueue(bool force);
     public void DoLockQueue();
     public void DoOmitOutput();
