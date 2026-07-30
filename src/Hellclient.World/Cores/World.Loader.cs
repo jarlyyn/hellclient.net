@@ -8,7 +8,7 @@ namespace Hellclient.World.Cores;
 
 public partial class World
 {
-    public byte[] DoEncode() => (Array.Empty<byte>());
-    public void DoDecode(byte[] data) { }
+    public string DoEncode() => Service.LoaderService.Encode(Context);
+    public void DoDecode(string data) => Service.LoaderService.Decode(Context, data);
 
 }

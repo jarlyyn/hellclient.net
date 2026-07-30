@@ -11,6 +11,7 @@ namespace Hellclient.World.Infras.Components;
 
 [TomlSerializable(typeof(SystemConfig))]
 [TomlSerializable(typeof(ScriptData))]
+[TomlSerializable(typeof(WorldData))]
 public partial class TomlContext : TomlSerializerContext
 {
 }

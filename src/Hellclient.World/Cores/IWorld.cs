@@ -79,8 +79,8 @@ public interface IWorld
     public Task DoSend(Command command);
     public void DoSendToQueue(Command command);
     public void DoExecute(string message);
-    public byte[] DoEncode();
-    public void DoDecode(byte[] data);
+    public string DoEncode();
+    public void DoDecode(string data);
     public void DoReloadScript();
     public void DoSaveScript();
     public void DoUseScript(string scriptPath);

@@ -31,4 +31,5 @@ public class WorldService : IWorldService
     public IScriptBridgeService ScriptBridgeService { get; set; } = new ScriptBridgeService();
 
     public ILogService LogService { get; set; } = new LogService();
+    public ILoaderService LoaderService { get; set; } = new LoaderService();
 }
