@@ -5,10 +5,13 @@ using Hellclient.World.Utils;
 using Hellclient.Core.Utils;
 using Hellclient.Application;
 using Hellclient.Core.Cores;
+using Hellclient.Core.WebApp;
+using Hellclient.World.Configs;
+
 
 Application.Instance.Init();
 Application.Instance.Config();
-
+WebApp.Instance.Start($"http://{AppConfig.System.Addr}");
 CharsetUtil.InstallEncodingProvider();
 var world = AppCore.Instance.Client.Titan.NewWorld("test")!;
 world.SetCharset(CharsetUtil.GBK);
