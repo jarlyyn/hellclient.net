@@ -3,7 +3,7 @@ using System.Text;
 using Hellclient.Core.Types;
 using Hellclient.World.Infras.Adapters;
 
-namespace Hellclient.Core.WebApp;
+namespace Hellclient.WebUI;
 
 public class WebsocketConnection : IConnection
 {

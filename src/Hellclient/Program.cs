@@ -7,10 +7,12 @@ using Hellclient.Application;
 using Hellclient.Core.Cores;
 using Hellclient.Core.WebApp;
 using Hellclient.World.Configs;
+using Hellclient.WebUI;
 
 
 Application.Instance.Init();
 Application.Instance.Config();
+WebUI.Instance.Init();
 WebApp.Instance.Start($"http://{AppConfig.System.Addr}");
 CharsetUtil.InstallEncodingProvider();
 var world = AppCore.Instance.Client.Titan.NewWorld("test")!;
