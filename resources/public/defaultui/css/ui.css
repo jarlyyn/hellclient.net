@@ -1,0 +1,597 @@
+body {
+    text-size-adjust: none;
+    background: black;
+    color: white;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+    overflow-y: hidden;
+}
+
+#world {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul,
+li {
+    padding: 0;
+    margin: 0;
+    list-style: none
+}
+
+#userinput-note-body-alllines,
+ul#lines,
+ul#alllines,
+ul#visualPrompt-alllines {
+    white-space: pre;
+    font-family: monospace;
+}
+
+#userinput-note-body-alllines,
+ul#visualPrompt-alllines,
+ul#alllines {
+    background: black;
+    padding: 0;
+    margin: 0;
+    color: white
+}
+
+#userinput-note-body-alllines li,
+ul#visualPrompt-alllines li,
+ul#lines li,
+ul#alllines li {
+    width: 80em;
+    overflow: hidden;
+    background: black;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 13px;
+}
+
+ul#lines {
+    padding-bottom: 60px;
+    margin-bottom: -32px;
+    padding-top: 110px;
+    padding-left: 0;
+}
+#history-suggestion{
+    position: fixed;
+    bottom:32px;
+    width:100%;
+    z-index: 1;
+    background-color: #eeeeeeee;
+    color:black
+}
+#history-suggestion ul{
+    padding:0.5em 10em
+}
+#history-suggestion li{
+    cursor: pointer;
+    font-size:16px;
+    line-height: 26px;
+}
+#history-suggestion li:hover{
+    background: #333333;
+    color:white;
+}
+#footer {
+    position: fixed;
+    bottom: 0;
+    height: 32px;
+    left: 0;
+    width: 100%;
+    background: black;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+#user-input {
+    height: 32px;
+    position: relative;
+    flex: 1
+}
+
+#user-input .el-input-group__prepend,
+#user-input .el-input-group__append {
+    background: black
+}
+
+#user-input span {
+    height: 32px;
+    line-height: 32px
+}
+
+#user-input .el-input__inner {
+    background: black;
+    color: white;
+    border-bottom: none
+}
+
+#top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 108px;
+    background: white;
+    min-width: 1024px
+}
+
+#tabs .el-tabs__item.is-active {
+    font-weight: bold;
+    background-color: #ecf5ff;
+}
+
+#top.empty {
+    height: 30px;
+}
+
+#top .el-tabs__header {
+    margin: 0
+}
+
+#buttons {
+    padding: 4px
+}
+
+.el-tooltip__popper {
+    color: black
+}
+
+#current {
+    z-index: 1;
+    position: relative;
+    font-weight: bold;
+    line-height: 32px;
+    flex-basis:8em;
+    flex-grow:0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    text-decoration: underline;
+    padding: 0 0.5em 0 0.5em;
+    background: black
+}
+#footer-home-button{
+    display: inline-block;
+    height:32px;
+    width:32px;
+    line-height: 32px;
+    text-align: center;
+    padding-left: 1em;
+}
+#footer-home{
+    position: relative;
+    font-weight: bold;
+    line-height: 32px;
+    flex-basis:8em;
+    flex-grow:0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+    text-decoration: underline;
+    padding: 0 0.5em 0 0.5em;
+    background: black;
+    color:#909399
+}
+#current:hover {
+    width: 100%;
+    margin-right: -100%;
+    flex-basis: 100%;
+}
+
+#main-button {
+    padding-right: 2em
+}
+
+#tabs {
+    height: 43px
+}
+
+#no-clients {
+    color: black;
+    font-weight: bold;
+    line-height: 43px;
+    text-indent: 0.5em
+}
+
+#triggers .el-table .cell {
+    color: #333333
+}
+
+.el-form .el-switch {
+    height: 40px;
+    line-height: 40px
+}
+
+#world {
+    color: #303133
+}
+
+#userinput-list-body {
+    color: #303133;
+    padding: 0 2em
+}
+
+#userinput-datagrid-body {
+    color: #303133;
+    padding: 0 2em
+}
+
+#userinput-datagrid-body .toolbar {
+    padding-top: 1em
+}
+
+#userinput-datagrid-body .el-table__row .cell {
+    white-space: nowrap;
+}
+
+.el-message-box.update-required .el-message-box__content {
+    white-space: pre-line;
+}
+
+#script-intro {
+    white-space: pre-wrap;
+}
+
+.script-introe {
+    white-space: pre-wrap;
+    color: #333333;
+}
+
+.param-comment {
+    color: rgb(19, 206, 102)
+}
+
+@media (max-width: 1120px) {
+    body #visualPrompt .el-dialog {
+        min-width: auto;
+        width: 90%
+    }
+
+    body {
+        min-width: 640px
+    }
+
+    ul#lines,
+    ul#alllines,
+    ul#visualPrompt-alllines {
+        white-space: pre;
+        font-family: 'sans';
+    }
+
+    #doalllines,
+    #dootpions,
+    #dousertriggers,
+    #dousertimers,
+    #douseraliases,
+    #advancebuttons,
+    #dolock,
+    #dounlock {
+        display: none;
+    }
+
+    #about-button {
+        display: none;
+    }
+    #top {
+        min-width: 1120px
+    }
+}
+
+html body .el-table .game-list-running {
+    background-color: #f0f9eb
+}
+
+html body .el-table .game-list-not-running {
+    background-color: #fbc4c4
+}
+
+#switchstatus .connected {
+    color: #67C23A
+}
+
+#switchstatus .disconnected {
+    color: #E6A23C;
+}
+
+#switchstatus {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: white;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+}
+
+#userinput-list-body span.intro {
+    white-space: pre-wrap;
+}
+.notopended-id{
+    color:#333333;
+    cursor: pointer;
+    font-weight: bold;
+}
+.userinput-list-mutli-footer {
+    margin-top: 0.5em;
+    text-align: right;
+}
+
+#visualPrompt .el-dialog {
+    min-width: 900px
+}
+
+#visualPrompt .media.landscape .image img {
+    width: 90%;
+    display: block;
+    margin: auto;
+    height: auto;
+    max-height: 400px;
+}
+
+#visualPrompt .media.portrait .image img {
+    width: auto;
+    display: block;
+    margin: auto;
+    height: 500px;
+    max-width: 90%;
+}
+
+#visualPrompt .intro {
+    line-height: 1.5em;
+    padding: 0.5em;
+    color: #333333;
+    font-size: 16px;
+}
+
+#visualPrompt .text {
+    white-space: pre-line
+}
+
+.update-comment textarea,
+.update-required textarea,
+.update-variable textarea {
+    height: 16em;
+}
+
+.update-comment,
+.update-required,
+.update-variable {
+    width: 600px
+}
+
+#variablelist .variable-value {
+    white-space: pre-wrap;
+}
+
+#userinput-note-body {
+    line-height: 1.3em;
+    padding: 0.5em;
+    font-size: 16px;
+}
+
+#userinput-note-body .text {
+    white-space: pre-wrap;
+}
+
+#userinput-note-body .md a {
+    color: green
+}
+
+#batchcommand,#masssend {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: #333333;
+    max-width: 90%;
+    margin: auto;
+
+}
+
+#batchcommand .data, #masssend .data {
+    flex-grow: 1;
+    margin-bottom: 0.5em;
+}
+
+#batchcommand textarea ,#masssend textarea {
+    width: 100%;
+    min-height: 100%;
+    background: black;
+    color: white;
+}
+
+#stage {
+    background: black;
+    bottom: 32px;
+    left: 0;
+    position: fixed;
+    z-index: -1;
+}
+
+#dashboard-body {
+    background: black;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    z-index: -1;
+    overflow: auto;
+}
+
+#dashboard-content {
+    padding: 40px 20px 0 20px;
+}
+
+#dashboard-content-clients {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 600px);
+    justify-content: center;
+    margin: 20px 5px;
+    
+}
+
+.dashboard-client-body {
+    margin: auto;
+    position: relative;
+    padding-left:80px
+}
+
+.dashboard-client .id {
+    font-weight: bold;
+    color: #333333;
+    font-size: 18px
+}
+
+.dashboard-client .script {
+    color: cadetblue;
+    font-style: italic;
+}
+
+#dashboard-info {
+    max-width: 600px;
+    margin: auto;
+    display: none;
+    text-align: center;
+}
+
+#hudwrapper.hide {
+    display: none
+}
+
+.dashboard-client  {
+    position: relative;
+    background-color: white;
+    width: 440px;
+    height:64px;
+    margin: 0 auto 5px;
+    color:#333333;
+    padding:10px;
+    cursor: pointer;
+}
+.dashboard-client  .info{
+    height:20px;
+    line-height: 20px;
+}
+.dashboard-client.disconnected {
+    opacity: 0.7;
+}
+
+.el-card__header {
+    position: relative;
+}
+
+.dashboard-client .running {
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
+.dashboard-client .priority {
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    right: 42px;
+    top: 0px;
+}
+.dashboard-client.priority-1{
+    background-color:#ffdba5
+}
+.dashboard-client.priority-2{
+    background-color:#fbc4c4;
+    animation:2s infinite priority2
+}
+@keyframes priority2 { 
+    0% { background-color: #fbc4c4;; }
+    75% { background-color:#f56c6c; }
+    100% { background-color: #fbc4c4; }
+}
+.dashboard-client-content{
+    margin:5px 0 5px;
+    padding-left:80px;
+}
+
+.dashboard-client .avatar{
+    position: absolute;
+}
+#clients-open{
+    position: relative;
+    background-color: #409EFF;
+    width: 440px;
+    height:64px;
+    margin: 0 auto 5px;
+    padding:10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 30px;
+    color: white;
+}
+#dashboard-content-clients .summary{
+    background-color: #333333;
+    padding: 0 5px;
+    margin: 0;
+    color: white;
+    height: 38px;
+}
+#dashboard-content-clients .summary li{
+    overflow: hidden;
+    background-color: #333333;
+    white-space: pre-wrap;
+    word-break: break-all;
+    height: 19px;
+    line-height: 19px;
+}
+#clients-quick{
+    position: relative;
+    background-color: #e6a23c;
+    width: 440px;
+    height:64px;
+    margin: 0 auto 5px;
+    padding:10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 30px;
+    color: white;
+}
+.clients-tool{
+    position: relative;
+    line-height: 48px;
+}
+
+.clients-tool .label{ 
+    width:100%;
+    height:20px;
+    line-height: 20px;
+    position: absolute;
+    color:white;
+    font-size:16px;
+    text-align: center;
+    top: 50%;
+    left:0;
+    font-weight: bold;
+    margin-top:16px;
+}
+
+@media (min-width: 1121px) {
+    #dashboard-info{
+        display: block;
+    }
+    #dashboard .clients-tool,
+    .dashboard-client{
+        padding-top:20px;
+        padding-bottom:20px;
+        padding-left:20px;
+        padding-right:20px;
+        margin-bottom:30px;
+    }
+}
+

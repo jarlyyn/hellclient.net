@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=600" />
+  <title>Hellclient</title>
+  <link rel="stylesheet" href="/public/defaultui/theme-chalk/index.css">
+  <link rel="stylesheet" href="/public/defaultui/css/ansicolor.css">
+  <link rel="stylesheet" href="/public/defaultui/css/ui.css">
+  <link rel="shortcut icon" href="/public/defaultui/image/favicon.png">
+  <style>
+  </style>
+  <script src="/public/defaultui/js/markdown-it.min.js"></script>
+  <script data-main="/public/defaultui/js/init.js" src="/public/defaultui/js/require.min.js"></script>
+</head>
+
+<body>
+
+  <div id="app">
+    <div id="userinputlist"></div>
+
+    <div id="top" :class="{empty:current==''}"></div>
+    <div v-if="current" id="hudwrapper" class="hide"><canvas @mousedown="onHUDClick" id="hud"></canvas></div>
+    <div v-if="current" id="stage" @mousedown="onButton('allLines')">
+      <canvas id="output"></canvas>
+      <canvas id="prompt-output"></canvas>
+    </div>
+    <div id="triggerlist"></div>
+    <div id="creategameform"></div>
+    <div id="createscriptform"></div>
+    <div id="createtimerform"></div>
+    <div id="updatetimerform"></div>
+    <div id="timerlist"></div>
+    <div id="createaliasform"></div>
+    <div id="updatealiasform"></div>
+    <div id="createtriggerform"></div>
+    <div id="updatetriggerform"></div>
+    <div id="aliaslist"></div>
+    <div id="variablelist"></div>
+    <div id="worldsettings"></div>
+    <div id="scriptsettings"></div>
+    <div id="requiredparams"></div>
+    <div id="notopened"></div>
+    <div id="gamelist"></div>
+    <div id="script"></div>
+    <div id="scriptlist"></div>
+    <div id="createrequiredparamform"></div>
+    <div id="updaterequiredparamform"></div>
+    <div id="updateworldsettingsform"></div>
+    <div id="updatescriptsettingsform"></div>
+    <div id="userinputdatagrid"></div>
+    <div id="userinputnote"></div>
+    <div id="requestpermissions"></div>
+    <div id="requesttrustdomains"></div>
+    <div id="authorized"></div>
+    <div id="visualprompt"></div>
+    <div id="masssendform"></div>
+    <div id="userpasswordform"></div>
+    <div id="batchcommand"></div>
+
+    <el-dialog v-if="clients.length && current && info[current]" :title="'游戏'+current+ '@' +info[current].HostPort+'状态'"
+      :visible.sync="statusVisible" width="80%">
+      <div>
+        <span v-if="status" id="pop-status">{{status}}</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="statusVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="关于" :visible.sync="aboutVisible" width="80%">
+      <div>
+        <h2>hellclient</h2>
+        <p><a target="_blank" href="https://github.com/jarlyyn/hellclient">Homepage</a></p>
+        <p><a target="_blank" href="https://forum.hellclient.com">社区</a></p>
+        <p>服务版本:{{version}}</p>
+        <p>界面版本:{{uiversion}}</p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="aboutVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
+    <div id="alllines"></div>
+    <div v-if="suggestion && suggestion.length"id="history-suggestion" @click="hideSuggestion"><ul>
+      <li @click="onSuggest(cmd)" v-for="cmd in suggestion" v-if="cmd">{{cmd}}</li>
+    </ul></div>
+    <div v-if="current" id="footer">
+      <div id="current">
+        {{current}}
+      </div>
+      <div id="user-input" v-on:keyup.esc="onEsc" v-on:keyup.down="onDown" v-on:keyup.up="onUp" v-on:keyup.13="send" v-on:keydown="onInputKeyDown">
+        <el-input v-on:input="onInputChange" id="mud-input" size="small" placeholder="请输入命令" v-model="cmd" >
+          <el-tooltip slot="prepend" effect="light" content="助理" placement="top">
+            <el-button icon="el-icon-user" @click="assist"></el-button>
+          </el-tooltip>
+          <el-tooltip slot="append" effect="light" content="多行发送" placement="top">
+            <el-button icon="el-icon-box" @click="masssend"></el-button>
+          </el-tooltip>
+        </el-input>
+      </div>
+      <div id="footer-home">
+        <el-tooltip slot="append" effect="light" content="游戏一览" placement="top"><i id="footer-home-button" class="el-icon-s-home" @click="onButton('overview')"></i></el-tooltip>
+      </div>
+    </div>
+    <div id="dashboard"></div>
+  </div>
+  <script>
+    var MD=markdownit()
+    MD.disable("image")
+  </script>
+  <script>
+    var body = document.getElementsByTagName("html")[0]
+  </script>
+  
+</body>
+
+</html>
