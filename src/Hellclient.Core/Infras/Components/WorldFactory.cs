@@ -1,7 +1,7 @@
 using Hellclient.World.Cores;
 using Hellclient.World.Features.WorldServices;
 
-namespace Hellclient.Core.Cores;
+namespace Hellclient.Core.Infras.Components;
 
 
 public interface IWorldFactory

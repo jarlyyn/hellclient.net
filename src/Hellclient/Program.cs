@@ -4,12 +4,13 @@ using Hellclient.World.Cores;
 using Hellclient.World.Utils;
 using Hellclient.Core.Utils;
 using Hellclient.Application;
+using Hellclient.Core.Cores;
 
 Application.Instance.Init();
 Application.Instance.Config();
 
 CharsetUtil.InstallEncodingProvider();
-var world = Core.Instance.WorldManager.NewWorld("test");
+var world = AppCore.Instance.Client.Titan.NewWorld("test")!;
 world.SetCharset(CharsetUtil.GBK);
 world.SetHost(Environment.GetEnvironmentVariable("TEST_HOST")!);
 world.SetPort(Environment.GetEnvironmentVariable("TEST_PORT")!);
