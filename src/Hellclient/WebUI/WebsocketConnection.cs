@@ -40,9 +40,12 @@ public class WebsocketConnection : IConnection
     public async Task Close()
     {
         OnClose?.Invoke(this, EventArgs.Empty);
-        await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure,
-            "",
-             System.Threading.CancellationToken.None);
+        if (_socket.State == WebSocketState.Open)
+        {
+            await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure,
+                "",
+                System.Threading.CancellationToken.None);
+        }
     }
     public async Task Send(byte[] data)
     {

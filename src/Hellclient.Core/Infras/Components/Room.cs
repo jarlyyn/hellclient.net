@@ -6,7 +6,7 @@ public class Room
 {
     public string Id { get; set; } = "";
     public List<IConnection> Conns { get; set; } = new();
-    public List<IConnection> Rooms()
+    public List<IConnection> Members()
     {
         return Conns;
     }

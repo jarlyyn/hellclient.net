@@ -8,15 +8,20 @@ public class AppCore
     public required Client Client { get; set; }
     public static AppCore BuildDefault()
     {
-        var ctx= new ClientContext();
+        var ctx = new ClientContext();
         var titan = new Titan()
         {
             Context = ctx.Titan
         };
+        var prophet = new Prophet()
+        {
+            Context = ctx.Prophet
+        };
         var client = new Client()
         {
             Context = ctx,
-            Titan = titan
+            Titan = titan,
+            Prophet = prophet
         };
         var app = new AppCore()
         {
