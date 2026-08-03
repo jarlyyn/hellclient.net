@@ -1,4 +1,6 @@
-namespace Hellclient.World.Types;
+using Hellclient.World.Types;
+
+namespace Hellclient.World.Infras.Components;
 
 public class WorldEventBus
 {

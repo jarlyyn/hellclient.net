@@ -1,5 +1,6 @@
 using Hellclient.Core.Features.States;
 using Hellclient.Core.Infras.Components;
+using Hellclient.Core.Types;
 using Hellclient.World.Cores;
 
 namespace Hellclient.Core.Features.Services;
@@ -30,5 +31,13 @@ public class TitanService: ITitanService
         world = WorldFactory.CreateWorld(id);
         context.Worlds[id] = world;
         return world;
+    }
+    public void Publish(TitanContext context, Message message)
+    {
+        context.EventBus.MsgEvent?.Invoke(this, message);
+    }
+    private void _onConnected(TitanContext context, IWorld world)
+    {
+        world.DoPrintSystem($"");
     }
 }

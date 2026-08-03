@@ -1,4 +1,6 @@
-namespace Hellclient.Core.Types;
+using Hellclient.Core.Types;
+
+namespace Hellclient.Core.Infras.Components;
 
 public class TitanEventBus
 {

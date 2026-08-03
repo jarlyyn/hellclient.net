@@ -21,7 +21,6 @@ public class WebsocketConnection : IConnection
         {
             using var ms = new MemoryStream();
             ValueWebSocketReceiveResult result;
-
             do
             {
                 result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
