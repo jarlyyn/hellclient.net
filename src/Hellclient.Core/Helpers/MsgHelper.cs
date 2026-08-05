@@ -70,7 +70,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeDisconnected, "", id));
         }
 
-        public static void PublishCreateFail(IPublisher p, FieldError[] errors)
+        public static void PublishCreateFail(IPublisher p, List<FieldError> errors)
         {
             p.Publish(new Message(MsgTypeCreateFail, "", errors));
         }
@@ -90,7 +90,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeUpdateSuccess, "", id));
         }
 
-        public static void PublishCreateScriptFail(IPublisher p, FieldError[] errors)
+        public static void PublishCreateScriptFail(IPublisher p, List<FieldError> errors)
         {
             p.Publish(new Message(MsgTypeCreateScriptFail, "", errors));
         }
@@ -105,27 +105,27 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeLine, id, line));
         }
 
-        public static void PublishPrompt(IPublisher p, string id, Line prompt)
+        public static void PublishPrompt(IPublisher p, string id, Line? prompt)
         {
             p.Publish(new Message(MsgTypePrompt, id, prompt));
         }
 
-        public static void PublishAllLines(IPublisher p, string id, Line[] lines)
+        public static void PublishAllLines(IPublisher p, string id, List<Line> lines)
         {
             p.Publish(new Message(MsgTypeAllLines, id, lines));
         }
 
-        public static void PublishLines(IPublisher p, string id, Line[] lines)
+        public static void PublishLines(IPublisher p, string id, List<Line> lines)
         {
             p.Publish(new Message(MsgTypeLines, id, lines));
         }
 
-        public static void PublishClients(IPublisher p, ClientInfo[] infos)
+        public static void PublishClients(IPublisher p, List<ClientInfo> infos)
         {
             p.Publish(new Message(MsgTypeClients, "", infos));
         }
 
-        public static void PublishNotOpened(IPublisher p, WorldFile[] list)
+        public static void PublishNotOpened(IPublisher p, List<WorldFile> list)
         {
             p.Publish(new Message(MsgTypeNotOpened, "", list));
         }
@@ -145,7 +145,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeStatus, id, status));
         }
 
-        public static void PublishHistory(IPublisher p, string id, string[] history)
+        public static void PublishHistory(IPublisher p, string id, List<string> history)
         {
             p.Publish(new Message(MsgTypeHistory, id, history));
         }
@@ -155,7 +155,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeUserTimers, id, timers));
         }
 
-        public static void PublishScriptTimers(IPublisher p, string id, Timer[] timers)
+        public static void PublishScriptTimers(IPublisher p, string id, List<Timer> timers)
         {
             p.Publish(new Message(MsgTypeScriptTimers, id, timers));
         }
@@ -175,12 +175,12 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeUpdateTimerSuccess, world, id));
         }
 
-        public static void PublishUserAliases(IPublisher p, string id, Alias[] aliases)
+        public static void PublishUserAliases(IPublisher p, string id, List<Alias> aliases)
         {
             p.Publish(new Message(MsgTypeUserAliases, id, aliases));
         }
 
-        public static void PublishScriptAliases(IPublisher p, string id, Alias[] aliases)
+        public static void PublishScriptAliases(IPublisher p, string id, List<Alias> aliases)
         {
             p.Publish(new Message(MsgTypeScriptAliases, id, aliases));
         }
@@ -200,12 +200,12 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeUpdateAliasSuccess, world, id));
         }
 
-        public static void PublishUserTriggers(IPublisher p, string id, Trigger[] triggers)
+        public static void PublishUserTriggers(IPublisher p, string id, List<Trigger> triggers)
         {
             p.Publish(new Message(MsgTypeUserTriggers, id, triggers));
         }
 
-        public static void PublishScriptTriggers(IPublisher p, string id, Trigger[] triggers)
+        public static void PublishScriptTriggers(IPublisher p, string id, List<Trigger> triggers)
         {
             p.Publish(new Message(MsgTypeScriptTriggers, id, triggers));
         }
@@ -275,7 +275,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeScriptSettingsMessage, world, settings));
         }
 
-        public static void PublishRequiredParamsMessage(IPublisher p, string world, RequiredParam[] rp)
+        public static void PublishRequiredParamsMessage(IPublisher p, string world, List<RequiredParam> rp)
         {
             p.Publish(new Message(MsgTypeRequiredParamsMessage, world, rp));
         }
@@ -315,7 +315,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeHUDUpdate, world, diff));
         }
 
-        public static void PublishHUDContent(IPublisher p, string world, Line[] lines)
+        public static void PublishHUDContent(IPublisher p, string world, List<Line> lines)
         {
             p.Publish(new Message(MsgTypeHUDContent, world, lines));
         }

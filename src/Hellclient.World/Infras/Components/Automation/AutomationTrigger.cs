@@ -7,7 +7,7 @@ namespace Hellclient.World.Components.Automation;
 public class AutomationTrigger
 {
     public bool Deleted;
-    public Trigger Data { get; set; }
+    public Trigger Data { get; set; }=new Trigger();
     public IMatcher? Matcher { get; set; }
     private string RawMatch { get; set; } = "";
     public  MatchResult? Wildcards { get; set; }

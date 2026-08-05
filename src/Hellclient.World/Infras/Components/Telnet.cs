@@ -12,7 +12,6 @@ public class Telnet : IMudConnection
     public const int StatusSbIac = 4;
     private TcpClient _client { get; set; } = new TcpClient();
     private NetworkStream? _stream;
-    private CancellationTokenSource _cts;
     public string Host { get; set; } = "";
     public int Port { get; set; } = 0;
     private List<byte> _buffer = [];

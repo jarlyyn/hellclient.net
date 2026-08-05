@@ -1,3 +1,4 @@
+using Hellclient.Core.Configs;
 using Hellclient.Core.Features.States;
 
 namespace Hellclient.Core.Cores;
@@ -8,7 +9,19 @@ public class AppCore
     public required Client Client { get; set; }
     public static AppCore BuildDefault()
     {
-        var ctx = new ClientContext();
+        var tctx = new TitanContext()
+        {
+            Deployment = Deployment.Instance,
+        };
+        var pctx = new ProphetContext()
+        {
+            Deployment = Deployment.Instance,
+        };
+        var ctx = new ClientContext()
+        {
+            Titan = tctx,
+            Prophet = pctx
+        };
         var titan = new Titan()
         {
             Context = ctx.Titan

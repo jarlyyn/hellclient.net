@@ -25,4 +25,5 @@ public class WorldContext
     public Automation Automation { get; set; } = new Automation();
 
     public Script Script { get; set; } = new Script();
+    public required WorldPaths Paths { get; init; }
 }

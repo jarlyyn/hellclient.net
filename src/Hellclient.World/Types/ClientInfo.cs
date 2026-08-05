@@ -11,5 +11,12 @@ public class ClientInfo
     public int Priority { get; set; } = 0;
     public long LastActive { get; set; } = 0;
     public List<Line> Summary { get; set; } = new List<Line>();
-
+    public int CompareTo(ClientInfo other)
+    {
+        if (this.Position != other.Position)
+        {
+            return this.Position.CompareTo(other.Position);
+        }
+        return this.ReadyAt.CompareTo(other.ReadyAt);
+    }
 }

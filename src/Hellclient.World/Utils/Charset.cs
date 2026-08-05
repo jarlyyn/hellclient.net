@@ -16,7 +16,7 @@ public class CharsetUtil
         {
             return Array.Empty<byte>();
         }
-        switch (charset)
+        switch (charset.ToLower())
         {
             case "gbk":
             case "cp936":
@@ -30,7 +30,7 @@ public class CharsetUtil
     }
     public static string ToUtf8(string charset, byte[] data)
     {
-        switch (charset)
+        switch (charset.ToLower())
         {
             case "gbk":
             case "cp936":
