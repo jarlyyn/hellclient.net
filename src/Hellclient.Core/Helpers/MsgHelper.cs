@@ -135,7 +135,7 @@ public class MsgHelper
             p.Publish(new Message(MsgTypeScriptInfo, id, info));
         }
 
-        public static void PublishScriptInfoList(IPublisher p, ScriptInfo[] info)
+        public static void PublishScriptInfoList(IPublisher p, List<ScriptInfo> info)
         {
             p.Publish(new Message(MsgTypeScriptInfoList, "", info));
         }

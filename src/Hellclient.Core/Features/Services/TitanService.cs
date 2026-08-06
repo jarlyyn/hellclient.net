@@ -255,32 +255,29 @@ public class TitanService : ITitanService
             MsgHelper.PublishPrompt(context.EventBus, id, prompt);
         }
     }
-    // public void  HandleCmdNotOpened() {
-    // 	list, err := t.ListNotOpened()
-    // 	if err != nil {
-    // 		return
-    // 	}
-    // 	runtime.GC()
-    // 	msg.PublishNotOpened(t, list)
-    // }
-    // public void  HandleCmdOpen(TitanContext context, string id) bool {
-    // 	ok, err := t.OpenWorld(id)
-    // 	if err != nil && !os.IsNotExist(err) {
-    // 		util.LogError(err)
-    // 		return false
-    // 	}
-    // 	w := t.World(id)
-    // 	if w != nil {
-    // 		w.UpdateLastActive()
-    // 	}
-    // 	return ok
-    // }
-    // public void  HandleCmdSave(TitanContext context, string id) {
-    //         var w = World(context, id);
-    //         if (w != null) {
-    //             w.HandleCmdError(context.SaveWorld(id));
-    //         }
-    //     }
+    public void HandleCmdNotOpened(TitanContext context)
+    {
+        var list = ListNotOpened(context);
+        MsgHelper.PublishNotOpened(context.EventBus, list);
+    }
+    public async Task<bool> HandleCmdOpen(TitanContext context, string id)
+    {
+        var ok = await OpenWorld(context, id);
+        var w = World(context, id);
+        if (w != null)
+        {
+            w.UpdateLastActive();
+        }
+        return ok;
+    }
+    public void HandleCmdSave(TitanContext context, string id)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            SaveWorld(context, id);
+        }
+    }
     public void HandleCmdSaveScript(TitanContext context, string id)
     {
         var w = World(context, id);
@@ -296,10 +293,11 @@ public class TitanService : ITitanService
             MsgHelper.PublishScriptInfo(context.EventBus, id, info);
         }
     }
-    // public void  HandleCmdListScriptInfo(TitanContext context) {
-    //         var info = context.ListScripts();
-    //         MsgHelper.PublishScriptInfoList(context.EventBus, info);
-    //     }
+    public void HandleCmdListScriptInfo(TitanContext context)
+    {
+        var info = ListScripts(context);
+        MsgHelper.PublishScriptInfoList(context.EventBus, info);
+    }
     public void HandleCmdUseScript(TitanContext context, string id, string script)
     {
         var w = World(context, id);
@@ -347,11 +345,10 @@ public class TitanService : ITitanService
         result.Sort((a, b) => a.CompareTo(b));
         MsgHelper.PublishClients(context.EventBus, result);
     }
-    // private onSave(TitanContext context, IWorld world)
-    // {
-    //     	t.SaveWorld(b.ID)
-
-    // }
+    private void onSave(TitanContext context, IWorld world)
+    {
+        SaveWorld(context, world.ID);
+    }
     public void RequestPermissions(TitanContext context, IWorld world, Authorization a)
     {
         var w = World(context, world.ID);
