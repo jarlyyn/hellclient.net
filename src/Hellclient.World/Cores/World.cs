@@ -26,6 +26,10 @@ public partial class World : IWorld
         Service.InstallTo(Context);
 
     }
+    public void Dispose()
+    {
+
+    }
     private IWorldService Service { get; init; }
     public WorldEventBus EventBus { get => Context.EventBus; }
     public WorldContext Context { get; init; }

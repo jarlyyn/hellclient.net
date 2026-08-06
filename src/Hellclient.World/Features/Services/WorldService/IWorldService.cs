@@ -6,6 +6,7 @@ namespace Hellclient.World.Features.WorldServices;
 public interface IWorldService
 {
     public void InstallTo(WorldContext context);
+    public void RemoveFrom(WorldContext context);
     public IConnService ConnService { get; set; }
     public IAutomationService AutomationService { get; set; }
     public IMetronomeService MetronomeService { get; set; }

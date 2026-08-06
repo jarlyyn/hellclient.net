@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Text;
+using System.Text.Json;
 using Hellclient.Core.Features.States;
 using Hellclient.Core.Helpers;
 using Hellclient.Core.Infras.Components;
@@ -7,9 +8,12 @@ using Hellclient.Core.Types;
 using Hellclient.World.Configs;
 using Hellclient.World.Cores;
 using Hellclient.World.Helpers;
+using Hellclient.World.Infras.Components;
 using Hellclient.World.Types;
 using Hellclient.World.Utils;
+using Tomlyn;
 using Path = System.IO.Path;
+using Timer = Hellclient.World.Types.Timer;
 
 namespace Hellclient.Core.Features.Services;
 
@@ -23,10 +27,15 @@ public interface ITitanService
 public class TitanService : ITitanService
 {
     public const string Ext = ".toml";
+    public string Scriptpath { get; set; } = "";
     public IWorldFactory WorldFactory { get; set; } = new WorldFactory();
     private IWorld? _find(TitanContext context, string id)
     {
-        return context.Worlds.TryGetValue(id, out var world) ? world : null;
+        lock (context.Worlds)
+        {
+            var w = context.Worlds.TryGetValue(id, out var world) ? world : null;
+            return w;
+        }
     }
     public IWorld? World(TitanContext context, string id)
     {
@@ -41,14 +50,23 @@ public class TitanService : ITitanService
     }
     public IWorld? NewWorld(TitanContext context, string id)
     {
-        var world = _find(context, id);
-        if (world != null)
+        lock (context.Worlds)
         {
+            var world = _find(context, id);
+            if (world != null)
+            {
+                return world;
+            }
+            world = WorldFactory.CreateWorld(id, createPaths(context, id));
+            context.Worlds[id] = world;
             return world;
         }
-        world = WorldFactory.CreateWorld(id, createPaths(context, id));
-        context.Worlds[id] = world;
-        return world;
+    }
+    public void Destory(TitanContext context, IWorld world)
+    {
+        world.Dispose();
+        RemoveFrom(context, world);
+
     }
     public void Publish(TitanContext context, Types.Message message)
     {
@@ -545,5 +563,680 @@ public class TitanService : ITitanService
             }
         }
     }
+    public bool IsTriggerNameAvaliable(TitanContext context, string id, string name, bool byuser)
+    {
+        var world = World(context, id);
+        if (world != null)
+        {
+            name = prefixedName(name, byuser);
+            return world.HasNamedTrigger(name);
+        }
+        return false;
+    }
+    public bool DoCreateTrigger(TitanContext context, string id, Trigger trigger)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            return w.AddTrigger(trigger, false);
+        }
+        return false;
+    }
+    public int DoUpdateTrigger(TitanContext context, string id, Trigger trigger)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            return w.DoUpdateTrigger(trigger);
+        }
+        return MushString.UpdateFailNotFound;
+    }
+    public void OnCreateTriggerSuccess(TitanContext context, string world, string id)
+    {
+        MsgHelper.PublishCreateTriggerSuccess(context.EventBus, world, id);
+    }
+    public void OnUpdateTriggerSuccess(TitanContext context, string world, string id)
+    {
+        MsgHelper.PublishUpdateTriggerSuccess(context.EventBus, world, id);
+    }
+    public void HandleCmdTriggers(TitanContext context, string id, bool byuser)
+    {
+        var world = World(context, id);
+        if (world != null)
+        {
+            var triggers = world.GetTriggersByType(byuser);
+            triggers.Sort();
+            if (byuser)
+            {
+                MsgHelper.PublishUserTriggers(context.EventBus, id, triggers);
+            }
+            else
+            {
+                MsgHelper.PublishScriptTriggers(context.EventBus, id, triggers);
+            }
+        }
+    }
+    public void HandleCmdDeleteTrigger(TitanContext context, string world, string id)
+    {
+        var w = World(context, world);
+        if (w != null)
+        {
+            var itemtype = GetTriggerType(context, world, id);
+            w.DoDeleteTrigger(id);
+            if (itemtype != null && itemtype.Value)
+            {
+                AutoSaveWorld(context, id);
+            }
+        }
+    }
+    public bool? GetTriggerType(TitanContext context, string world, string id)
+    {
+        var w = World(context, world);
+        if (w != null)
+        {
+            var trigger = w.GetTrigger(id);
+            if (trigger != null)
+            {
+                var result = trigger.ByUser();
+                return result;
+            }
+        }
+        return null;
+    }
+    public void HandleCmdLoadTrigger(TitanContext context, string world, string id)
+    {
+        var w = World(context, world);
+        if (w != null)
+        {
+            var trigger = w.GetTrigger(id);
+            if (trigger != null)
+            {
+                MsgHelper.PublishTrigger(context.EventBus, world, trigger);
+            }
+        }
+    }
+    public bool IsTimerNameAvaliable(TitanContext context, string id, string name, bool byuser)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            name = prefixedName(name, byuser);
+            return w.HasNamedTimer(name);
+        }
+        return false;
+    }
 
+    public bool DoCreateTimer(TitanContext context, string id, Timer timer)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            return w.AddTimer(timer, false);
+        }
+        return false;
+    }
+    public int DoUpdateTimer(TitanContext context, string id, Timer timer)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            return w.DoUpdateTimer(timer);
+        }
+        return MushString.UpdateFailNotFound;
+    }
+    public void OnCreateTimerSuccess(TitanContext context, string world, string id)
+    {
+        MsgHelper.PublishCreateTimerSuccess(context.EventBus, world, id);
+    }
+    public void OnUpdateTimerSuccess(TitanContext context, string world, string id)
+    {
+        MsgHelper.PublishUpdateTimerSuccess(context.EventBus, world, id);
+    }
+
+    public void HandleCmdTimers(TitanContext context, string id, bool byuser)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            var timers = w.GetTimersByType(byuser);
+            timers.Sort();
+            if (byuser)
+            {
+                MsgHelper.PublishUserTimers(context.EventBus, id, timers);
+            }
+            else
+            {
+                MsgHelper.PublishScriptTimers(context.EventBus, id, timers);
+            }
+        }
+    }
+    public void HandleCmdDeleteTimer(TitanContext context, string world, string id)
+    {
+        var w = World(context, world);
+        if (w != null)
+        {
+            var itemtype = GetTimerType(context, world, id);
+            w.DoDeleteTimer(id);
+            if (itemtype != null && itemtype.Value)
+            {
+                AutoSaveWorld(context, id);
+            }
+        }
+    }
+    public bool? GetTimerType(TitanContext context, string world, string id)
+    {
+        var w = World(context, world);
+        if (w != null)
+        {
+            var timer = w.GetTimer(id);
+            if (timer != null)
+            {
+                var result = timer.ByUser();
+                return result;
+            }
+        }
+        return null;
+    }
+    public void HandleCmdLoadTimer(TitanContext context, string world, string id)
+    {
+        var w = World(context, world);
+        if (w != null)
+        {
+            var timer = w.GetTimer(id);
+            if (timer != null)
+            {
+                MsgHelper.PublishTimer(context.EventBus, world, timer);
+            }
+        }
+    }
+    public void HandleCmdSend(TitanContext context, string id, string msg)
+    {
+        var w = World(context, id);
+        if (w != null && msg != "")
+        {
+            w.AddHistory(msg);
+            w.DoExecute(msg);
+        }
+    }
+    public void HandleCmdMasssend(TitanContext context, string id, string msg)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            var m = Command.Create(msg);
+            m.History = false;
+            w.DoMetronomeSend(m);
+        }
+    }
+    public void HandleCmdFindHistory(TitanContext context, string id, int position)
+    {
+        if (position < 0)
+        {
+            return;
+        }
+        var w = World(context, id);
+        if (w != null)
+        {
+            var h = w.GetHistories();
+            if (position >= h.Count)
+            {
+                return;
+            }
+            MsgHelper.PublishFoundHistory(context.EventBus, id, new FoundHistory() { Position = position, Command = h[h.Count - 1 - position] });
+        }
+    }
+
+    public void HandleCmdHUDClick(TitanContext context, string id, Click click)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            w.DoSendHUDClickToScript(click);
+        }
+    }
+    public void HandleCmdKeyUp(TitanContext context, string id, string key)
+    {
+        var w = World(context, id);
+        if (w != null && key != "")
+        {
+            w.DoSendKeyUpToScript(key);
+        }
+    }
+    public void DoSortClients(TitanContext context, List<string> order)
+    {
+        lock (context.Worlds)
+        {
+            var ordermap = new Dictionary<string, int>();
+            int max = order.Count;
+            int maxword = context.Worlds.Count;
+            if (maxword > max)
+            {
+                max = maxword;
+            }
+            for (int k = 0; k < order.Count; k++)
+            {
+                var v = order[k];
+                ordermap[v] = k - max;
+            }
+            foreach (var kvp in context.Worlds)
+            {
+                kvp.Value.SetPosition(ordermap[kvp.Key]);
+            }
+        }
+    }
+    public bool IsScriptExist(TitanContext context, string id)
+    {
+        var scriptPath = Path.Combine(Scriptpath, id);
+        return File.Exists(scriptPath);
+    }
+    public List<WorldFile> ListNotOpened(TitanContext context)
+    {
+        lock (context.Worlds)
+        {
+            var result = new List<WorldFile>();
+            var files = Directory.GetFiles(Path.Combine(Scriptpath));
+            foreach (var file in files)
+            {
+                var name = Path.GetFileName(file);
+                if (!name.EndsWith(Ext))
+                {
+                    continue;
+                }
+                var id = name.Substring(0, name.Length - Ext.Length);
+                if (context.Worlds.ContainsKey(id))
+                {
+                    continue;
+                }
+                var info = new FileInfo(file);
+                var data = File.ReadAllText(file);
+                // Assuming toml.Unmarshal equivalent in C# is available
+                var configdata = TomlSerializer.Deserialize<WorldData>(data, TomlContext.Default.WorldData)!;
+                var ut = DateTimeFormatter.Format(info.LastWriteTime);
+                result.Add(new WorldFile
+                {
+                    ID = id,
+                    Name = configdata.Name,
+                    LastUpdated = ut
+                });
+                configdata = null;
+            }
+            return result;
+        }
+    }
+    public List<string> ListWorlds(TitanContext context)
+    {
+        var result = new List<string>();
+        var files = Directory.GetFiles(Path.Combine(Scriptpath));
+        foreach (var file in files)
+        {
+            var name = Path.GetFileName(file);
+            if (name.EndsWith(Ext))
+            {
+                result.Add(name.Substring(0, name.Length - Ext.Length));
+            }
+        }
+        return result;
+    }
+    public List<ScriptInfo> ListScripts(TitanContext context)
+    {
+        var result = new List<ScriptInfo>();
+        var dirs = Directory.GetDirectories(Path.Combine(Scriptpath));
+        foreach (var dir in dirs)
+        {
+            var id = Path.GetFileName(dir);
+            if (IDRegexp.MatchString(id))
+            {
+                var file = Path.Combine(dir, "script.toml");
+                if (!File.Exists(file))
+                {
+                    continue;
+                }
+                var data = File.ReadAllText(file);
+                var d = TomlSerializer.Deserialize<ScriptData>(data, TomlContext.Default.ScriptData)!;
+                result.Add(ScriptDataHelper.ConvertInfo(id, d));
+            }
+        }
+        return result;
+    }
+    public void CloseWorld(TitanContext context, string id)
+    {
+        lock (context.Worlds)
+        {
+
+            var w = context.Worlds[id];
+            if (w == null)
+            {
+                return;
+            }
+            context.Worlds.Remove(id);
+            Destory(context, w);
+        }
+    }
+    public void HandleCmdParams(TitanContext context, string id)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        var i = new ParamsInfo();
+        i.Params = w.GetParams();
+        i.ParamComments = w.GetParamComments();
+        i.RequiredParams = w.GetRequiredParams();
+        MsgHelper.PublishParamsinfo(context.EventBus, id, i);
+    }
+    public void HandleCmdDeleteParam(TitanContext context, string id, string name)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        w.DeleteParam(name);
+        AutoSaveWorld(context, id);
+        MsgHelper.PublishParamDeleted(context.EventBus, id, name);
+        HandleCmdParams(context, id);
+    }
+    public void HandleCmdUpdateParam(TitanContext context, string id, string name, string value)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        w.SetParam(name, value);
+        MsgHelper.PublishParamUpdated(context.EventBus, id, name);
+        AutoSaveWorld(context, id);
+        HandleCmdParams(context, id);
+    }
+    public void HandleCmdUpdateParamComment(TitanContext context, string id, string name, string value)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        w.SetParamComment(name, value);
+        MsgHelper.PublishParamUpdated(context.EventBus, id, name);
+        AutoSaveWorld(context, id);
+        HandleCmdParams(context, id);
+    }
+    public void HandleCmdWorldSettings(TitanContext context, string id)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        var s = WorldDataHelper.ConvertSettings(id, w.GetWorldData());
+        MsgHelper.PublishWorldSettingsMessage(context.EventBus, id, s);
+    }
+    public void HandleCmdScriptSettings(TitanContext context, string id)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        var s = ScriptDataHelper.ConvertSettings(w.GetScriptID(), w.GetScriptData());
+
+        MsgHelper.PublishScriptSettingsMessage(context.EventBus, id, s);
+    }
+    public void HandleCmdRequiredParams(TitanContext context, string id)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+        }
+        var p = new List<RequiredParam>();
+        var s = w.GetScriptData();
+        if (s != null)
+        {
+            p = s.RequiredParams;
+        }
+        MsgHelper.PublishRequiredParamsMessage(context.EventBus, id, p);
+    }
+
+    public void HandleCmdRequestPermissions(TitanContext context, Authorization a)
+    {
+        var w = World(context, a.World);
+        if (w is null)
+        {
+            return;
+        }
+        var items = w.GetPermissions();
+
+        foreach (var authed in a.Items)
+        {
+            foreach (var owned in items)
+            {
+                if (owned == authed)
+                {
+                    goto Next;
+                }
+            }
+            items.Add(authed);
+        Next:;
+        }
+        w.SetPermissions(items);
+        w.DoReloadPermissions();
+        if (a.Script != "")
+        {
+            w.DoRunScript(a.Script);
+        }
+    }
+
+    public void HandleCmdRequestTrustDomains(TitanContext context, Authorization a)
+    {
+        var w = World(context, a.World);
+        if (w is null)
+        {
+            return;
+        }
+        var trusted = w.GetTrusted();
+
+        foreach (var authed in a.Items)
+        {
+            foreach (var owned in trusted.Domains)
+            {
+                if (owned == authed)
+                {
+                    goto Next;
+                }
+            }
+            trusted.Domains.Add(authed);
+        Next:;
+        }
+        w.SetTrusted(trusted);
+
+        w.DoReloadPermissions();
+
+        if (a.Script != "")
+        {
+            w.DoRunScript(a.Script);
+        }
+    }
+    public void HandleCmdAuthorized(TitanContext context, string id)
+    {
+        var w = World(context, id);
+
+
+        if (w is null)
+        {
+            return;
+        }
+        var a = new Authorized();
+        var p = w.GetPermissions();
+        var trusted = w.GetTrusted();
+        a.Permissions.AddRange(p);
+        a.Domains.AddRange(trusted.Domains);
+        w.DoReloadPermissions();
+        MsgHelper.PublishAuthorized(context.EventBus, id, a);
+    }
+    public void HandleCmdRevokeAuthorized(TitanContext context, string id)
+    {
+        var w = World(context, id);
+
+        if (w is null)
+        {
+            return;
+        }
+        w.SetPermissions(new List<string>());
+        var trusted = w.GetTrusted();
+        trusted.Domains = new List<string>();
+        w.SetTrusted(trusted);
+        w.DoReloadPermissions();
+        MsgHelper.PublishAuthorized(context.EventBus, id, new Authorized());
+    }
+
+    public void HandleCmdUpdateRequiredParams(TitanContext context, string id, List<RequiredParam> p)
+    {
+        var w = World(context, id);
+        if (w is null)
+        {
+            return;
+
+        }
+        var data = w.GetScriptData();
+
+
+        if (data != null)
+        {
+            data.RequiredParams = p;
+            MsgHelper.PublishRequiredParamsMessage(context.EventBus, id, data.RequiredParams);
+
+        }
+    }
+
+    public void HandleCmdBatchCommandScripts(TitanContext context)
+    {
+
+        var result = new List<string>();
+        var resultmap = new Dictionary<string, bool> { };
+        lock (context.Worlds)
+        {
+            foreach (var w in context.Worlds.ToList().Select(kv => kv.Value))
+            {
+                var sid = w.GetScriptID();
+
+
+                if (!resultmap.ContainsKey(sid))
+                {
+                    resultmap[sid] = true;
+                    result.Add(sid);
+                }
+            }
+        }
+        var bcs = new BatchCommandScripts();
+        bcs.Scripts = result;
+        MsgHelper.PublishBatchCommandScripts(context.EventBus, bcs);
+    }
+    public void NewScript(TitanContext context, string id, string scripttype)
+    {
+        // 	t.Locker.Lock()
+        // 	defer t.Locker.Unlock()
+        // 	ok, err := t.IsScriptExist(id)
+        // 	if err != nil {
+        // 		return err
+        // 	}
+        // 	if ok {
+        // 		return errors.New("script exists")
+        // 	}
+        // 	err = os.MkdirAll(filepath.Join(t.Scriptpath, id, "script"), util.DefaultFolderMode)
+        // 	if err != nil {
+        // 		return err
+        // 	}
+        // 	data, err := os.ReadFile(world.ScriptTomlTemplates[scripttype])
+        // 	if err != nil {
+        // 		return err
+        // 	}
+        // 	err = os.WriteFile(filepath.Join(t.Scriptpath, id, "script.toml"), data, util.DefaultFileMode)
+        // 	if err != nil {
+        // 		return err
+        // 	}
+        // 	data, err = os.ReadFile(world.ScriptTemplates[scripttype])
+        // 	if err != nil {
+        // 		return err
+        // 	}
+        // 	err = os.WriteFile(filepath.Join(t.Scriptpath, id, "script", world.ScriptTargets[scripttype]), data, util.DefaultFileMode)
+        // 	if err != nil {
+        // 		return err
+        // 	}
+        // 	return nil
+    }
+    public void OnResponse(TitanContext context, World.Types.Message msg)
+    {
+        var w = World(context, msg.World);
+        if (w is not null)
+        {
+            w.DoSendResponseToScript(msg);
+        }
+    }
+    public void OnBatchCommandMessage(TitanContext context, World.Types.Message msg)
+    {
+        var bc = JsonSerializer.Deserialize(msg.Data, JsonContext.Default.BatchCommand);
+        HandleBatchCommand(context, bc);
+    }
+
+    public void HandleBatchCommand(TitanContext context, World.Types.BatchCommand bc)
+    {
+        lock (context.Worlds)
+        {
+            foreach (var w in context.Worlds.Values)
+            {
+                if (!w.GetIgnoreBatchCommand())
+                {
+                    var scriptid = w.GetScriptID();
+                    foreach (var bcsid in bc.Scripts)
+                    {
+                        if (bcsid == "" || bcsid == scriptid)
+                        {
+                            w.DoExecute(bc.Command);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void OnGlobalMessage(TitanContext context, byte[] msg)
+    {
+        var data = Encoding.UTF8.GetString(msg).Split(" ", 3);
+        switch (data[0])
+        {
+            case "broadcast":
+                if (data.Length == 3)
+                {
+                    var bc = Broadcast.CreateBroadcast(data[1], data[2], true);
+                    lock (context.Worlds)
+                    {
+                        foreach (var v in context.Worlds.Values)
+                        {
+                            v.DoSendBroadcastToScript(bc);
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    public void OnSwitchStatusChange(TitanContext context, int status)
+    {
+        MsgHelper.PublishSwitchStatusMessage(context.EventBus, status);
+    }
+    public void Start(TitanContext context)
+    {
+        context.HellSwitch.OnGlobalMessage += (sender, e) => OnGlobalMessage(context, e);
+        context.HellSwitch.OnSwitchStatusChange += (sender, e) => OnSwitchStatusChange(context, e);
+        context.HellSwitch.Start();
+    }
+    public void Stop(TitanContext context)
+    {
+        context.HellSwitch.OnGlobalMessage = null;
+        context.HellSwitch.OnSwitchStatusChange = null;
+        context.HellSwitch.Stop();
+        context.HellSwitch.Close();
+    }
 }

@@ -45,7 +45,7 @@ public partial class World
     public string GetScriptID() => Service.ConfigService.GetScriptID(Context);
     public void SetScriptID(string scriptID) => Service.ConfigService.SetScriptID(Context, scriptID);
     public void SetTrusted(Trusted trusted) => Service.ConfigService.SetTrusted(Context, trusted);
-    public Trusted? GetTrusted() => Service.ConfigService.GetTrusted(Context);
+    public Trusted GetTrusted() => Service.ConfigService.GetTrusted(Context);
     public void SetPermissions(List<string> permissions) => Service.ConfigService.SetPermissions(Context, permissions);
     public List<string> GetPermissions() => Service.ConfigService.GetPermissions(Context);
 

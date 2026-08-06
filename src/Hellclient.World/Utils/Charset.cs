@@ -16,13 +16,17 @@ public class CharsetUtil
         {
             return Array.Empty<byte>();
         }
-        switch (charset.ToLower())
+        switch (charset)
         {
             case "gbk":
+            case "GBK":
             case "cp936":
+            case "CP936":
             case "windows-936":
+            case "WINDOWS-936":
                 return Encoding.GetEncoding(charset).GetBytes(data);
             case "utf-8":
+            case "UTF-8":
                 return Encoding.UTF8.GetBytes(data);
             default:
                 throw new NotSupportedException($"Charset {charset} is not supported.");
@@ -30,13 +34,17 @@ public class CharsetUtil
     }
     public static string ToUtf8(string charset, byte[] data)
     {
-        switch (charset.ToLower())
+        switch (charset)
         {
             case "gbk":
+            case "GBK":
             case "cp936":
+            case "CP936":
             case "windows-936":
+            case "WINDOWS-936":
                 return Encoding.GetEncoding(charset).GetString(data);
             case "utf-8":
+            case "UTF-8":
                 return Encoding.UTF8.GetString(data);
             default:
                 throw new NotSupportedException($"Charset {charset} is not supported.");

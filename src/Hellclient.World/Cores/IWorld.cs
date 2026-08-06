@@ -72,7 +72,7 @@ public interface IWorld
     public string GetScriptHome();
     public void DoLog(string message);
     public void SetTrusted(Trusted trusted);
-    public Trusted? GetTrusted();
+    public Trusted GetTrusted();
     public PlainOptions GetPluginOptions();
     public void DoReloadPermissions();
     public void DoSendToConn(byte[] cmd);
@@ -209,4 +209,5 @@ public interface IWorld
     public List<Line> GetHUDContent();
     public bool UpdateHUDContent(int start, List<Line> content);
 
+    public void Dispose();
 }

@@ -28,4 +28,6 @@ public class HellSwitch
     {
         
     }
+    public EventHandler<byte[]>? OnGlobalMessage { get; set; }
+    public EventHandler<int>? OnSwitchStatusChange { get; set; }
 }

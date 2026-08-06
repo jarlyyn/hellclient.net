@@ -33,4 +33,34 @@ public class ScriptDataHelper
         }
         return info;
     }
+    public static ScriptSettings ConvertSettings(string name,ScriptData? d)
+    {
+        var settings = new ScriptSettings()
+        {
+        };
+        if (d is not null)
+        {
+            settings.Name = name;
+            settings.Type = d.Type;
+            settings.Intro = d.Intro;
+            settings.Desc = d.Desc;
+            settings.OnOpen = d.OnOpen;
+            settings.OnClose = d.OnClose;
+            settings.OnConnect = d.OnConnect;
+            settings.OnDisconnect = d.OnDisconnect;
+            settings.OnBroadcast = d.OnBroadcast;
+            settings.OnResponse = d.OnResponse;
+            settings.OnAssist = d.OnAssist;
+            settings.OnKeyUp = d.OnKeyUp;
+            settings.Channel = d.Channel;
+            settings.OnHUDClick = d.OnHUDClick;
+            settings.OnBuffer = d.OnBuffer;
+            settings.OnBufferMin = d.OnBufferMin;
+            settings.OnBufferMax = d.OnBufferMax;
+            settings.OnFocus = d.OnFocus;
+            settings.OnLoseFocus = d.OnLoseFocus;
+            settings.OnSubneg = d.OnSubneg;
+        }
+        return settings;
+    }
 }

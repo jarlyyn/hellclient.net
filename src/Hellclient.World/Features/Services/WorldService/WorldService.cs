@@ -15,6 +15,9 @@ public class WorldService : IWorldService
         ScriptService.InstallTo(context);
         AutomationService.InstallTo(context);
     }
+    public void RemoveFrom(WorldContext context)
+    {
+    }
     public IConnService ConnService { get; set; } = new ConnService();
     public IAutomationService AutomationService { get; set; } = new AutomationService();
 
