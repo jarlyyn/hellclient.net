@@ -3,8 +3,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
+    <TrimmerRootAssembly Include="Microsoft.ClearScript" />
+    <TrimmerRootAssembly Include="Microsoft.ClearScript.V8" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ClearScript.V8" Version="7.5.1" />
   </ItemGroup>
 </Project>

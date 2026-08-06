@@ -149,8 +149,8 @@ public class Telnet : IMudConnection
     {
         Host = host;
         Port = port;
-        _client=new TcpClient();
         await Disconnect();
+        _client=new TcpClient();
         await _client.ConnectAsync(host, port);
         await Connected();
         _ = listen();

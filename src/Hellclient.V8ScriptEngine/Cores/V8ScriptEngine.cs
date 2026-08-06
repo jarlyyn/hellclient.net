@@ -3,7 +3,7 @@ using Hellclient.World.Types;
 using Hellclient.World.Cores;
 using Timer = Hellclient.World.Types.Timer;
 
-namespace Hellclient.Cores;
+namespace Hellclient.V8ScriptEngine.Cores;
 
 public class V8ScriptEngine : IScriptEngine
 {
