@@ -6,6 +6,9 @@ namespace Hellclient.Core.Cores;
 
 public class Titan
 {
+    public void Init()
+    {
+    }
     public ITitanService Service { get; set; } = new TitanService();
     public required TitanContext Context { private get; init; }
 

@@ -11,4 +11,6 @@ public class TitanContext
     public TitanEventBus EventBus { get; set; } = new TitanEventBus();
     public HellSwitch HellSwitch { get; set; } = new HellSwitch();
     public required Deployment Deployment { get; init; }
+    public string ScriptPath { get; set; } = "";
+    public string WorldsPath { get; set; } = "";
 }

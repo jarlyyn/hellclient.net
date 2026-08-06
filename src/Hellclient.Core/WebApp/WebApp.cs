@@ -11,14 +11,14 @@ public class WebApp
     public static WebApp Instance { get; set; } = new WebApp();
     private WebApplication? App { get; set; } = null;
     public EventHandler<WebApplication>? OnInit { get; set; }
-    public void Start(string ListenAddress)
+    public async Task Start(string ListenAddress)
     {
         if (App == null)
         {
             var app = buildApp();
             App = app;
             OnInit?.Invoke(this, app);
-            Task.Run(async () => await app.RunAsync(ListenAddress));
+            await app.RunAsync(ListenAddress);
         }
     }
     public void Stop()

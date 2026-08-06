@@ -9,7 +9,7 @@ public static class AnsiHelpers
     private static readonly AnsiStringParser parser = new();
     public static Line? Parse(string input)
     {
-        var result = new Line();
+        var result = Line.New();
         if (string.IsNullOrEmpty(input))
         {
             return result;

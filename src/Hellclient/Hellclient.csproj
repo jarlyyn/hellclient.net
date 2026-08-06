@@ -5,8 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
+    <OptimizationPreference>Size</OptimizationPreference>
     <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
     <DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>

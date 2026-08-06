@@ -12,20 +12,21 @@ using Hellclient.WebUI;
 
 Application.Instance.Init();
 Application.Instance.Config();
-WebUI.Instance.Init();
-WebApp.Instance.Start($"http://{AppConfig.System.Addr}");
 CharsetUtil.InstallEncodingProvider();
-await AppCore.Instance.Client.Titan.OpenWorld(Environment.GetEnvironmentVariable("TEST_WORLD")!);
-var world=AppCore.Instance.Client.Titan.World(Environment.GetEnvironmentVariable("TEST_WORLD")!)!;
+
+WebUI.Instance.Init();
+await WebApp.Instance.Start($"http://{AppConfig.System.Addr}");
+// await AppCore.Instance.Client.Titan.OpenWorld(Environment.GetEnvironmentVariable("TEST_WORLD")!);
+// var world=AppCore.Instance.Client.Titan.World(Environment.GetEnvironmentVariable("TEST_WORLD")!)!;
 // var world = AppCore.Instance.Client.Titan.NewWorld("test")!;
 // world.SetCharset(CharsetUtil.GBK);
 // world.SetHost(Environment.GetEnvironmentVariable("TEST_HOST")!);
 // world.SetPort(Environment.GetEnvironmentVariable("TEST_PORT")!);
-world.EventBus.LineEvent += (sender, data) =>
-{
-    Console.WriteLine(data.ToPlainText());
-};
-Thread.Sleep(1000);
+// world.EventBus.LineEvent += (sender, data) =>
+// {
+//     Console.WriteLine(data.ToPlainText());
+// };
+// Thread.Sleep(1000);
 // await world.DoConnectServer();
 // world.Context.Connection.OnCommandReceived += (sender, cmd) =>
 // {
@@ -40,14 +41,14 @@ Thread.Sleep(1000);
 //     Console.WriteLine("Disconnected from the server.");
 // };
 // world.DoConnectServer();
-await world.DoSend(Command.Create(Environment.GetEnvironmentVariable("TEST_ID")!));
-await world.DoSend(Command.Create(Environment.GetEnvironmentVariable("TEST_PASS")!));
-await world.DoSend(Command.Create("y"));
+// await world.DoSend(Command.Create(Environment.GetEnvironmentVariable("TEST_ID")!));
+// await world.DoSend(Command.Create(Environment.GetEnvironmentVariable("TEST_PASS")!));
+// await world.DoSend(Command.Create("y"));
 // Thread.Sleep(1000);
 // await world.DoSend("name\r\n");
 // Thread.Sleep(1000);
 // await world.DoCloseServer();
 // await world.DoSend("passwd\r\n");
 
-Thread.Sleep(10000000);
+// Thread.Sleep(10000000);
 

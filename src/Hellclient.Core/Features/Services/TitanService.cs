@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
 using Hellclient.Core.Features.States;
@@ -22,12 +21,70 @@ public interface ITitanService
     IWorld? World(TitanContext context, string id);
     IWorld? NewWorld(TitanContext context, string id);
     Task<bool> OpenWorld(TitanContext context, string id);
+    void SaveWorld(TitanContext context, string id);
+    void AutoSaveWorld(TitanContext context, string id);
+    public void HandleCmdConnect(TitanContext context, string id);
+    public void HandleCmdDisconnect(TitanContext context, string id);
+    public void HandleCmdSend(TitanContext context, string id, string msg);
+    public void HandleCmdAllLines(TitanContext context, string id);
+    public void HandleCmdNotOpened(TitanContext context);
+    public Task<bool> HandleCmdOpen(TitanContext context, string id);
+    public void ExecClients(TitanContext context);
+    public void CloseWorld(TitanContext context, string id);
+    public void HandleCmdSave(TitanContext context, string id);
+    public void HandleCmdSaveScript(TitanContext context, string id);
+    public void HandleCmdScriptInfo(TitanContext context, string id);
+    public void HandleCmdListScriptInfo(TitanContext context);
+    public void HandleCmdStatus(TitanContext context, string id);
+    public void HandleCmdUseScript(TitanContext context, string id, string script);
+    public void HandleCmdReloadScript(TitanContext context, string id);
+    public void HandleCmdTimers(TitanContext context, string id, bool byuser);
+    public bool? GetTimerType(TitanContext context, string world, string id);
+    public void HandleCmdDeleteTimer(TitanContext context, string world, string id);
+    public void HandleCmdLoadTimer(TitanContext context, string world, string id);
+    public void HandleCmdAliases(TitanContext context, string id, bool byuser);
+    public bool? GetAliasType(TitanContext context, string world, string id);
+    public void HandleCmdDeleteAlias(TitanContext context, string world, string id);
+    public void HandleCmdLoadAlias(TitanContext context, string world, string id);
+    public void HandleCmdTriggers(TitanContext context, string id, bool byuser);
+    public bool? GetTriggerType(TitanContext context, string world, string id);
+    public void HandleCmdDeleteTrigger(TitanContext context, string world, string id);
+    public void HandleCmdLoadTrigger(TitanContext context, string world, string id);
+    public void HandleCmdParams(TitanContext context, string id);
+    public void HandleCmdUpdateParam(TitanContext context, string id, string name, string value);
+    public void HandleCmdUpdateParamComment(TitanContext context, string id, string name, string value);
+    public void HandleCmdDeleteParam(TitanContext context, string id, string name);
+    public void HandleCmdCallback(TitanContext context, string id, World.Types.Callback cb);
+    public void HandleCmdAssist(TitanContext context, string id);
+    public void HandleCmdAbout(TitanContext context);
+    public void HandleCmdWorldSettings(TitanContext context, string id);
+    public void HandleCmdScriptSettings(TitanContext context, string id);
+    public void HandleCmdRequiredParams(TitanContext context, string id);
+    public void HandleCmdDefaultServer(TitanContext context);
+    public void HandleCmdDefaultCharset(TitanContext context);
+    public void HandleCmdRequestPermissions(TitanContext context, Authorization a);
+    public void HandleCmdRequestTrustDomains(TitanContext context, Authorization a);
+    public void HandleCmdAuthorized(TitanContext context, string id);
+    public void HandleCmdRevokeAuthorized(TitanContext context, string id);
+    public void HandleCmdMasssend(TitanContext context, string id, string msg);
+    public void HandleCmdFindHistory(TitanContext context, string id, int position);
+    public void HandleCmdHUDClick(TitanContext context, string id, Click click);
+    public void DoSortClients(TitanContext context, List<string> order);
+    public void HandleCmdKeyUp(TitanContext context, string id, string key);
+    public void HandleBatchCommand(TitanContext context, World.Types.BatchCommand bc);
+    public void HandleCmdBatchCommandScripts(TitanContext context);
+    public void ExecAPIversion(TitanContext context);
+    public void ExecSwitchStatus(TitanContext context);
+    public void Focus(TitanContext context, string id);
+    public void HandleCmdLines(TitanContext context, string id);
+    public void HandleCmdPrompt(TitanContext context, string id);
+    public void HandleCmdHistory(TitanContext context, string id);
+    public void HandleCmdHUDContent(TitanContext context, string id);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService
 {
     public const string Ext = ".toml";
-    public string Scriptpath { get; set; } = "";
     public IWorldFactory WorldFactory { get; set; } = new WorldFactory();
     private IWorld? _find(TitanContext context, string id)
     {
@@ -457,6 +514,7 @@ public class TitanService : ITitanService
         {
             return false;
         }
+        InstallTo(context,world!);
         context.Worlds[id] = world!;
         world!.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
         _ = world!.DoConnectServer();
@@ -823,7 +881,7 @@ public class TitanService : ITitanService
     }
     public bool IsScriptExist(TitanContext context, string id)
     {
-        var scriptPath = Path.Combine(Scriptpath, id);
+        var scriptPath = Path.Combine(context.ScriptPath, id);
         return File.Exists(scriptPath);
     }
     public List<WorldFile> ListNotOpened(TitanContext context)
@@ -831,7 +889,7 @@ public class TitanService : ITitanService
         lock (context.Worlds)
         {
             var result = new List<WorldFile>();
-            var files = Directory.GetFiles(Path.Combine(Scriptpath));
+            var files = Directory.GetFiles(Path.Combine(context.WorldsPath));
             foreach (var file in files)
             {
                 var name = Path.GetFileName(file);
@@ -863,7 +921,7 @@ public class TitanService : ITitanService
     public List<string> ListWorlds(TitanContext context)
     {
         var result = new List<string>();
-        var files = Directory.GetFiles(Path.Combine(Scriptpath));
+        var files = Directory.GetFiles(Path.Combine(context.ScriptPath));
         foreach (var file in files)
         {
             var name = Path.GetFileName(file);
@@ -877,7 +935,7 @@ public class TitanService : ITitanService
     public List<ScriptInfo> ListScripts(TitanContext context)
     {
         var result = new List<ScriptInfo>();
-        var dirs = Directory.GetDirectories(Path.Combine(Scriptpath));
+        var dirs = Directory.GetDirectories(Path.Combine(context.ScriptPath));
         foreach (var dir in dirs)
         {
             var id = Path.GetFileName(dir);
@@ -1172,7 +1230,7 @@ public class TitanService : ITitanService
     }
     public void OnBatchCommandMessage(TitanContext context, World.Types.Message msg)
     {
-        var bc = JsonSerializer.Deserialize(msg.Data, JsonContext.Default.BatchCommand);
+        var bc = JsonSerializer.Deserialize(msg.Data, Infras.Components.JsonContext.Default.BatchCommand);
         HandleBatchCommand(context, bc);
     }
 

@@ -74,6 +74,7 @@ public class Ring<T> where T : class
                 break;
             }
         }
+        result.Reverse();
         return result;
     }
     public T? GetCurrentItem()

@@ -47,7 +47,6 @@ public class InfoService : IInfoService
         {
             context.Info.Recent.Add(line);
         }
-        linesUpdated(context);
     }
     private void onPrompt(WorldContext context, Line line)
     {
@@ -60,7 +59,6 @@ public class InfoService : IInfoService
         if (line != null)
         {
             line.OmitFromOutput = true;
-            linesUpdated(context);
         }
     }
     public void DeleteLines(WorldContext context, int count)

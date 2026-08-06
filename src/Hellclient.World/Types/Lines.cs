@@ -54,7 +54,7 @@ public class Line
 
     public List<Word> Words { get; set; } = [];
     public string ID { get; set; } = string.Empty;
-    public Int64 Timestamp { get; set; } = 0;
+    public Int64 Time { get; set; } = 0;
     public int Type { get; set; } = 0;
     public bool OmitFromLog { get; set; } = false;
     public bool OmitFromOutput { get; set; } = false;
@@ -87,7 +87,7 @@ public class Line
     {
         return new Line
         {
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+            Time = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
             Words = [],
             ID = SimpleID.Instance.GenerateID(),
         };

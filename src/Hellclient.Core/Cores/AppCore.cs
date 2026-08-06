@@ -12,10 +12,13 @@ public class AppCore
         var tctx = new TitanContext()
         {
             Deployment = Deployment.Instance,
+            ScriptPath = Deployment.Instance.ScriptsPath,
+            WorldsPath= Deployment.Instance.WorldsPath,
         };
         var pctx = new ProphetContext()
         {
             Deployment = Deployment.Instance,
+            TitanContext = tctx,
         };
         var ctx = new ClientContext()
         {
@@ -24,12 +27,13 @@ public class AppCore
         };
         var titan = new Titan()
         {
-            Context = ctx.Titan
+            Context = ctx.Titan,
         };
         var prophet = new Prophet()
         {
-            Context = ctx.Prophet
+            Context = ctx.Prophet,
         };
+        prophet.Init();
         var client = new Client()
         {
             Context = ctx,
