@@ -10,7 +10,7 @@ public class ScriptDataHelper
         {
             ID = id,
         };
-        if (d == null)
+        if (d != null)
         {
             info.Type = d.Type;
             info.Intro = d.Intro;
