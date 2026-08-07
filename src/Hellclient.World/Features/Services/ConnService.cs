@@ -33,6 +33,14 @@ public class ConnService : IConnService
     public static TimeSpan DefaultDebounceDuration = TimeSpan.FromMilliseconds(200);
     public void InstallTo(WorldContext context)
     {
+        context.Connection.OnConnected += (sender, args) =>
+        {
+            context.EventBus.ConnectedEvent?.Invoke(this, EventArgs.Empty);
+        };
+        context.Connection.OnDisconnected += (sender, args) =>
+        {
+            context.EventBus.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
+        };
         context.Convert.Debounce = new Debounce(DefaultDebounceDuration, () =>
         {
             if (context.Connection.IsConnected())
@@ -73,7 +81,6 @@ public class ConnService : IConnService
         await context.Connection.Disconnect();
         context.Convert.Prompt();
         context.Convert.Debounce?.Discard();
-        context.EventBus.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
         context.EventBus.ServerCloseEvent?.Invoke(this, EventArgs.Empty);
     }
     public void Send(WorldContext context, byte[] message)

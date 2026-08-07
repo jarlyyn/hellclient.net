@@ -12,6 +12,7 @@ public class Telnet : IMudConnection
     public const int StatusSbIac = 4;
     private TcpClient _client { get; set; } = new TcpClient();
     private NetworkStream? _stream;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
     public string Host { get; set; } = "";
     public int Port { get; set; } = 0;
     private List<byte> _buffer = [];
@@ -109,6 +110,7 @@ public class Telnet : IMudConnection
     }
     private async Task listen()
     {
+        _cts=new CancellationTokenSource();
         using (NetworkStream stream = _client.GetStream())
         {
             _stream = stream;
@@ -117,7 +119,7 @@ public class Telnet : IMudConnection
             {
                 while (_client.Connected)
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length,_cts.Token);
                     if (bytesRead == 0)
                     {
                         Console.WriteLine("【连接中止】服务器已主动断开连接。");
@@ -127,6 +129,10 @@ public class Telnet : IMudConnection
                     OnByte(buffer[0]);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("【连接中止】读取流时任务已取消。");
+            }
             catch (SocketException ex)
             {
                 // 物理断网、超时或服务器崩溃会触发此异常
@@ -134,7 +140,7 @@ public class Telnet : IMudConnection
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"【连接中止】读取流时发生未知错误: {ex.Message}");
+                Console.WriteLine($"【连接中止】读取流时发生未知错误: {ex.GetType().Name} :{ex.Message}");
             }
             finally
             {
@@ -158,7 +164,7 @@ public class Telnet : IMudConnection
     public async Task Disconnect()
     {
         if (_client.Connected)
-        {
+    {        _cts.Cancel();
             _client.Close();
         }
     }

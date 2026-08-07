@@ -514,7 +514,7 @@ public class TitanService : ITitanService
         {
             return false;
         }
-        InstallTo(context,world!);
+        InstallTo(context, world!);
         context.Worlds[id] = world!;
         world!.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
         _ = world!.DoConnectServer();
@@ -1231,7 +1231,10 @@ public class TitanService : ITitanService
     public void OnBatchCommandMessage(TitanContext context, World.Types.Message msg)
     {
         var bc = JsonSerializer.Deserialize(msg.Data, Infras.Components.JsonContext.Default.BatchCommand);
-        HandleBatchCommand(context, bc);
+        if (bc is not null)
+        {
+            HandleBatchCommand(context, bc);
+        }
     }
 
     public void HandleBatchCommand(TitanContext context, World.Types.BatchCommand bc)
