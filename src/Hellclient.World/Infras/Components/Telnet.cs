@@ -122,7 +122,7 @@ public class Telnet : IMudConnection
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length,_cts.Token);
                     if (bytesRead == 0)
                     {
-                        Console.WriteLine("【连接中止】服务器已主动断开连接。");
+                        // Console.WriteLine("【连接中止】服务器已主动断开连接。");
                         break;
                     }
 
@@ -131,21 +131,21 @@ public class Telnet : IMudConnection
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("【连接中止】读取流时任务已取消。");
+                // Console.WriteLine("【连接中止】读取流时任务已取消。");
             }
             catch (SocketException ex)
             {
                 // 物理断网、超时或服务器崩溃会触发此异常
-                Console.WriteLine($"【连接中止】网络套接字异常: {ex.Message}");
+                // Console.WriteLine($"【连接中止】网络套接字异常: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"【连接中止】读取流时发生未知错误: {ex.GetType().Name} :{ex.Message}");
+                // Console.WriteLine($"【连接中止】读取流时发生未知错误: {ex.GetType().Name} :{ex.Message}");
             }
             finally
             {
                 _ = Disconnected();
-                Console.WriteLine("已退出监听循环，正在清理当前连接资源...");
+                // Console.WriteLine("已退出监听循环，正在清理当前连接资源...");
             }
 
         }

@@ -41,6 +41,10 @@ public class ConnService : IConnService
         {
             context.EventBus.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
         };
+        context.Convert.OnPrompt += (sender, line) =>
+        {
+            context.EventBus.PromptEvent?.Invoke(this, line);
+        };
         context.Convert.Debounce = new Debounce(DefaultDebounceDuration, () =>
         {
             if (context.Connection.IsConnected())
@@ -103,6 +107,7 @@ public class ConnService : IConnService
             return;
         }
         var bytes = CharsetUtil.FromUtf8(context.Config.Data.Charset, cmd.Message);
+        context.Convert.Publish();
         if (cmd.Echo)
         {
             DoPrintEcho(context, cmd);
@@ -111,7 +116,6 @@ public class ConnService : IConnService
         {
 
         }
-        context.Convert.Publish();
         await context.Connection.Send(bytes);
         await context.Connection.Send(new byte[] { 13 });
     }

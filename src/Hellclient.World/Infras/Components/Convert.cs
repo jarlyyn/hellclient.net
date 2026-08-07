@@ -27,6 +27,7 @@ public class Convert : IConvert
         {
             return;
         }
+        line.Type = Line.LineTypePrompt;
         OnPrompt?.Invoke(this, line);
     }
     public string Charset { get; set; } = CharsetUtil.UTF8;
@@ -52,7 +53,7 @@ public class Convert : IConvert
             return;
         }
         _buffer.Add(data);
-         Task.Run(async () => await Debounce!.Exec());
+        Task.Run(async () => await Debounce!.Exec());
     }
     public void OnCommandReceived(object sender, TelnetCommand cmd)
     {
@@ -74,9 +75,12 @@ public class Convert : IConvert
         {
             return;
         }
-        line.Type=Line.LineTypeReal;
+        line.Type = Line.LineTypeReal;
         OnLine?.Invoke(this, line);
         Debounce?.Reset();
         _buffer.Clear();
+        var pl = Line.New();
+        pl.Type = Line.LineTypePrompt;
+        OnPrompt?.Invoke(this, pl);
     }
 }

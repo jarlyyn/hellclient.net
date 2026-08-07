@@ -2,7 +2,7 @@ namespace Hellclient.World.Infras.Components;
 
 public class DebounceTimer
 {
-    public DebounceTimer(double interval)
+    public DebounceTimer(TimeSpan interval)
     {
         _timer = new System.Timers.Timer(interval)
         {
@@ -19,6 +19,13 @@ public class DebounceTimer
                 _timer.Stop();
                 _timer.Start();
             }
+        }
+    }
+    public void Start()
+    {
+        if (_timer is not null)
+        {
+            _timer.Start();
         }
     }
     public void Discard()
@@ -57,6 +64,7 @@ public class Debounce
     public Debounce(TimeSpan duration, Action callback)
     {
         Duration = duration;
+        MaxDuration = 2 * duration;
         Callback = callback;
     }
     //Duration debounce duration
@@ -123,7 +131,7 @@ public class Debounce
         {
             return false;
         }
-        _timer = new DebounceTimer(Duration.TotalMilliseconds);
+        _timer = new DebounceTimer(Duration);
 
         if (MaxDuration > TimeSpan.Zero)
         {
@@ -139,10 +147,16 @@ public class Debounce
             Callback?.Invoke();
         }
         _timer.Bind(run);
+        _timer.Start();
         return Leading;
     }
     private async Task run(DebounceTimer timer)
     {
+        if (_timer is not null)
+        {
+            _timer?.Discard();
+            _timer = null;
+        }
         timer.Discard();
         Callback?.Invoke();
 
