@@ -12,6 +12,19 @@ public class Word
     public bool Underlined { get; set; } = false;
     public bool Blinking { get; set; } = false;
     public bool Inverse { get; set; } = false;
+    public Word Inherit()
+    {
+        return new Word
+        {
+            Text = "",
+            Color = this.Color,
+            Background = this.Background,
+            Bold = this.Bold,
+            Underlined = this.Underlined,
+            Blinking = this.Blinking,
+            Inverse = this.Inverse
+        };
+    }
 }
 
 public class Line
@@ -68,6 +81,11 @@ public class Line
     }
     public void RemoveTail(int length)
     {
+        if (length >= 255)
+        {
+            Words.Clear();
+            return;
+        }
         while (length > 0 && Words.Count > 0)
         {
             var lastWord = Words.Last();

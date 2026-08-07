@@ -49,20 +49,25 @@ public class Telnet : IMudConnection
             case StatusIAC:
                 if (data == TelnetCommand.CmdIAC)
                 {
-                    Publish(data);
                     status = StatusNormal;
-
+                    Publish(data);
                 }
                 else
                 {
-                    if (data == TelnetCommand.CmdSubnegotiation)
+                    switch (data)
                     {
-                        status = StatusSb;
-                    }
-                    else
-                    {
-                        currentcmd = data;
-                        status = StatusCmd;
+                        case TelnetCommand.CmdGoAhead:
+                        case TelnetCommand.CmdEraseLine:
+                            status = StatusNormal;
+                            OnCommandReceived?.Invoke(this, new TelnetCommand(data, [data]));
+                            break;
+                        case TelnetCommand.CmdSubnegotiation:
+                            status = StatusSb;
+                            break;
+                        default:
+                            currentcmd = data;
+                            status = StatusCmd;
+                            break;
                     }
                 }
                 return;
@@ -110,7 +115,7 @@ public class Telnet : IMudConnection
     }
     private async Task listen()
     {
-        _cts=new CancellationTokenSource();
+        _cts = new CancellationTokenSource();
         using (NetworkStream stream = _client.GetStream())
         {
             _stream = stream;
@@ -119,7 +124,7 @@ public class Telnet : IMudConnection
             {
                 while (_client.Connected)
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length,_cts.Token);
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, _cts.Token);
                     if (bytesRead == 0)
                     {
                         // Console.WriteLine("【连接中止】服务器已主动断开连接。");
@@ -156,7 +161,7 @@ public class Telnet : IMudConnection
         Host = host;
         Port = port;
         await Disconnect();
-        _client=new TcpClient();
+        _client = new TcpClient();
         await _client.ConnectAsync(host, port);
         await Connected();
         _ = listen();
@@ -164,7 +169,8 @@ public class Telnet : IMudConnection
     public async Task Disconnect()
     {
         if (_client.Connected)
-    {        _cts.Cancel();
+        {
+            _cts.Cancel();
             _client.Close();
         }
     }

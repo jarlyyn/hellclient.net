@@ -62,14 +62,57 @@ public class ConnService : IConnService
         };
         context.Connection.OnCommandReceived += (sender, cmd) =>
         {
-            context.Convert.OnCommandReceived(this, cmd);
+            OnCommandReceived(context, cmd);
         };
         context.Convert.OnLine += (sender, line) =>
         {
             context.EventBus.LineEvent?.Invoke(this, line);
         };
-
     }
+    public async void OnCommandReceived(WorldContext context, TelnetCommand cmd)
+    {
+
+        context.Convert.Publish();
+        switch (cmd.Command)
+        {
+            case TelnetCommand.CmdDo:
+                switch (cmd.Data[0])
+                {
+                    default:
+                        break;
+                }
+                break;
+            case TelnetCommand.CmdDont:
+                switch (cmd.Data[0])
+                {
+                    default:
+                        break;
+                }
+                break;
+            case TelnetCommand.CmdWill:
+                switch (cmd.Data[0])
+                {
+                    case TelnetCommand.OptionEcho:
+                        await context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionEcho));
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case TelnetCommand.CmdWont:
+                switch (cmd.Data[0])
+                {
+                    default:
+                        break;
+                }
+                break;
+
+            case TelnetCommand.CmdGoAhead:
+                break;
+        }
+        context.EventBus.OnCommand?.Invoke(this, cmd);
+    }
+
     public async Task Connect(WorldContext context)
     {
         context.Convert.Charset = context.Config.Data.Charset;

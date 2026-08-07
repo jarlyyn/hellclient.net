@@ -25,14 +25,18 @@ public static class AnsiHelpers
         }
 
         var current = new Word();
+        result.Words.Add(current);
         foreach (var element in elements)
         {
+            if (result.Words.Count == 0)
+            {
+                result.Words.Add(new Word());
+            }
+            current = result.Words.Last();
             switch (element)
             {
                 case AnsiPrintableString text:
-                    current.Text = text.Text;
-                    result.Words.Add(current);
-                    current = new Word();
+                    current.Text += text.Text;
                     break;
                 case AnsiControlString control:
                     break;
@@ -40,6 +44,11 @@ public static class AnsiHelpers
                     switch (cs.Function)
                     {
                         case "m":
+                            if (current.Text.Length > 0)
+                            {
+                                current = current.Inherit();
+                                result.Words.Add(current);
+                            }
                             applyFunctionM(current, result, cs);
                             break;
                         case "K":
@@ -55,11 +64,17 @@ public static class AnsiHelpers
                             break;
                     }
                     break;
+                case AnsiEscapeSequence asc:
+                    switch (asc.Code)
+                    {
+                        default:
+                            break;
+                    }
+                    break;
                 default:
                     break;
             }
         }
-
         return result;
     }
     private static void applyFunctionD(Word w, Line line, AnsiControlSequence cs)
@@ -203,9 +218,6 @@ public static class AnsiHelpers
                 case 107:
                     w.Background = "Bright-White";
                     break;
-                case 256:
-                    line.Words.Clear();
-                    break;
                 default:
                     break;
             }
@@ -213,6 +225,11 @@ public static class AnsiHelpers
     }
     private static void applyFunctionK(Word w, Line line, AnsiControlSequence cs)
     {
+        if (cs.Parameters.Count == 0)
+        {
+            line.Words.Clear();
+            return;
+        }
         foreach (var param in cs.Parameters)
         {
             switch (param.Value)
@@ -222,7 +239,6 @@ public static class AnsiHelpers
                     line.Words.Clear();
                     break;
                 default:
-                    Console.WriteLine($"Unknown ANSI control sequence function K parameter: {param.Value}");
                     break;
             }
         }

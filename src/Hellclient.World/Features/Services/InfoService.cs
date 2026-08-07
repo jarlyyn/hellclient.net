@@ -76,13 +76,13 @@ public class InfoService : IInfoService
         {
             ID = context.ID,
             HostPort = $"{context.Connection.Host}:{context.Connection.Port}",
-            // ReadyAt=context.Info.ReadyAt,
+            ReadyAt = context.Config.ReadyAt,
             Running = context.Connection.IsConnected(),
-            // ScriptID=
+            ScriptID=context.Config.Data.ScriptID,
             Priority = context.Info.Priority,
             Summary = context.Info.Summary,
             LastActive = context.Info.LastActive,
-            // Position=context.Info.Lines.Position,
+            Position = context.Config.Position,
         };
     }
     private void linesUpdated(WorldContext context)

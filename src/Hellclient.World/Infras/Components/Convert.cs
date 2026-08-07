@@ -1,3 +1,4 @@
+using System.Text;
 using Hellclient.World.Helpers;
 using Hellclient.World.Types;
 using Hellclient.World.Utils;
@@ -11,10 +12,8 @@ public interface IConvert
     public event EventHandler<Line>? OnPrompt;
     public Debounce? Debounce { get; set; }
 
-    public event EventHandler<TelnetCommand>? OnCommand;
     public void OnByte(object sender, byte data);
     public byte[] GetBuffer();
-    public void OnCommandReceived(object sender, TelnetCommand cmd);
     public void Prompt();
     public void Publish();
 }
@@ -36,7 +35,6 @@ public class Convert : IConvert
     private List<byte> _buffer = new List<byte>();
     public event EventHandler<Line>? OnLine;
     public event EventHandler<Line>? OnPrompt;
-    public event EventHandler<TelnetCommand>? OnCommand;
     public byte[] GetBuffer()
     {
         return _buffer.ToArray();
@@ -45,6 +43,7 @@ public class Convert : IConvert
     {
         if (data == 13)
         {
+            Publish();
             return;
         }
         if (data == 10)
@@ -54,19 +53,6 @@ public class Convert : IConvert
         }
         _buffer.Add(data);
         Task.Run(async () => await Debounce!.Exec());
-    }
-    public void OnCommandReceived(object sender, TelnetCommand cmd)
-    {
-        if (_buffer.Count > 0)
-        {
-            Publish();
-        }
-        switch (cmd.Command)
-        {
-            case TelnetCommand.CmdGoAhead:
-                break;
-        }
-        OnCommand?.Invoke(this, cmd);
     }
     public void Publish()
     {

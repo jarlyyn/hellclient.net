@@ -23,4 +23,5 @@ public class WorldEventBus
         public EventHandler<Authorization>? RequestPermissionsEvent { get; set; }
         public EventHandler<Authorization>? RequestTrustDomainsEvent { get; set; }
         public EventHandler<object>? ScriptMessageEvent { get; set; }
+        public EventHandler<TelnetCommand>? OnCommand { get; set; }
 }
