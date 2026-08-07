@@ -12,7 +12,7 @@ public static class AnsiHelpers
         var result = Line.New();
         if (string.IsNullOrEmpty(input))
         {
-            return result;
+            return null;
         }
         List<IAnsiStringParserElement> elements;
         try

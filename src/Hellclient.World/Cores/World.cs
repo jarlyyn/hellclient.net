@@ -17,9 +17,9 @@ public partial class World : IWorld
             Paths = paths,
             Info = new Info()
             {
-                Lines = new Ring<Line>(AppConfig.System.MaxHistory),
+                Lines = new Ring<Line>(AppConfig.System.MaxLines),
                 History = new Ring<string>(AppConfig.System.MaxHistory),
-                Recent = new Ring<Line>(AppConfig.System.MaxHistory),
+                Recent = new Ring<Line>(AppConfig.System.MaxRecent),
             }
         };
         Service = service;

@@ -17,23 +17,29 @@ public class WebsocketConnection : IConnection
     public async Task Run()
     {
         var buffer = new Memory<byte>(new byte[4096]);
-        while (_socket.State == WebSocketState.Open)
+        try
         {
-            using var ms = new MemoryStream();
-            ValueWebSocketReceiveResult result;
-            do
+            while (_socket.State == WebSocketState.Open)
             {
-                result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
-                if (result.MessageType == WebSocketMessageType.Close)
+                using var ms = new MemoryStream();
+                ValueWebSocketReceiveResult result;
+                do
                 {
-                    await Close();
-                    return;
-                }
-                ms.Write(buffer.Span[..result.Count]);
+                    result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await Close();
+                        return;
+                    }
+                    ms.Write(buffer.Span[..result.Count]);
 
-            } while (!result.EndOfMessage);
-            ms.Seek(0, SeekOrigin.Begin);
-            OnMessage?.Invoke(this, ms.ToArray());
+                } while (!result.EndOfMessage);
+                ms.Seek(0, SeekOrigin.Begin);
+                OnMessage?.Invoke(this, ms.ToArray());
+            }
+        }finally
+        {
+            await Close();
         }
     }
     public async Task Close()

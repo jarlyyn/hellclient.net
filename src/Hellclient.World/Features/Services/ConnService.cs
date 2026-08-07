@@ -85,6 +85,7 @@ public class ConnService : IConnService
     }
     public void Send(WorldContext context, byte[] message)
     {
+        context.Convert.Publish();
         context.Connection.Send(message);
     }
     public bool IsConnected(WorldContext context)
@@ -110,6 +111,7 @@ public class ConnService : IConnService
         {
 
         }
+        context.Convert.Publish();
         await context.Connection.Send(bytes);
         await context.Connection.Send(new byte[] { 13 });
     }

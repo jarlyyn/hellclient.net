@@ -16,6 +16,7 @@ public interface IConvert
     public byte[] GetBuffer();
     public void OnCommandReceived(object sender, TelnetCommand cmd);
     public void Prompt();
+    public void Publish();
 }
 public class Convert : IConvert
 {
@@ -66,7 +67,7 @@ public class Convert : IConvert
         }
         OnCommand?.Invoke(this, cmd);
     }
-    private void Publish()
+    public void Publish()
     {
         var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
         if (line is null)

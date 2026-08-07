@@ -101,7 +101,7 @@ public class InfoService : IInfoService
     }
     public Line? CurrentPrompt(WorldContext context)
     {
-        return context.Info.Lines.GetCurrentItem();
+        return context.Info.Prompt;
     }
     public int GetLineCount(WorldContext context)
     {
