@@ -113,14 +113,14 @@ public class ProphetService : IProphetService
         TitanService.HandleCmdHUDContent(ctx.TitanContext, roomid);
 
     }
-
+    private void onLeave(ProphetContext ctx, string roomid)
+    {
+        TitanService.LoseFocus(ctx.TitanContext, roomid);
+    }
     public void Change(ProphetContext ctx, string roomid)
     {
-        // var conn = ctx.Users.Identities.TryGetValue("user", out var c) ? c : null;
-        // if (conn != null)
-        // {
-            Interlocked.Exchange(ref ctx.Current!, roomid);
-        // }
+        onLeave(ctx, roomid);
+        Interlocked.Exchange(ref ctx.Current!, roomid);
         onCurrent(ctx, roomid);
         TitanService.ExecClients(ctx.TitanContext);
     }
@@ -148,8 +148,8 @@ public class ProphetService : IProphetService
     private void change(ProphetContext ctx, IConnection conn, string id)
     {
 
-        Change(ctx, id);
         Send(ctx, conn, "current", id);
+        Change(ctx, id);
     }
     public void OnCmdChange(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {

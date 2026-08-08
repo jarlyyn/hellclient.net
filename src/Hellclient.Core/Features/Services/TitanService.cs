@@ -80,6 +80,7 @@ public interface ITitanService
     public void HandleCmdPrompt(TitanContext context, string id);
     public void HandleCmdHistory(TitanContext context, string id);
     public void HandleCmdHUDContent(TitanContext context, string id);
+    public void LoseFocus(TitanContext context, string id);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService

@@ -78,7 +78,7 @@ public class InfoService : IInfoService
             HostPort = $"{context.Connection.Host}:{context.Connection.Port}",
             ReadyAt = context.Config.ReadyAt,
             Running = context.Connection.IsConnected(),
-            ScriptID=context.Config.Data.ScriptID,
+            ScriptID = context.Config.Data.ScriptID,
             Priority = context.Info.Priority,
             Summary = context.Info.Summary,
             LastActive = context.Info.LastActive,
@@ -139,6 +139,7 @@ public class InfoService : IInfoService
     public void SetPriority(WorldContext context, int priority)
     {
         context.Info.Priority = priority;
+        RefreshClientInfo(context);
     }
     public int GetPriority(WorldContext context)
     {
@@ -147,6 +148,7 @@ public class InfoService : IInfoService
     public void SetSummary(WorldContext context, List<Line> lines)
     {
         context.Info.Summary = lines;
+        RefreshClientInfo(context);
     }
     public List<Line> GetSummary(WorldContext context)
     {
