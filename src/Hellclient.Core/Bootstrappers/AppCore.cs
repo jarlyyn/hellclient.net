@@ -2,6 +2,7 @@ using Hellclient.Core.Configs;
 using Hellclient.Core.Cores;
 using Hellclient.Core.Features.Services;
 using Hellclient.Core.Features.States;
+using Hellclient.Core.Infras.Adapters;
 using Hellclient.Core.Infras.Components;
 using Hellclient.World.Infras.Adapters;
 
@@ -13,7 +14,10 @@ public class AppCore
     public required Prophet Prophet { get; set; }
     public static AppCore BuildDefault()
     {
-        var logger = new NopLogger();
+        var logger = new FileLogger()
+        {
+            WorldLogsPath = System.IO.Path.Combine(Deployment.Instance.LogsPath, "logs")
+        };
         var tctx = new TitanContext()
         {
             Deployment = Deployment.Instance,

@@ -3,6 +3,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hellclient.Core.Types;
+using Hellclient.Core.Types.Forms;
 using Hellclient.World.Types;
 using Timer = Hellclient.World.Types.Timer;
 
@@ -43,6 +44,8 @@ namespace Hellclient.Core.Infras.Components;
 [JsonSerializable(typeof(FoundHistory))]
 [JsonSerializable(typeof(DiffLines))]
 [JsonSerializable(typeof(BatchCommandScripts))]
+[JsonSerializable(typeof(CreateAliasForm))]
+[JsonSerializable(typeof(CreateGameForm))]
 public partial class JsonContext : JsonSerializerContext
 {
     public static JsonSerializerOptions JsonOptions = new()
@@ -122,6 +125,10 @@ public partial class JsonContext : JsonSerializerContext
                 return JsonSerializer.SerializeToUtf8Bytes(dl, JsonContext.Instance.DiffLines);
             case BatchCommandScripts bcs:
                 return JsonSerializer.SerializeToUtf8Bytes(bcs, JsonContext.Instance.BatchCommandScripts);
+            case CreateAliasForm caf:
+                return JsonSerializer.SerializeToUtf8Bytes(caf, JsonContext.Instance.CreateAliasForm);
+            case CreateGameForm cgf:
+                return JsonSerializer.SerializeToUtf8Bytes(cgf, JsonContext.Instance.CreateGameForm);
             case null:
                 return Encoding.UTF8.GetBytes("null");
             default:

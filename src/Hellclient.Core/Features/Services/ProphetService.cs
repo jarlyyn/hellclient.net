@@ -5,6 +5,8 @@ using Hellclient.Core.Types;
 using Hellclient.Core.Infras.Components;
 using Hellclient.World.Types;
 using System.Reflection.Metadata.Ecma335;
+using Hellclient.Core.Types.Forms;
+using Hellclient.Core.Helpers;
 
 namespace Hellclient.Core.Features.Services;
 
@@ -80,7 +82,7 @@ public interface IProphetService
 }
 public class ProphetService : IProphetService
 {
-    
+
     public ITitanService TitanService { get; set; } = new TitanService();
     public void Publish(ProphetContext ctx, Types.Message message)
     {
@@ -154,20 +156,20 @@ public class ProphetService : IProphetService
     }
     public void OnCmdChange(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         change(ctx, conn, msg);
     }
 
     public void OnCmdConnect(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdConnect(ctx.TitanContext, msg);
 
     }
 
     public void OnCmdDisconnect(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdDisconnect(ctx.TitanContext, msg);
     }
     public string GetCurrent(ProphetContext ctx)
@@ -181,7 +183,7 @@ public class ProphetService : IProphetService
     public void OnCmdSend(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         var id = getCurrent(ctx);
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdSend(ctx.TitanContext, id, msg);
     }
 
@@ -193,7 +195,27 @@ public class ProphetService : IProphetService
 
     public void OnCmdCreateGame(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.CreateGame(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<CreateGameForm>(cmd.Data(), JsonContext.Instance.CreateGameForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateCreateGameForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var w=TitanService.NewWorld(ctx.TitanContext,form.ID);
+        if (w == null){
+            return;
+        }
+        w.SetHost(form.Host);
+        w.SetPort(form.Port);
+        w.SetCharset(form.Charset);
+        TitanService.OnCreateSuccess(ctx.TitanContext, form.ID);
+        TitanService.ExecClients(ctx.TitanContext);
+        TitanService.SaveWorld(ctx.TitanContext, form.ID);
     }
     public void OnCmdNotOpened(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -201,7 +223,7 @@ public class ProphetService : IProphetService
     }
     public async Task OnCmdOpen(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
 
         var ok = await TitanService.HandleCmdOpen(ctx.TitanContext, msg);
         if (ok)
@@ -212,24 +234,24 @@ public class ProphetService : IProphetService
     }
     public void OnCmdClose(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.CloseWorld(ctx.TitanContext, msg);
         change(ctx, conn, "");
         TitanService.ExecClients(ctx.TitanContext);
     }
     public void OnCmdSave(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdSave(ctx.TitanContext, msg);
     }
     public void OnCmdSaveScript(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdSaveScript(ctx.TitanContext, msg);
     }
     public void OnCmdScriptInfo(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdScriptInfo(ctx.TitanContext, msg);
     }
     public void OnCmdCreateScript(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
@@ -242,12 +264,12 @@ public class ProphetService : IProphetService
     }
     public void OnCmdListStatus(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdStatus(ctx.TitanContext, msg);
     }
     public void OnCmdUseScript(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -259,22 +281,21 @@ public class ProphetService : IProphetService
 
     public void OnCmdReloadScript(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdReloadScript(ctx.TitanContext, msg);
     }
     public void OnCmdTimers(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         TitanService.HandleCmdTimers(ctx.TitanContext, msg[0], msg[1] == "byuser");
     }
     public void OnCmdCreateTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.CreateTimer(p.Titan, cmd.Data())
-
+        //Todo
     }
     public void OnCmdDeleteTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -293,7 +314,7 @@ public class ProphetService : IProphetService
     public void OnCmdLoadTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
 
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -306,7 +327,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdAliases(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -315,12 +336,34 @@ public class ProphetService : IProphetService
     }
     public void OnCmdCreateAlias(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.CreateAlias(p.Titan, cmd.Data())
-
+        var form = JsonSerializer.Deserialize<CreateAliasForm>(cmd.Data(), JsonContext.Instance.CreateAliasForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateCreateAliasForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var alias = FormHelper.CreateAliasFromForm(form);
+        var ok = TitanService.DoCreateAlias(ctx.TitanContext, form.World, alias);
+        if (!ok)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, FormHelper.CreateAliasFailErrors);
+            return;
+        }
+        TitanService.OnCreateAliasSuccess(ctx.TitanContext, form.World, form.ID);
+        TitanService.HandleCmdAliases(ctx.TitanContext, form.World, form.ByUser);
+        if (form.ByUser)
+        {
+            TitanService.AutoSaveWorld(ctx.TitanContext, form.World);
+        }
     }
     public void OnCmdDeleteAlias(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -338,7 +381,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdLoadAlias(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -351,7 +394,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdTriggers(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
 
         TitanService.HandleCmdTriggers(ctx.TitanContext, msg[0], msg[1] == "byuser");
     }
@@ -362,7 +405,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdDeleteTrigger(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -380,7 +423,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdLoadTrigger(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 2)
         {
             return;
@@ -393,12 +436,12 @@ public class ProphetService : IProphetService
     }
     public void OnCmdParams(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdParams(ctx.TitanContext, msg);
     }
     public void OnCmdUpdateParam(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 3)
         {
             return;
@@ -407,7 +450,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdUpdateParamComment(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         if (msg.Count < 3)
         {
             return;
@@ -425,7 +468,7 @@ public class ProphetService : IProphetService
     }
     public void OnCmdDeleteParam(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
 
         if (msg.Count < 2)
         {
@@ -435,18 +478,18 @@ public class ProphetService : IProphetService
     }
     public void OnCmdCallback(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
 
         if (msg.Count < 2)
         {
             return;
         }
-        var cb = JsonSerializer.Deserialize<Callback>(msg[1], JsonContext.Default.Callback)!;
+        var cb = JsonSerializer.Deserialize<Callback>(msg[1], JsonContext.Instance.Callback)!;
         TitanService.HandleCmdCallback(ctx.TitanContext, msg[0], cb);
     }
     public void OnCmdAssist(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdAssist(ctx.TitanContext, msg);
     }
     public void OnCmdAbout(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
@@ -456,18 +499,18 @@ public class ProphetService : IProphetService
 
     public void OnCmdWorldSettings(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdWorldSettings(ctx.TitanContext, msg);
     }
 
     public void OnCmdScriptSettings(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdScriptSettings(ctx.TitanContext, msg);
     }
     public void OnCmdRequiredParams(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdRequiredParams(ctx.TitanContext, msg);
     }
     public void OnCmdUpdateRequiredParams(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
@@ -491,41 +534,41 @@ public class ProphetService : IProphetService
     public void OnCmdRequestPermissions(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
 
-        var msg = JsonSerializer.Deserialize<Authorization>(cmd.Data(), JsonContext.Default.Authorization)!;
+        var msg = JsonSerializer.Deserialize<Authorization>(cmd.Data(), JsonContext.Instance.Authorization)!;
         TitanService.HandleCmdRequestPermissions(ctx.TitanContext, msg);
     }
     public void OnCmdRequestTrustDomains(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<Authorization>(cmd.Data(), JsonContext.Default.Authorization)!;
+        var msg = JsonSerializer.Deserialize<Authorization>(cmd.Data(), JsonContext.Instance.Authorization)!;
 
         TitanService.HandleCmdRequestTrustDomains(ctx.TitanContext, msg);
     }
     public void OnCmdAuthorized(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdAuthorized(ctx.TitanContext, msg);
     }
     public void OnCmdRevokeAuthorized(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdRevokeAuthorized(ctx.TitanContext, msg);
     }
     public void OnCmdMasssend(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         var id = getCurrent(ctx);
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdMasssend(ctx.TitanContext, id, msg);
     }
     public void OnCmdFindHistory(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         var id = getCurrent(ctx);
-        var msg = JsonSerializer.Deserialize<int>(cmd.Data(), JsonContext.Default.Int32)!;
+        var msg = JsonSerializer.Deserialize<int>(cmd.Data(), JsonContext.Instance.Int32)!;
         TitanService.HandleCmdFindHistory(ctx.TitanContext, id, msg);
     }
     public void OnCmdHUDClick(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         var id = getCurrent(ctx);
-        var msg = JsonSerializer.Deserialize<Click>(cmd.Data(), JsonContext.Default.Click)!;
+        var msg = JsonSerializer.Deserialize<Click>(cmd.Data(), JsonContext.Instance.Click)!;
         TitanService.HandleCmdHUDClick(ctx.TitanContext, id, msg);
     }
 
@@ -538,19 +581,19 @@ public class ProphetService : IProphetService
 
     public void OnCmdSortClients(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Default.ListString)!;
+        var msg = JsonSerializer.Deserialize<List<string>>(cmd.Data(), JsonContext.Instance.ListString)!;
         TitanService.DoSortClients(ctx.TitanContext, msg);
         TitanService.ExecClients(ctx.TitanContext);
     }
     public void OnCmdKeyUp(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         var id = getCurrent(ctx);
-        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Default.String)!;
+        var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
         TitanService.HandleCmdKeyUp(ctx.TitanContext, id, msg);
     }
     public void OnCmdBatchCommand(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        var msg = JsonSerializer.Deserialize<BatchCommand>(cmd.Data(), JsonContext.Default.BatchCommand)!;
+        var msg = JsonSerializer.Deserialize<BatchCommand>(cmd.Data(), JsonContext.Instance.BatchCommand)!;
         TitanService.HandleBatchCommand(ctx.TitanContext, msg);
     }
     public void OnCmdBatchCommandScripts(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)

@@ -17,6 +17,7 @@ public class WorldService : IWorldService
     }
     public void RemoveFrom(WorldContext context)
     {
+        context.Dispose();
     }
     public IConnService ConnService { get; set; } = new ConnService();
     public IAutomationService AutomationService { get; set; } = new AutomationService();

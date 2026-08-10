@@ -81,6 +81,10 @@ public interface ITitanService
     public void HandleCmdHistory(TitanContext context, string id);
     public void HandleCmdHUDContent(TitanContext context, string id);
     public void LoseFocus(TitanContext context, string id);
+    public void OnCreateFail(TitanContext context, List<FieldError> errors);
+    public bool DoCreateAlias(TitanContext context, string id, Alias alias);
+    public void OnCreateAliasSuccess(TitanContext context, string world, string id);
+    public void OnCreateSuccess(TitanContext context, string id);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService
@@ -202,6 +206,11 @@ public class TitanService : ITitanService
     {
         context.EventBus.RequestEvent?.Invoke(this, msg);
     }
+    public void OnCreateFail(TitanContext context, List<FieldError> errors)
+    {
+        MsgHelper.PublishCreateFail(context.EventBus, errors);
+    }
+
     public void OnCreateSuccess(TitanContext context, string id)
     {
         MsgHelper.PublishCreateSuccess(context.EventBus, id);
@@ -1233,7 +1242,7 @@ public class TitanService : ITitanService
     }
     public void OnBatchCommandMessage(TitanContext context, World.Types.Message msg)
     {
-        var bc = JsonSerializer.Deserialize(msg.Data, Infras.Components.JsonContext.Default.BatchCommand);
+        var bc = JsonSerializer.Deserialize(msg.Data, Infras.Components.JsonContext.Instance.BatchCommand);
         if (bc is not null)
         {
             HandleBatchCommand(context, bc);
