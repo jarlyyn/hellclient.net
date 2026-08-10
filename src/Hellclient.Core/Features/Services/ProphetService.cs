@@ -206,16 +206,20 @@ public class ProphetService : IProphetService
             TitanService.OnCreateFail(ctx.TitanContext, errors);
             return;
         }
-        var w=TitanService.NewWorld(ctx.TitanContext,form.ID);
-        if (w == null){
-            return;
+        lock (ctx.TitanContext.Worlds)
+        {
+            var w = TitanService.NewWorld(ctx.TitanContext, form.ID);
+            if (w == null)
+            {
+                return;
+            }
+            w.SetHost(form.Host);
+            w.SetPort(form.Port);
+            w.SetCharset(form.Charset);
+            TitanService.OnCreateSuccess(ctx.TitanContext, form.ID);
+            TitanService.ExecClients(ctx.TitanContext);
+            TitanService.SaveWorld(ctx.TitanContext, form.ID);
         }
-        w.SetHost(form.Host);
-        w.SetPort(form.Port);
-        w.SetCharset(form.Charset);
-        TitanService.OnCreateSuccess(ctx.TitanContext, form.ID);
-        TitanService.ExecClients(ctx.TitanContext);
-        TitanService.SaveWorld(ctx.TitanContext, form.ID);
     }
     public void OnCmdNotOpened(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -307,7 +311,7 @@ public class ProphetService : IProphetService
             TitanService.HandleCmdTimers(ctx.TitanContext, msg[0], itemtype.Value);
             if (itemtype.Value)
             {
-                TitanService.AutoSaveWorld(ctx.TitanContext, msg[0]);
+                TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, msg[0]);
             }
         }
     }
@@ -358,7 +362,7 @@ public class ProphetService : IProphetService
         TitanService.HandleCmdAliases(ctx.TitanContext, form.World, form.ByUser);
         if (form.ByUser)
         {
-            TitanService.AutoSaveWorld(ctx.TitanContext, form.World);
+            TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
         }
     }
     public void OnCmdDeleteAlias(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
@@ -375,7 +379,7 @@ public class ProphetService : IProphetService
             TitanService.HandleCmdAliases(ctx.TitanContext, msg[0], itemtype.Value);
             if (itemtype.Value)
             {
-                TitanService.AutoSaveWorld(ctx.TitanContext, msg[0]);
+                TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, msg[0]);
             }
         }
     }
@@ -417,7 +421,7 @@ public class ProphetService : IProphetService
             TitanService.HandleCmdTriggers(ctx.TitanContext, msg[0], itemtype.Value);
             if (itemtype.Value)
             {
-                TitanService.AutoSaveWorld(ctx.TitanContext, msg[0]);
+                TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, msg[0]);
             }
         }
     }
@@ -600,5 +604,4 @@ public class ProphetService : IProphetService
     {
         TitanService.HandleCmdBatchCommandScripts(ctx.TitanContext);
     }
-
 }

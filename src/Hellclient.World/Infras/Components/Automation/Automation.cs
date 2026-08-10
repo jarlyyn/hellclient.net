@@ -4,8 +4,12 @@ namespace Hellclient.World.Components.Automation;
 
 public class Automation
 {
+    public Automation()
+    {
+        Timers = new Timers();
+    }
     public static int MaxMultiLines = 200;
-    public Timers Timers { get; set; } = new Timers();
+    public  Timers Timers { get; set; }=new Timers();
     public Triggers Triggers { get; set; } = new Triggers();
     public Aliases Aliases { get; set; } = new Aliases();
     public Ring<string> MultiLines { get; set; } = new(MaxMultiLines);

@@ -11,7 +11,7 @@ public class Timers
     Dictionary<string, AutomationTimer> Named { get; set; } = [];
     Dictionary<string, AutomationTimer> Temporary { get; set; } = [];
     Dictionary<string, Dictionary<string, AutomationTimer>> Grouped { get; set; } = [];
-    Action<Timer>? OnFire { get; set; }
+    public EventHandler<Timer>? OnFire { get; set; }
 
     public void TimerCallback(Timer timer)
     {
@@ -19,7 +19,7 @@ public class Timers
         {
             _removeTimer(timer.ID);
         }
-        OnFire!.Invoke(timer);
+        OnFire!.Invoke(this, timer);
     }
     public bool AddTimer(Timer timer, bool replace)
     {

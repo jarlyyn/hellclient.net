@@ -81,11 +81,24 @@ public class AutomationService : IAutomationService
     {
         context.EventBus.LineEvent += async (_, line) => await OnLine(context, line);
         context.EventBus.CloseEvent += (_, _) => OnClose(context);
+        context.Automation.Timers.OnFire += (_, timer) => OnTimer(context, timer);
         // Install automation service to the world context
     }
     private void OnClose(WorldContext context)
     {
         context.Automation.Timers.Flush();
+    }
+    public void OnTimer(WorldContext context, Timer timer)
+    {
+        context.Lock.Wait();
+        try
+        {
+            ScriptService.SendTimer(context, timer);
+        }
+        finally
+        {
+            context.Lock.Release();
+        }
     }
     public async Task OnLine(WorldContext context, Line? line)
     {
@@ -176,45 +189,53 @@ public class AutomationService : IAutomationService
     }
     public bool MatchAlias(WorldContext context, string message)
     {
-        bool matched = false;
-        var queue = context.Automation.Aliases.Queue();
-        foreach (var v in queue)
+        context.Lock.Wait();
+        try
         {
-            var r = v.Match(message);
-            if (r is null)
+            bool matched = false;
+            var queue = context.Automation.Aliases.Queue();
+            foreach (var v in queue)
             {
-                continue;
-            }
-            matched = true;
-            var send = "";
-            var data = v.Data;
-            if (data.Send != "")
-            {
-                var rl = r.ReplaceList(data.Name);
-                if (v.Data.ExpandVariables)
+                var r = v.Match(message);
+                if (r is null)
                 {
-                    rl.AddRange(Replacer.BuildParamsReplacer(context.Config.Data.Params));
+                    continue;
                 }
-                send = Replacer.Replace(data.Send, rl);
+                matched = true;
+                var send = "";
+                var data = v.Data;
+                if (data.Send != "")
+                {
+                    var rl = r.ReplaceList(data.Name);
+                    if (v.Data.ExpandVariables)
+                    {
+                        rl.AddRange(Replacer.BuildParamsReplacer(context.Config.Data.Params));
+                    }
+                    send = Replacer.Replace(data.Send, rl);
+                }
+                if (send != "")
+                {
+                    trySendTo(context, data.SendTo, send, data.Variable, data.OmitFromLog, data.OmitFromOutput);
+                }
+                if (data.Script != "")
+                {
+                    ScriptService.SendAlias(context, message, v.Data, r);
+                }
+                if (data.OneShot)
+                {
+                    context.Automation.Aliases.RemoveAlias(data.ID);
+                }
+                if (!data.KeepEvaluating)
+                {
+                    return true;
+                }
             }
-            if (send != "")
-            {
-                trySendTo(context, data.SendTo, send, data.Variable, data.OmitFromLog, data.OmitFromOutput);
-            }
-            if (data.Script != "")
-            {
-                ScriptService.SendAlias(context, message, v.Data, r);
-            }
-            if (data.OneShot)
-            {
-                context.Automation.Aliases.RemoveAlias(data.ID);
-            }
-            if (!data.KeepEvaluating)
-            {
-                return true;
-            }
+            return matched;
         }
-        return matched;
+        finally
+        {
+            context.Lock.Release();
+        }
     }
     public void DoExecute(WorldContext context, string cmd)
     {

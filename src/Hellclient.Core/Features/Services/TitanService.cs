@@ -22,7 +22,7 @@ public interface ITitanService
     IWorld? NewWorld(TitanContext context, string id);
     Task<bool> OpenWorld(TitanContext context, string id);
     void SaveWorld(TitanContext context, string id);
-    void AutoSaveWorld(TitanContext context, string id);
+    public void HandleCmdAutoSaveWorld(TitanContext context, string id);
     public void HandleCmdConnect(TitanContext context, string id);
     public void HandleCmdDisconnect(TitanContext context, string id);
     public void HandleCmdSend(TitanContext context, string id, string msg);
@@ -239,20 +239,51 @@ public class TitanService : ITitanService
     public void HandleCmdConnect(TitanContext context, string id)
     {
         var w = World(context, id);
-        w?.DoConnectServer();
+        if (w != null)
+        {
+            w.Lock.Wait();
+            try
+            {
+                w.DoConnectServer();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
     }
     public void HandleCmdDisconnect(TitanContext context, string id)
     {
         var w = World(context, id);
-        w?.DoCloseServer();
+        if (w != null)
+        {
+            w.Lock.Wait();
+            try
+            {
+                w.DoCloseServer();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+
+        }
     }
     public void HandleCmdStatus(TitanContext context, string id)
     {
         var w = World(context, id);
         if (w != null)
         {
-            var status = w.GetStatus();
-            MsgHelper.PublishStatus(context.EventBus, id, status);
+            w.Lock.Wait();
+            try
+            {
+                var status = w.GetStatus();
+                MsgHelper.PublishStatus(context.EventBus, id, status);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void ExecSwitchStatus(TitanContext context)
@@ -297,8 +328,16 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var alllines = w.GetCurrentLines();
-            MsgHelper.PublishAllLines(context.EventBus, id, alllines);
+            w.Lock.Wait();
+            try
+            {
+                var alllines = w.GetCurrentLines();
+                MsgHelper.PublishAllLines(context.EventBus, id, alllines);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdLines(TitanContext context, string id)
@@ -344,13 +383,32 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            SaveWorld(context, id);
+            w.Lock.Wait();
+            try
+            {
+                SaveWorld(context, id);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdSaveScript(TitanContext context, string id)
     {
         var w = World(context, id);
-        w?.DoSaveScript();
+        if (w != null)
+        {
+            w.Lock.Wait();
+            try
+            {
+                w.DoSaveScript();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
 
     }
     public void HandleCmdScriptInfo(TitanContext context, string id)
@@ -358,8 +416,16 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var info = ScriptDataHelper.ConvertInfo(w.GetScriptID(), w.GetScriptData());
-            MsgHelper.PublishScriptInfo(context.EventBus, id, info);
+            w.Lock.Wait();
+            try
+            {
+                var info = ScriptDataHelper.ConvertInfo(w.GetScriptID(), w.GetScriptData());
+                MsgHelper.PublishScriptInfo(context.EventBus, id, info);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdListScriptInfo(TitanContext context)
@@ -370,22 +436,67 @@ public class TitanService : ITitanService
     public void HandleCmdUseScript(TitanContext context, string id, string script)
     {
         var w = World(context, id);
-        w?.DoUseScript(script);
+        if (w != null)
+        {
+
+            w.Lock.Wait();
+            try
+            {
+                w.DoUseScript(script);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
     }
     public void HandleCmdReloadScript(TitanContext context, string id)
     {
         var w = World(context, id);
-        w?.DoReloadScript();
+        if (w != null)
+        {
+            try
+            {
+                w.DoReloadScript();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
     }
     public void HandleCmdCallback(TitanContext context, string id, World.Types.Callback cb)
     {
         var w = World(context, id);
-        w?.DoSendCallbackToScript(cb);
+        if (w != null)
+        {
+            try
+            {
+                w.DoSendCallbackToScript(cb);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
+
     }
     public void HandleCmdAssist(TitanContext context, string id)
     {
         var w = World(context, id);
-        w?.DoAssist();
+        if (w != null)
+        {
+            try
+            {
+
+                w.DoAssist();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
+
     }
     public void HandleCmdAbout(TitanContext context)
     {
@@ -406,13 +517,16 @@ public class TitanService : ITitanService
     }
     public void ExecClients(TitanContext context)
     {
-        var result = new List<ClientInfo>();
-        context.Worlds.ToList().ForEach(kv =>
+        lock (context.Worlds)
         {
-            result.Add(kv.Value.GetClientInfo()!);
-        });
-        result.Sort((a, b) => a.CompareTo(b));
-        MsgHelper.PublishClients(context.EventBus, result);
+            var result = new List<ClientInfo>();
+            context.Worlds.ToList().ForEach(kv =>
+            {
+                result.Add(kv.Value.GetClientInfo()!);
+            });
+            result.Sort((a, b) => a.CompareTo(b));
+            MsgHelper.PublishClients(context.EventBus, result);
+        }
     }
     private void onSave(TitanContext context, IWorld world)
     {
@@ -498,39 +612,58 @@ public class TitanService : ITitanService
     {
         saveWorld(context, id, false);
     }
+    public void HandleCmdAutoSaveWorld(TitanContext context, string id)
+    {
+        var w = World(context, id);
+        if (w != null)
+        {
+            w.Lock.Wait();
+            try
+            {
+                AutoSaveWorld(context, id);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
+    }
     public void AutoSaveWorld(TitanContext context, string id)
     {
         saveWorld(context, id, true);
     }
     public async Task<bool> OpenWorld(TitanContext context, string id)
     {
-        if (context.Worlds.ContainsKey(id))
+        lock (context.Worlds)
         {
-            return false;
+            if (context.Worlds.ContainsKey(id))
+            {
+                return false;
+            }
+            string data;
+            try
+            {
+                data = File.ReadAllText(GetWorldPath(context, id), Encoding.UTF8);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            var world = context.WorldFactory.CreateWorld(id, createPaths(context, id));
+            try
+            {
+                world?.DoDecode(data);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            InstallTo(context, world!);
+            context.Worlds[id] = world!;
+            world!.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
+            _ = world!.DoConnectServer();
+            return true;
         }
-        string data;
-        try
-        {
-            data = File.ReadAllText(GetWorldPath(context, id), Encoding.UTF8);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-        var world = context.WorldFactory.CreateWorld(id, createPaths(context, id));
-        try
-        {
-            world?.DoDecode(data);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-        InstallTo(context, world!);
-        context.Worlds[id] = world!;
-        world!.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
-        _ = world!.DoConnectServer();
-        return true;
     }
     private string prefixedName(string name, bool byuser)
     {
@@ -578,15 +711,23 @@ public class TitanService : ITitanService
         var world = World(context, id);
         if (world != null)
         {
-            var aliases = world.GetAliasesByType(byuser);
-            aliases.Sort();
-            if (byuser)
+            world.Lock.Wait();
+            try
             {
-                MsgHelper.PublishUserAliases(context.EventBus, id, aliases);
+                var aliases = world.GetAliasesByType(byuser);
+                aliases.Sort();
+                if (byuser)
+                {
+                    MsgHelper.PublishUserAliases(context.EventBus, id, aliases);
+                }
+                else
+                {
+                    MsgHelper.PublishScriptAliases(context.EventBus, id, aliases);
+                }
             }
-            else
+            finally
             {
-                MsgHelper.PublishScriptAliases(context.EventBus, id, aliases);
+                world.Lock.Release();
             }
         }
     }
@@ -595,11 +736,19 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var itemtype = GetAliasType(context, world, id);
-            w.DoDeleteAlias(id);
-            if (itemtype != null && itemtype.Value)
+            w.Lock.Wait();
+            try
             {
-                AutoSaveWorld(context, id);
+                var itemtype = GetAliasType(context, world, id);
+                w.DoDeleteAlias(id);
+                if (itemtype != null && itemtype.Value)
+                {
+                    AutoSaveWorld(context, id);
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
     }
@@ -623,10 +772,18 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var alias = w.GetAlias(id);
-            if (alias != null)
+            w.Lock.Wait();
+            try
             {
-                MsgHelper.PublishAlias(context.EventBus, world, alias);
+                var alias = w.GetAlias(id);
+                if (alias != null)
+                {
+                    MsgHelper.PublishAlias(context.EventBus, world, alias);
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
     }
@@ -668,18 +825,26 @@ public class TitanService : ITitanService
     }
     public void HandleCmdTriggers(TitanContext context, string id, bool byuser)
     {
-        var world = World(context, id);
-        if (world != null)
+        var w = World(context, id);
+        if (w != null)
         {
-            var triggers = world.GetTriggersByType(byuser);
-            triggers.Sort();
-            if (byuser)
+            w.Lock.Wait();
+            try
             {
-                MsgHelper.PublishUserTriggers(context.EventBus, id, triggers);
+                var triggers = w.GetTriggersByType(byuser);
+                triggers.Sort();
+                if (byuser)
+                {
+                    MsgHelper.PublishUserTriggers(context.EventBus, id, triggers);
+                }
+                else
+                {
+                    MsgHelper.PublishScriptTriggers(context.EventBus, id, triggers);
+                }
             }
-            else
+            finally
             {
-                MsgHelper.PublishScriptTriggers(context.EventBus, id, triggers);
+                w.Lock.Release();
             }
         }
     }
@@ -688,11 +853,19 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var itemtype = GetTriggerType(context, world, id);
-            w.DoDeleteTrigger(id);
-            if (itemtype != null && itemtype.Value)
+            w.Lock.Wait();
+            try
             {
-                AutoSaveWorld(context, id);
+                var itemtype = GetTriggerType(context, world, id);
+                w.DoDeleteTrigger(id);
+                if (itemtype != null && itemtype.Value)
+                {
+                    AutoSaveWorld(context, id);
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
     }
@@ -715,10 +888,18 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var trigger = w.GetTrigger(id);
-            if (trigger != null)
+            w.Lock.Wait();
+            try
             {
-                MsgHelper.PublishTrigger(context.EventBus, world, trigger);
+                var trigger = w.GetTrigger(id);
+                if (trigger != null)
+                {
+                    MsgHelper.PublishTrigger(context.EventBus, world, trigger);
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
     }
@@ -765,15 +946,23 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var timers = w.GetTimersByType(byuser);
-            timers.Sort();
-            if (byuser)
+            w.Lock.Wait();
+            try
             {
-                MsgHelper.PublishUserTimers(context.EventBus, id, timers);
+                var timers = w.GetTimersByType(byuser);
+                timers.Sort();
+                if (byuser)
+                {
+                    MsgHelper.PublishUserTimers(context.EventBus, id, timers);
+                }
+                else
+                {
+                    MsgHelper.PublishScriptTimers(context.EventBus, id, timers);
+                }
             }
-            else
+            finally
             {
-                MsgHelper.PublishScriptTimers(context.EventBus, id, timers);
+                w.Lock.Release();
             }
         }
     }
@@ -782,11 +971,19 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var itemtype = GetTimerType(context, world, id);
-            w.DoDeleteTimer(id);
-            if (itemtype != null && itemtype.Value)
+            w.Lock.Wait();
+            try
             {
-                AutoSaveWorld(context, id);
+                var itemtype = GetTimerType(context, world, id);
+                w.DoDeleteTimer(id);
+                if (itemtype != null && itemtype.Value)
+                {
+                    AutoSaveWorld(context, id);
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
     }
@@ -809,10 +1006,18 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var timer = w.GetTimer(id);
-            if (timer != null)
+            w.Lock.Wait();
+            try
             {
-                MsgHelper.PublishTimer(context.EventBus, world, timer);
+                var timer = w.GetTimer(id);
+                if (timer != null)
+                {
+                    MsgHelper.PublishTimer(context.EventBus, world, timer);
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
     }
@@ -821,8 +1026,16 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null && msg != "")
         {
-            w.AddHistory(msg);
-            w.DoExecute(msg);
+            w.Lock.Wait();
+            try
+            {
+                w.AddHistory(msg);
+                w.DoExecute(msg);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdMasssend(TitanContext context, string id, string msg)
@@ -830,9 +1043,17 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var m = Command.Create(msg);
-            m.History = false;
-            w.DoMetronomeSend(m);
+            w.Lock.Wait();
+            try
+            {
+                var m = Command.Create(msg);
+                m.History = false;
+                w.DoMetronomeSend(m);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdFindHistory(TitanContext context, string id, int position)
@@ -844,12 +1065,20 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var h = w.GetHistories();
-            if (position >= h.Count)
+            w.Lock.Wait();
+            try
             {
-                return;
+                var h = w.GetHistories();
+                if (position >= h.Count)
+                {
+                    return;
+                }
+                MsgHelper.PublishFoundHistory(context.EventBus, id, new FoundHistory() { Position = position, Command = h[h.Count - 1 - position] });
             }
-            MsgHelper.PublishFoundHistory(context.EventBus, id, new FoundHistory() { Position = position, Command = h[h.Count - 1 - position] });
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
 
@@ -858,7 +1087,15 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            w.DoSendHUDClickToScript(click);
+            w.Lock.Wait();
+            try
+            {
+                w.DoSendHUDClickToScript(click);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdKeyUp(TitanContext context, string id, string key)
@@ -866,7 +1103,15 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null && key != "")
         {
-            w.DoSendKeyUpToScript(key);
+            w.Lock.Wait();
+            try
+            {
+                w.DoSendKeyUpToScript(key);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void DoSortClients(TitanContext context, List<string> order)
@@ -887,7 +1132,15 @@ public class TitanService : ITitanService
             }
             foreach (var kvp in context.Worlds)
             {
-                kvp.Value.SetPosition(ordermap[kvp.Key]);
+                kvp.Value.Lock.Wait();
+                try
+                {
+                    kvp.Value.SetPosition(ordermap[kvp.Key]);
+                }
+                finally
+                {
+                    kvp.Value.Lock.Release();
+                }
             }
         }
     }
@@ -986,11 +1239,19 @@ public class TitanService : ITitanService
         {
             return;
         }
-        var i = new ParamsInfo();
-        i.Params = w.GetParams();
-        i.ParamComments = w.GetParamComments();
-        i.RequiredParams = w.GetRequiredParams();
-        MsgHelper.PublishParamsinfo(context.EventBus, id, i);
+        w.Lock.Wait();
+        try
+        {
+            var i = new ParamsInfo();
+            i.Params = w.GetParams();
+            i.ParamComments = w.GetParamComments();
+            i.RequiredParams = w.GetRequiredParams();
+            MsgHelper.PublishParamsinfo(context.EventBus, id, i);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
     }
     public void HandleCmdDeleteParam(TitanContext context, string id, string name)
     {
@@ -999,10 +1260,19 @@ public class TitanService : ITitanService
         {
             return;
         }
-        w.DeleteParam(name);
-        AutoSaveWorld(context, id);
-        MsgHelper.PublishParamDeleted(context.EventBus, id, name);
-        HandleCmdParams(context, id);
+        w.Lock.Wait();
+        try
+        {
+
+            w.DeleteParam(name);
+            AutoSaveWorld(context, id);
+            MsgHelper.PublishParamDeleted(context.EventBus, id, name);
+            HandleCmdParams(context, id);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
     }
     public void HandleCmdUpdateParam(TitanContext context, string id, string name, string value)
     {
@@ -1011,10 +1281,18 @@ public class TitanService : ITitanService
         {
             return;
         }
-        w.SetParam(name, value);
-        MsgHelper.PublishParamUpdated(context.EventBus, id, name);
-        AutoSaveWorld(context, id);
-        HandleCmdParams(context, id);
+        w.Lock.Wait();
+        try
+        {
+            w.SetParam(name, value);
+            MsgHelper.PublishParamUpdated(context.EventBus, id, name);
+            AutoSaveWorld(context, id);
+            HandleCmdParams(context, id);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
     }
     public void HandleCmdUpdateParamComment(TitanContext context, string id, string name, string value)
     {
@@ -1023,10 +1301,18 @@ public class TitanService : ITitanService
         {
             return;
         }
-        w.SetParamComment(name, value);
-        MsgHelper.PublishParamUpdated(context.EventBus, id, name);
-        AutoSaveWorld(context, id);
-        HandleCmdParams(context, id);
+        w.Lock.Wait();
+        try
+        {
+            w.SetParamComment(name, value);
+            MsgHelper.PublishParamUpdated(context.EventBus, id, name);
+            AutoSaveWorld(context, id);
+            HandleCmdParams(context, id);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
     }
     public void HandleCmdWorldSettings(TitanContext context, string id)
     {
@@ -1035,8 +1321,17 @@ public class TitanService : ITitanService
         {
             return;
         }
-        var s = WorldDataHelper.ConvertSettings(id, w.GetWorldData());
-        MsgHelper.PublishWorldSettingsMessage(context.EventBus, id, s);
+        w.Lock.Wait();
+        try
+        {
+            var s = WorldDataHelper.ConvertSettings(id, w.GetWorldData());
+            MsgHelper.PublishWorldSettingsMessage(context.EventBus, id, s);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
+
     }
     public void HandleCmdScriptSettings(TitanContext context, string id)
     {
@@ -1045,9 +1340,17 @@ public class TitanService : ITitanService
         {
             return;
         }
-        var s = ScriptDataHelper.ConvertSettings(w.GetScriptID(), w.GetScriptData());
+        w.Lock.Wait();
+        try
+        {
+            var s = ScriptDataHelper.ConvertSettings(w.GetScriptID(), w.GetScriptData());
+            MsgHelper.PublishScriptSettingsMessage(context.EventBus, id, s);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
 
-        MsgHelper.PublishScriptSettingsMessage(context.EventBus, id, s);
     }
     public void HandleCmdRequiredParams(TitanContext context, string id)
     {
@@ -1072,25 +1375,33 @@ public class TitanService : ITitanService
         {
             return;
         }
-        var items = w.GetPermissions();
+        w.Lock.Wait();
+        try
+        {
+            var items = w.GetPermissions();
 
-        foreach (var authed in a.Items)
-        {
-            foreach (var owned in items)
+            foreach (var authed in a.Items)
             {
-                if (owned == authed)
+                foreach (var owned in items)
                 {
-                    goto Next;
+                    if (owned == authed)
+                    {
+                        goto Next;
+                    }
                 }
+                items.Add(authed);
+            Next:;
             }
-            items.Add(authed);
-        Next:;
+            w.SetPermissions(items);
+            w.DoReloadPermissions();
+            if (a.Script != "")
+            {
+                w.DoRunScript(a.Script);
+            }
         }
-        w.SetPermissions(items);
-        w.DoReloadPermissions();
-        if (a.Script != "")
+        finally
         {
-            w.DoRunScript(a.Script);
+            w.Lock.Release();
         }
     }
 
@@ -1101,27 +1412,35 @@ public class TitanService : ITitanService
         {
             return;
         }
-        var trusted = w.GetTrusted();
-
-        foreach (var authed in a.Items)
+        w.Lock.Wait();
+        try
         {
-            foreach (var owned in trusted.Domains)
+            var trusted = w.GetTrusted();
+
+            foreach (var authed in a.Items)
             {
-                if (owned == authed)
+                foreach (var owned in trusted.Domains)
                 {
-                    goto Next;
+                    if (owned == authed)
+                    {
+                        goto Next;
+                    }
                 }
+                trusted.Domains.Add(authed);
+            Next:;
             }
-            trusted.Domains.Add(authed);
-        Next:;
+            w.SetTrusted(trusted);
+
+            w.DoReloadPermissions();
+
+            if (a.Script != "")
+            {
+                w.DoRunScript(a.Script);
+            }
         }
-        w.SetTrusted(trusted);
-
-        w.DoReloadPermissions();
-
-        if (a.Script != "")
+        finally
         {
-            w.DoRunScript(a.Script);
+            w.Lock.Release();
         }
     }
     public void HandleCmdAuthorized(TitanContext context, string id)
@@ -1133,13 +1452,21 @@ public class TitanService : ITitanService
         {
             return;
         }
-        var a = new Authorized();
-        var p = w.GetPermissions();
-        var trusted = w.GetTrusted();
-        a.Permissions.AddRange(p);
-        a.Domains.AddRange(trusted.Domains);
-        w.DoReloadPermissions();
-        MsgHelper.PublishAuthorized(context.EventBus, id, a);
+        w.Lock.Wait();
+        try
+        {
+            var a = new Authorized();
+            var p = w.GetPermissions();
+            var trusted = w.GetTrusted();
+            a.Permissions.AddRange(p);
+            a.Domains.AddRange(trusted.Domains);
+            w.DoReloadPermissions();
+            MsgHelper.PublishAuthorized(context.EventBus, id, a);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
     }
     public void HandleCmdRevokeAuthorized(TitanContext context, string id)
     {
@@ -1149,12 +1476,20 @@ public class TitanService : ITitanService
         {
             return;
         }
-        w.SetPermissions(new List<string>());
-        var trusted = w.GetTrusted();
-        trusted.Domains = new List<string>();
-        w.SetTrusted(trusted);
-        w.DoReloadPermissions();
-        MsgHelper.PublishAuthorized(context.EventBus, id, new Authorized());
+        w.Lock.Wait();
+        try
+        {
+            w.SetPermissions(new List<string>());
+            var trusted = w.GetTrusted();
+            trusted.Domains = new List<string>();
+            w.SetTrusted(trusted);
+            w.DoReloadPermissions();
+            MsgHelper.PublishAuthorized(context.EventBus, id, new Authorized());
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
     }
 
     public void HandleCmdUpdateRequiredParams(TitanContext context, string id, List<RequiredParam> p)
@@ -1185,13 +1520,21 @@ public class TitanService : ITitanService
         {
             foreach (var w in context.Worlds.ToList().Select(kv => kv.Value))
             {
-                var sid = w.GetScriptID();
-
-
-                if (!resultmap.ContainsKey(sid))
+                w.Lock.Wait();
+                try
                 {
-                    resultmap[sid] = true;
-                    result.Add(sid);
+                    var sid = w.GetScriptID();
+
+
+                    if (!resultmap.ContainsKey(sid))
+                    {
+                        resultmap[sid] = true;
+                        result.Add(sid);
+                    }
+                }
+                finally
+                {
+                    w.Lock.Release();
                 }
             }
         }
@@ -1255,17 +1598,25 @@ public class TitanService : ITitanService
         {
             foreach (var w in context.Worlds.Values)
             {
-                if (!w.GetIgnoreBatchCommand())
+                w.Lock.Wait();
+                try
                 {
-                    var scriptid = w.GetScriptID();
-                    foreach (var bcsid in bc.Scripts)
+                    if (!w.GetIgnoreBatchCommand())
                     {
-                        if (bcsid == "" || bcsid == scriptid)
+                        var scriptid = w.GetScriptID();
+                        foreach (var bcsid in bc.Scripts)
                         {
-                            w.DoExecute(bc.Command);
-                            break;
+                            if (bcsid == "" || bcsid == scriptid)
+                            {
+                                w.DoExecute(bc.Command);
+                                break;
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    w.Lock.Release();
                 }
             }
         }
