@@ -1,5 +1,5 @@
 using Hellclient.Core.Bootstrappers;
-using Hellclient.Core.Configs;
+using Hellclient.World.Configs;
 using Hellclient.Core.Cores;
 using Hellclient.Core.WebApp;
 using Microsoft.AspNetCore.Builder;

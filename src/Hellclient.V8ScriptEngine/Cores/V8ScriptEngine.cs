@@ -3,6 +3,7 @@ using Hellclient.World.Types;
 using Hellclient.World.Cores;
 using Timer = Hellclient.World.Types.Timer;
 using Path = System.IO.Path;
+using Hellclient.World.Configs;
 namespace Hellclient.V8ScriptEngine.Cores;
 
 public class V8ScriptEngine : IScriptEngine
@@ -97,6 +98,14 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
     }
     public void NewScript(string ID)
     {
-        Directory.CreateDirectory(Path.Combine(Deployment.INnstance.System.ScriptPath, ID));
+        if( Directory.Exists(Path.Combine(Deployment.Instance.ScriptsPath, ID)))
+        {
+            throw new Exception($"Script {ID} already exists");
+        }
+        Directory.CreateDirectory(Path.Combine(Deployment.Instance.ScriptsPath, ID));
+        var data=File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "v8.toml"));
+        File.WriteAllText(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script.toml"), data);
+        var scriptdata=File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "v8.js"));
+        File.WriteAllText(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script","script.js"), scriptdata);
     }
 }

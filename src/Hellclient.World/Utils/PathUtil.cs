@@ -1,4 +1,4 @@
-namespace Hellclient.Core.Utils;
+namespace Hellclient.World.Utils;
 
 public class PathUtil
 {
