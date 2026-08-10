@@ -9,7 +9,7 @@ namespace Hellclient.Core.Cores;
 public class AppCore
 {
     public static AppCore Instance { get; set; } = BuildDefault();
-    public required Client Client { get; set; }
+    public required Prophet Prophet { get; set; }
     public static AppCore BuildDefault()
     {
         var logger = new NopLogger();
@@ -25,31 +25,15 @@ public class AppCore
         {
             Deployment = Deployment.Instance,
             TitanContext = tctx,
-        };
-        var ctx = new ClientContext()
-        {
-            Titan = tctx,
-            Prophet = pctx
-        };
-        
-        var titan = new Titan()
-        {
-            Context = ctx.Titan,
-        };
+        };        
         var prophet = new Prophet()
         {
-            Context = ctx.Prophet,
+            Context = pctx,
         };
         prophet.Init();
-        var client = new Client()
-        {
-            Context = ctx,
-            Titan = titan,
-            Prophet = prophet
-        };
         var app = new AppCore()
         {
-            Client = client
+            Prophet = prophet
         };
         return app;
     }

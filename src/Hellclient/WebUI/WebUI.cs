@@ -10,7 +10,7 @@ namespace Hellclient.WebUI;
 public class WebUI
 {
     public static WebUI Instance { get; set; } = new WebUI();
-    public Client Client { get; set; } = AppCore.Instance.Client;
+    public Prophet Prophet { get; set; } = AppCore.Instance.Prophet;
     public void Init()
     {
         WebApp.Instance.OnInit += (sender, app) =>
@@ -41,7 +41,7 @@ public class WebUI
             using var webSocket = await ctx.WebSockets.AcceptWebSocketAsync();
             var conn = new WebsocketConnection(webSocket);
             OnWS?.Invoke(this, conn);
-            AppCore.Instance.Client.Prophet.Enter(conn);
+            AppCore.Instance.Prophet.Enter(conn);
             await conn.Run();
         }
         else
