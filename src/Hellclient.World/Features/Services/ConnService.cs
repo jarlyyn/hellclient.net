@@ -1,3 +1,5 @@
+using System.Text;
+using Hellclient.World.Configs;
 using Hellclient.World.Infras.Components;
 using Hellclient.World.States;
 using Hellclient.World.Types;
@@ -78,6 +80,9 @@ public class ConnService : IConnService
             case TelnetCommand.CmdDo:
                 switch (cmd.Data[0])
                 {
+                    case TelnetCommand.OptionTerminalType:
+                        await context.Connection.SendTelnetCommand(TelnetCommand.Will(TelnetCommand.OptionTerminalType));
+                        break;
                     default:
                         break;
                 }
@@ -95,6 +100,9 @@ public class ConnService : IConnService
                     case TelnetCommand.OptionEcho:
                         await context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionEcho));
                         break;
+                    case TelnetCommand.OptionGMCP:
+                        await context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionGMCP));
+                        break;
                     default:
                         break;
                 }
@@ -106,8 +114,24 @@ public class ConnService : IConnService
                         break;
                 }
                 break;
-
             case TelnetCommand.CmdGoAhead:
+                break;
+            case TelnetCommand.CmdSubnegotiation:
+                if (cmd.Data.Length > 0)
+                {
+                    switch (cmd.Data[0])
+                    {
+                        case 24:
+                            if (cmd.Data.Length > 1 && cmd.Data[1] == 1 && context.TType.Count > 0)
+                            {
+                                await context.Connection.Send(TelnetCommand.Subnegotiation(24, new byte[] { 0 }.Concat(Encoding.UTF8.GetBytes(context.TType[0])).ToArray()));
+                                context.TType.RemoveAt(0);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 break;
         }
         context.EventBus.OnCommand?.Invoke(this, cmd);
@@ -116,6 +140,19 @@ public class ConnService : IConnService
     public async Task Connect(WorldContext context)
     {
         context.Convert.Charset = context.Config.Data.Charset;
+        if (AppConfig.System.TerminalType != "")
+        {
+            context.TType = [
+                AppConfig.System.TerminalType,
+                "VT100",
+                "MTTS 7",
+                "MTTS 7"
+            ];
+        }
+        else
+        {
+            context.TType = [];
+        }
         await context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0);
     }
     public void Stop(WorldContext context)

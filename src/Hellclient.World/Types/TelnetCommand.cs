@@ -20,19 +20,28 @@ public class TelnetCommand(byte command, byte[] data)
     public const byte CmdEndSubnegotiation = 240;
     public const byte CmdGMCP = 201;
     public const byte OptionEcho = 1;
+    public const byte OptionTerminalType = 24;
+    public const byte OptionGMCP = 201;
     public static TelnetCommand Do(byte option) => new TelnetCommand(CmdDo, [option]);
     public static TelnetCommand Dont(byte option) => new TelnetCommand(CmdDont, [option]);
     public static TelnetCommand Will(byte option) => new TelnetCommand(CmdWill, [option]);
     public static TelnetCommand Wont(byte option) => new TelnetCommand(CmdWont, [option]);
     public static byte[] Subnegotiation(byte option, byte[] data)
     {
-        var result = new List<byte> { CmdSubnegotiation, option };
-        result.AddRange(data);
-        result.Add(CmdEndSubnegotiation);
+        var result = new List<byte> { CmdIAC, CmdSubnegotiation, option };
+        foreach (var b in data)
+        {
+            if (b == CmdIAC)
+            {
+                result.Add(CmdIAC);
+            }
+            result.Add(b);
+        }
+        result.AddRange([CmdIAC, CmdEndSubnegotiation]);
         return result.ToArray();
     }
-    public static byte[] GMCP(byte[] data)=> Subnegotiation(CmdGMCP, data);
-   
+    public static byte[] GMCP(byte[] data) => Subnegotiation(CmdGMCP, data);
+
     public byte Command { get; init; } = command;
     public byte[] Data { get; init; } = data;
     public byte[] ToByteArray()

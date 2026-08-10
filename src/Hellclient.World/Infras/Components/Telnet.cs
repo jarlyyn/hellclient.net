@@ -93,7 +93,7 @@ public class Telnet : IMudConnection
                 }
                 else if (data == TelnetCommand.CmdEndSubnegotiation)
                 {
-                    OnCommandReceived?.Invoke(this, new TelnetCommand(TelnetCommand.CmdEndSubnegotiation, [.. _buffer]));
+                    OnCommandReceived?.Invoke(this, new TelnetCommand(TelnetCommand.CmdSubnegotiation, [.. _buffer]));
                     _buffer.Clear();
                     status = StatusNormal;
                 }

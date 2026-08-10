@@ -4,7 +4,7 @@ namespace Hellclient.World.Utils;
 
 public class CharsetUtil
 {
-    public static string UTF8 { get; }= "utf-8";
+    public static string UTF8 { get; } = "utf-8";
     public static string GBK { get; } = "gbk";
     public static void InstallEncodingProvider()
     {
@@ -22,11 +22,13 @@ public class CharsetUtil
             case "GBK":
             case "cp936":
             case "CP936":
+            case "GB18030":
+            case "gb18030":
             case "windows-936":
             case "WINDOWS-936":
-                return Encoding.GetEncoding(charset).GetBytes(data);
-            case "utf-8":
-            case "UTF-8":
+                return Encoding.GetEncoding("GB18030").GetBytes(data);
+            case "utf8":
+            case "UTF8":
                 return Encoding.UTF8.GetBytes(data);
             default:
                 throw new NotSupportedException($"Charset {charset} is not supported.");
@@ -40,11 +42,13 @@ public class CharsetUtil
             case "GBK":
             case "cp936":
             case "CP936":
+            case "GB18030":
+            case "gb18030":
             case "windows-936":
             case "WINDOWS-936":
-                return Encoding.GetEncoding(charset).GetString(data);
-            case "utf-8":
-            case "UTF-8":
+                return Encoding.GetEncoding("GB18030").GetString(data);
+            case "utf8":
+            case "UTF8":
                 return Encoding.UTF8.GetString(data);
             default:
                 throw new NotSupportedException($"Charset {charset} is not supported.");

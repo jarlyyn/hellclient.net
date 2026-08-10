@@ -26,4 +26,5 @@ public class WorldContext
 
     public Script Script { get; set; } = new Script();
     public required WorldPaths Paths { get; init; }
+    public List<string> TType=[];
 }
