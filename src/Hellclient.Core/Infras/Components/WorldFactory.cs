@@ -9,11 +9,16 @@ public interface IWorldFactory
 {
     IWorld CreateWorld(string id, WorldPaths paths);
 }
-public class WorldFactory:IWorldFactory
+public class WorldFactory : IWorldFactory
 {
-    public IWorldService Service { get; set; }=new WorldService();
-    public IWorld CreateWorld(string id,WorldPaths paths)
+    public WorldFactory(ILogger logger)
     {
-        return new Hellclient.World.Cores.World(id, Service,paths);
+        this.logger = logger;
+    }
+    public ILogger logger { get; init; }
+    public IWorldService Service { get; set; } = new WorldService();
+    public IWorld CreateWorld(string id, WorldPaths paths)
+    {
+        return new Hellclient.World.Cores.World(id, Service, paths, logger);
     }
 }

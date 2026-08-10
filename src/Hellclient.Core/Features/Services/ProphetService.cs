@@ -80,6 +80,7 @@ public interface IProphetService
 }
 public class ProphetService : IProphetService
 {
+    
     public ITitanService TitanService { get; set; } = new TitanService();
     public void Publish(ProphetContext ctx, Types.Message message)
     {

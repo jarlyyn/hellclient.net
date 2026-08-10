@@ -1,5 +1,8 @@
 using Hellclient.Core.Configs;
+using Hellclient.Core.Features.Services;
 using Hellclient.Core.Features.States;
+using Hellclient.Core.Infras.Components;
+using Hellclient.World.Infras.Adapters;
 
 namespace Hellclient.Core.Cores;
 
@@ -9,11 +12,14 @@ public class AppCore
     public required Client Client { get; set; }
     public static AppCore BuildDefault()
     {
+        var logger = new NopLogger();
         var tctx = new TitanContext()
         {
             Deployment = Deployment.Instance,
             ScriptPath = Deployment.Instance.ScriptsPath,
-            WorldsPath= Deployment.Instance.WorldsPath,
+            WorldsPath = Deployment.Instance.WorldsPath,
+            Logger = logger,
+            WorldFactory=new WorldFactory(logger),
         };
         var pctx = new ProphetContext()
         {
@@ -25,6 +31,7 @@ public class AppCore
             Titan = tctx,
             Prophet = pctx
         };
+        
         var titan = new Titan()
         {
             Context = ctx.Titan,

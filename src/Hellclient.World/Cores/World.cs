@@ -9,7 +9,7 @@ namespace Hellclient.World.Cores;
 
 public partial class World : IWorld
 {
-    public World(string id, IWorldService service, WorldPaths paths)
+    public World(string id, IWorldService service, WorldPaths paths, ILogger logger)
     {
         Context = new WorldContext()
         {
@@ -20,7 +20,8 @@ public partial class World : IWorld
                 Lines = new Ring<Line>(AppConfig.System.MaxLines),
                 History = new Ring<string>(AppConfig.System.MaxHistory),
                 Recent = new Ring<Line>(AppConfig.System.MaxRecent),
-            }
+            },
+            logger = logger,
         };
         Service = service;
         Service.InstallTo(Context);
