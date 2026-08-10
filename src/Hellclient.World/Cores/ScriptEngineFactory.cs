@@ -6,6 +6,7 @@ using Hellclient.World.Infras.Adapters;
 public interface IScriptEngineFactory
 {
     public IScriptEngine CreateScriptEngine(IWorld world);
+    public void NewScript(string ID);
 }
 
 public class NopScriptEngineFactory : IScriptEngineFactory
@@ -13,6 +14,9 @@ public class NopScriptEngineFactory : IScriptEngineFactory
     public IScriptEngine CreateScriptEngine(IWorld world)
     {
         return new NopScriptEngine();
+    }
+    public void NewScript(string ID)
+    {
     }
 }
 
@@ -34,5 +38,9 @@ public static class ScriptEngineFactoryManager
         {
             return DefaultFactory.CreateScriptEngine(world);
         }
+    }
+    public static bool HasScriptEngine(string name)
+    {
+        return _factories.ContainsKey(name);
     }
 }

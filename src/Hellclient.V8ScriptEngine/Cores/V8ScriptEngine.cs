@@ -2,7 +2,7 @@ using Hellclient.V8ScriptEngine.Features.States;
 using Hellclient.World.Types;
 using Hellclient.World.Cores;
 using Timer = Hellclient.World.Types.Timer;
-
+using Path = System.IO.Path;
 namespace Hellclient.V8ScriptEngine.Cores;
 
 public class V8ScriptEngine : IScriptEngine
@@ -94,5 +94,9 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
     public IScriptEngine CreateScriptEngine(IWorld world)
     {
         return new V8ScriptEngine(world);
+    }
+    public void NewScript(string ID)
+    {
+        Directory.CreateDirectory(Path.Combine(Deployment.INnstance.System.ScriptPath, ID));
     }
 }
