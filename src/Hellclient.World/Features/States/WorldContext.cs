@@ -9,6 +9,10 @@ namespace Hellclient.World.States;
 
 public class WorldContext
 {
+    public void Dispose()
+    {
+
+    }
     public SemaphoreSlim Lock { get; set; } = new SemaphoreSlim(1, 1);
     public string ID { get; set; } = string.Empty;
     public WorldEventBus EventBus { get; set; } = new WorldEventBus();
@@ -26,6 +30,6 @@ public class WorldContext
 
     public Script Script { get; set; } = new Script();
     public required WorldPaths Paths { get; init; }
-    public List<string> TType=[];
+    public List<string> TType = [];
     public required ILogger logger { get; init; }
 }
