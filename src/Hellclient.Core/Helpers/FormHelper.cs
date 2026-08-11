@@ -610,4 +610,31 @@ public class FormHelper
         world.SetAutoSave(form.AutoSave);
         world.SetIgnoreBatchCommand(form.IgnoreBatchCommand);
     }
+    public static List<FieldError> ValidateUpdateScriptForm(UpdateScriptForm form)
+    {
+        var result = new List<FieldError>();
+        return result;
+    }
+    public static void UpdateScriptFromForm(ScriptData script, UpdateScriptForm form)
+    {
+        script.Type = form.Type;
+        script.Intro = form.Intro;
+        script.Desc = form.Desc;
+        script.OnOpen = form.OnOpen;
+        script.OnClose = form.OnClose;
+        script.OnConnect = form.OnConnect;
+        script.OnDisconnect = form.OnDisconnect;
+        script.OnBroadcast = form.OnBroadcast;
+        script.OnResponse = form.OnResponse;
+        script.OnHUDClick = form.OnHUDClick;
+        script.OnAssist = form.OnAssist;
+        script.OnBuffer = form.OnBuffer;
+        script.OnKeyUp = form.OnKeyUp;
+        script.OnBufferMin = form.OnBufferMin;
+        script.OnBufferMax = form.OnBufferMax;
+        script.OnSubneg = form.OnSubneg;
+        script.OnFocus = form.OnFocus;
+        script.OnLoseFocus = form.OnLoseFocus;
+        script.Channel = form.Channel;
+    }
 }

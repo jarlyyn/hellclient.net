@@ -650,7 +650,39 @@ public class ProphetService : IProphetService
     }
     public void OnCmdUpdateScriptSettings(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.UpdateScript(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<UpdateScriptForm>(cmd.Data(), JsonContext.Instance.UpdateScriptForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateUpdateScriptForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var w = TitanService.World(ctx.TitanContext, form.ID);
+        if (w is null)
+        {
+            return;
+        }
+        w.Lock.Wait();
+        try
+        {
+            var data = w.GetScriptData();
+            if (data is null)
+            {
+                return;
+            }
+            FormHelper.UpdateScriptFromForm(data, form);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
+        TitanService.OnUpdateScriptSuccess(ctx.TitanContext, form.ID);
+        TitanService.HandleCmdScriptSettings(ctx.TitanContext, form.ID);
+        TitanService.ExecClients(ctx.TitanContext);
     }
     public void OnCmdDeleteParam(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
