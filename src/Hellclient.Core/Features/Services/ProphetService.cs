@@ -619,7 +619,34 @@ public class ProphetService : IProphetService
 
     public void OnCmdUpdateWorldSettings(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.UpdateGame(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<UpdateGameForm>(cmd.Data(), JsonContext.Instance.UpdateGameForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateUpdateGameForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var w = TitanService.World(ctx.TitanContext, form.ID);
+        if (w is null)
+        {
+            return;
+        }
+        w.Lock.Wait();
+        try
+        {
+            FormHelper.UpdateGameFromForm(w, form);
+        }
+        finally
+        {
+            w.Lock.Release();
+        }
+        TitanService.OnUpdateSuccess(ctx.TitanContext, form.ID);
+        TitanService.HandleCmdWorldSettings(ctx.TitanContext, form.ID);
+        TitanService.ExecClients(ctx.TitanContext);
     }
     public void OnCmdUpdateScriptSettings(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {

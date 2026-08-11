@@ -97,6 +97,7 @@ public interface ITitanService
     public void OnUpdateTimerSuccess(TitanContext context, string world, string id);
     public int DoUpdateTrigger(TitanContext context, string id, Trigger trigger);
     public void OnUpdateTriggerSuccess(TitanContext context, string world, string id);
+    public void OnUpdateSuccess(TitanContext context, string id);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService

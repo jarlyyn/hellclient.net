@@ -284,7 +284,7 @@ public class FormHelper
     }
     public static Trigger CreateTriggerFromForm(CreateTriggerForm form)
     {
-        var result =Trigger.Create();
+        var result = Trigger.Create();
         result.Name = form.Name;
         result.Enabled = form.Enabled;
         result.Match = form.Match;
@@ -563,4 +563,51 @@ public class FormHelper
             Msg = "名称重复",
         }
     };
+    public static List<FieldError> ValidateUpdateGameForm(UpdateGameForm form)
+    {
+        var result = new List<FieldError>();
+        if (form.Host.Trim() == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Host",
+                Label = "Host",
+                Msg = "网址不能为空",
+            });
+        }
+        if (form.Port.Trim() == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Port",
+                Label = "Port",
+                Msg = "端口不能为空",
+            });
+        }
+        if (form.Charset.Trim() == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Charset",
+                Label = "Charset",
+                Msg = "字符编码不能为空",
+            });
+        }
+        return result;
+    }
+    public static void UpdateGameFromForm(IWorld world, UpdateGameForm form)
+    {
+        world.SetName(form.Name);
+        world.SetHost(form.Host);
+        world.SetPort(form.Port);
+        world.SetCharset(form.Charset);
+        world.SetScriptPrefix(form.ScriptPrefix);
+        world.SetCommandStackCharacter(form.CommandStackCharacter);
+        world.SetProxy(form.Proxy);
+        world.SetShowBroadcast(form.ShowBroadcast);
+        world.SetShowSubneg(form.ShowSubneg);
+        world.SetModEnabled(form.ModEnabled);
+        world.SetAutoSave(form.AutoSave);
+        world.SetIgnoreBatchCommand(form.IgnoreBatchCommand);
+    }
 }
