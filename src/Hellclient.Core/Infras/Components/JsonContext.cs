@@ -46,6 +46,11 @@ namespace Hellclient.Core.Infras.Components;
 [JsonSerializable(typeof(BatchCommandScripts))]
 [JsonSerializable(typeof(CreateAliasForm))]
 [JsonSerializable(typeof(CreateGameForm))]
+[JsonSerializable(typeof(CreateScriptForm))]
+[JsonSerializable(typeof(CreateTimerForm))]
+[JsonSerializable(typeof(CreateTriggerForm))]
+[JsonSerializable(typeof(RequiredParamsForm))]
+
 public partial class JsonContext : JsonSerializerContext
 {
     public static JsonSerializerOptions JsonOptions = new()
@@ -129,6 +134,14 @@ public partial class JsonContext : JsonSerializerContext
                 return JsonSerializer.SerializeToUtf8Bytes(caf, JsonContext.Instance.CreateAliasForm);
             case CreateGameForm cgf:
                 return JsonSerializer.SerializeToUtf8Bytes(cgf, JsonContext.Instance.CreateGameForm);
+            case CreateScriptForm csf:
+                return JsonSerializer.SerializeToUtf8Bytes(csf, JsonContext.Instance.CreateScriptForm);
+            case CreateTimerForm ctf:
+                return JsonSerializer.SerializeToUtf8Bytes(ctf, JsonContext.Instance.CreateTimerForm);
+            case RequiredParamsForm rpf:
+                return JsonSerializer.SerializeToUtf8Bytes(rpf, JsonContext.Instance.RequiredParamsForm);
+            case CreateTriggerForm ctf:
+                return JsonSerializer.SerializeToUtf8Bytes(ctf, JsonContext.Instance.CreateTriggerForm);
             case null:
                 return Encoding.UTF8.GetBytes("null");
             default:

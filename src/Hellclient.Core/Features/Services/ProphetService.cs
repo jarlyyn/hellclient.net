@@ -4,7 +4,6 @@ using Hellclient.Core.Features.States;
 using Hellclient.Core.Types;
 using Hellclient.Core.Infras.Components;
 using Hellclient.World.Types;
-using System.Reflection.Metadata.Ecma335;
 using Hellclient.Core.Types.Forms;
 using Hellclient.Core.Helpers;
 
@@ -260,7 +259,20 @@ public class ProphetService : IProphetService
     }
     public void OnCmdCreateScript(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.CreateScript(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<CreateScriptForm>(cmd.Data(), JsonContext.Instance.CreateScriptForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateCreateScriptForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        TitanService.NewScript(ctx.TitanContext, form.ID, form.Type);
+        TitanService.OnCreateScriptSuccess(ctx.TitanContext, form.ID);
+        TitanService.HandleCmdListScriptInfo(ctx.TitanContext);
     }
     public void OnCmdListScriptinfo(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -295,7 +307,31 @@ public class ProphetService : IProphetService
     }
     public void OnCmdCreateTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        //Todo
+        var form = JsonSerializer.Deserialize<CreateTimerForm>(cmd.Data(), JsonContext.Instance.CreateTimerForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateCreateTimerForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var timer = FormHelper.CreateTimerFromForm(form);
+        var ok = TitanService.DoCreateTimer(ctx.TitanContext, form.World, timer);
+        if (!ok)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, FormHelper.CreateTimerFailErrors);
+            return;
+        }
+        TitanService.OnCreateTimerSuccess(ctx.TitanContext, form.World, form.Name);
+        TitanService.HandleCmdTimers(ctx.TitanContext, form.World, form.ByUser);
+        if (form.ByUser)
+        {
+            TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
+        }
+ 
     }
     public void OnCmdDeleteTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -404,8 +440,30 @@ public class ProphetService : IProphetService
     }
     public void OnCmdCreateTrigger(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.CreateTrigger(p.Titan, cmd.Data())
-
+        var form = JsonSerializer.Deserialize<CreateTriggerForm>(cmd.Data(), JsonContext.Instance.CreateTriggerForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateCreateTriggerForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var trigger = FormHelper.CreateTriggerFromForm(form);
+        var ok = TitanService.DoCreateTrigger(ctx.TitanContext, form.World, trigger);
+        if (!ok)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, FormHelper.CreateTriggerFailErrors);
+            return;
+        }
+        TitanService.OnCreateTriggerSuccess(ctx.TitanContext, form.World, form.ID);
+        TitanService.HandleCmdTriggers(ctx.TitanContext, form.World, form.ByUser);
+        if (form.ByUser)
+        {
+            TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
+        }
     }
     public void OnCmdDeleteTrigger(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -519,13 +577,8 @@ public class ProphetService : IProphetService
     }
     public void OnCmdUpdateRequiredParams(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // var msg = forms.RequiredParamsForm{ }
-        // if json.Unmarshal(cmd.Data(), &msg) != nil {
-
-
-
-        // }
-        // p.Titan.HandleCmdUpdateRequiredParams(msg.Current, msg.RequiredParams)
+        var msg = JsonSerializer.Deserialize<RequiredParamsForm>(cmd.Data(), JsonContext.Instance.RequiredParamsForm)!;
+        TitanService.HandleCmdUpdateRequiredParams(ctx.TitanContext, msg.Current, msg.RequiredParams);
     }
     public void OnCmdDefaultServer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {

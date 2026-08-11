@@ -2,7 +2,6 @@ using System.Text;
 using System.Text.Json;
 using Hellclient.Core.Features.States;
 using Hellclient.Core.Helpers;
-using Hellclient.Core.Infras.Components;
 using Hellclient.Core.Types;
 using Hellclient.World.Configs;
 using Hellclient.World.Cores;
@@ -85,6 +84,13 @@ public interface ITitanService
     public bool DoCreateAlias(TitanContext context, string id, Alias alias);
     public void OnCreateAliasSuccess(TitanContext context, string world, string id);
     public void OnCreateSuccess(TitanContext context, string id);
+    public void NewScript(TitanContext context, string id, string scripttype);
+    public void OnCreateScriptSuccess(TitanContext context, string id);
+    public bool DoCreateTimer(TitanContext context, string id, Timer timer);
+    public void OnCreateTimerSuccess(TitanContext context, string world, string id);
+    public bool DoCreateTrigger(TitanContext context, string id, Trigger trigger);
+    public void OnCreateTriggerSuccess(TitanContext context, string world, string id);
+    public void HandleCmdUpdateRequiredParams(TitanContext context, string id, List<RequiredParam> p);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService
@@ -682,10 +688,18 @@ public class TitanService : ITitanService
     }
     public bool DoCreateAlias(TitanContext context, string id, Alias alias)
     {
-        var world = World(context, id);
-        if (world != null)
+        var w = World(context, id);
+        if (w != null)
         {
-            return world.AddAlias(alias, false);
+            w.Lock.Wait();
+            try
+            {
+                return w.AddAlias(alias, false);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return false;
     }
@@ -802,7 +816,15 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            return w.AddTrigger(trigger, false);
+            w.Lock.Wait();
+            try
+            {
+                return w.AddTrigger(trigger, false);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return false;
     }
@@ -919,7 +941,15 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            return w.AddTimer(timer, false);
+            w.Lock.Wait();
+            try
+            {
+                return w.AddTimer(timer, false);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return false;
     }
@@ -1544,36 +1574,7 @@ public class TitanService : ITitanService
     }
     public void NewScript(TitanContext context, string id, string scripttype)
     {
-        // 	t.Locker.Lock()
-        // 	defer t.Locker.Unlock()
-        // 	ok, err := t.IsScriptExist(id)
-        // 	if err != nil {
-        // 		return err
-        // 	}
-        // 	if ok {
-        // 		return errors.New("script exists")
-        // 	}
-        // 	err = os.MkdirAll(filepath.Join(t.Scriptpath, id, "script"), util.DefaultFolderMode)
-        // 	if err != nil {
-        // 		return err
-        // 	}
-        // 	data, err := os.ReadFile(world.ScriptTomlTemplates[scripttype])
-        // 	if err != nil {
-        // 		return err
-        // 	}
-        // 	err = os.WriteFile(filepath.Join(t.Scriptpath, id, "script.toml"), data, util.DefaultFileMode)
-        // 	if err != nil {
-        // 		return err
-        // 	}
-        // 	data, err = os.ReadFile(world.ScriptTemplates[scripttype])
-        // 	if err != nil {
-        // 		return err
-        // 	}
-        // 	err = os.WriteFile(filepath.Join(t.Scriptpath, id, "script", world.ScriptTargets[scripttype]), data, util.DefaultFileMode)
-        // 	if err != nil {
-        // 		return err
-        // 	}
-        // 	return nil
+        ScriptEngineFactoryManager.NewScript(scripttype, id);
     }
     public void OnResponse(TitanContext context, World.Types.Message msg)
     {

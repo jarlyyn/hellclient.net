@@ -43,4 +43,15 @@ public static class ScriptEngineFactoryManager
     {
         return _factories.ContainsKey(name);
     }
+    public static void NewScript(string name, string ID)
+    {
+        if (_factories.ContainsKey(name))
+        {
+            _factories[name].NewScript(ID);
+        }
+        else
+        {
+            DefaultFactory.NewScript(ID);
+        }
+    }
 }
