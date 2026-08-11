@@ -1,7 +1,5 @@
-using Hellclient.Core.Configs;
+using Hellclient.World.Configs;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 
 namespace Hellclient.Core.WebApp;

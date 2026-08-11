@@ -1,4 +1,4 @@
-using Hellclient.Core.Configs;
+using Hellclient.World.Configs;
 using Hellclient.Core.Infras.Components;
 
 namespace Hellclient.Core.Features.States;

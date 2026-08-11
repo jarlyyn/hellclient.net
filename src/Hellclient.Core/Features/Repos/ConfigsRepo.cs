@@ -1,4 +1,4 @@
-using Hellclient.Core.Configs;
+using Hellclient.World.Configs;
 using Hellclient.World.Infras.Components;
 using Hellclient.World.Types;
 using Tomlyn;

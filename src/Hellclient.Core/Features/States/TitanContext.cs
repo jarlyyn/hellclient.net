@@ -1,4 +1,4 @@
-using Hellclient.Core.Configs;
+using Hellclient.World.Configs;
 using Hellclient.Core.Infras.Components;
 using Hellclient.Core.Types;
 using Hellclient.World.Cores;
