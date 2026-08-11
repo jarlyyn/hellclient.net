@@ -30,7 +30,7 @@ public class Timer
     public string Variable { get; set; } = string.Empty;
     public bool OmitFromLog { get; set; } = false;
     public bool OmitFromOutput { get; set; } = false;
-    private bool byuser = false;
+    public bool byuser = false;
 
     public bool ByUser()
     {
@@ -73,6 +73,13 @@ public class Timer
     public int CompareTo(Timer other)
     {
         return ID.CompareTo(other.ID);
+    }
+    public static Timer Create()
+    {
+        return new Timer()
+        {
+            ID = SimpleID.Instance.GenerateID(),
+        };
     }
 
 }

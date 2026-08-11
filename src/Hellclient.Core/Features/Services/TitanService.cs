@@ -91,6 +91,12 @@ public interface ITitanService
     public bool DoCreateTrigger(TitanContext context, string id, Trigger trigger);
     public void OnCreateTriggerSuccess(TitanContext context, string world, string id);
     public void HandleCmdUpdateRequiredParams(TitanContext context, string id, List<RequiredParam> p);
+    public int DoUpdateAlias(TitanContext context, string id, Alias alias);
+    public void OnUpdateAliasSuccess(TitanContext context, string world, string id);
+    public int DoUpdateTimer(TitanContext context, string id, Timer timer);
+    public void OnUpdateTimerSuccess(TitanContext context, string world, string id);
+    public int DoUpdateTrigger(TitanContext context, string id, Trigger trigger);
+    public void OnUpdateTriggerSuccess(TitanContext context, string world, string id);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService
@@ -705,10 +711,18 @@ public class TitanService : ITitanService
     }
     public int DoUpdateAlias(TitanContext context, string id, Alias alias)
     {
-        var world = World(context, id);
-        if (world != null)
+        var w = World(context, id);
+        if (w != null)
         {
-            return world.DoUpdateAlias(alias);
+            w.Lock.Wait();
+            try
+            {
+                return w.DoUpdateAlias(alias);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return MushString.UpdateFailNotFound;
     }
@@ -722,13 +736,13 @@ public class TitanService : ITitanService
     }
     public void HandleCmdAliases(TitanContext context, string id, bool byuser)
     {
-        var world = World(context, id);
-        if (world != null)
+        var w = World(context, id);
+        if (w != null)
         {
-            world.Lock.Wait();
+            w.Lock.Wait();
             try
             {
-                var aliases = world.GetAliasesByType(byuser);
+                var aliases = w.GetAliasesByType(byuser);
                 aliases.Sort();
                 if (byuser)
                 {
@@ -741,7 +755,7 @@ public class TitanService : ITitanService
             }
             finally
             {
-                world.Lock.Release();
+                w.Lock.Release();
             }
         }
     }
@@ -833,7 +847,15 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            return w.DoUpdateTrigger(trigger);
+            w.Lock.Wait();
+            try
+            {
+                return w.DoUpdateTrigger(trigger);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return MushString.UpdateFailNotFound;
     }
@@ -958,7 +980,15 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            return w.DoUpdateTimer(timer);
+            w.Lock.Wait();
+            try
+            {
+                return w.DoUpdateTimer(timer);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return MushString.UpdateFailNotFound;
     }

@@ -1,3 +1,5 @@
+using Hellclient.World.Infras.Adapters;
+
 namespace Hellclient.World.Types;
 
 public class Trigger
@@ -42,7 +44,7 @@ public class Trigger
     public bool Inverse { get; set; } = false;
     public bool Italic { get; set; } = false;
     public string Variable { get; set; } = string.Empty;
-    private bool byuser = false;
+    public bool byuser = false;
     public bool ByUser()
     {
         return byuser;
@@ -63,5 +65,11 @@ public class Trigger
         }
         return ID.CompareTo(other.ID);
     }
-
+    public static Trigger Create()
+    {
+        return new Trigger()
+        {
+            ID=SimpleID.Instance.GenerateID(),
+        };
+    }
 }

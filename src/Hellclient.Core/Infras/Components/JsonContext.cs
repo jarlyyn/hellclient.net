@@ -49,6 +49,9 @@ namespace Hellclient.Core.Infras.Components;
 [JsonSerializable(typeof(CreateScriptForm))]
 [JsonSerializable(typeof(CreateTimerForm))]
 [JsonSerializable(typeof(CreateTriggerForm))]
+[JsonSerializable(typeof(UpdateAliasForm))]
+[JsonSerializable(typeof(UpdateTimerForm))]
+[JsonSerializable(typeof(UpdateTriggerForm))]
 [JsonSerializable(typeof(RequiredParamsForm))]
 
 public partial class JsonContext : JsonSerializerContext
@@ -56,6 +59,7 @@ public partial class JsonContext : JsonSerializerContext
     public static JsonSerializerOptions JsonOptions = new()
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
     };
     public static JsonContext Instance = new JsonContext(JsonOptions);
     public static byte[] Serialize(object? Data)
@@ -142,6 +146,12 @@ public partial class JsonContext : JsonSerializerContext
                 return JsonSerializer.SerializeToUtf8Bytes(rpf, JsonContext.Instance.RequiredParamsForm);
             case CreateTriggerForm ctf:
                 return JsonSerializer.SerializeToUtf8Bytes(ctf, JsonContext.Instance.CreateTriggerForm);
+            case UpdateAliasForm uaf:
+                return JsonSerializer.SerializeToUtf8Bytes(uaf, JsonContext.Instance.UpdateAliasForm);
+            case UpdateTimerForm utf:
+                return JsonSerializer.SerializeToUtf8Bytes(utf, JsonContext.Instance.UpdateTimerForm);
+            case UpdateTriggerForm utf:
+                return JsonSerializer.SerializeToUtf8Bytes(utf, JsonContext.Instance.UpdateTriggerForm);
             case null:
                 return Encoding.UTF8.GetBytes("null");
             default:

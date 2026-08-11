@@ -1,3 +1,5 @@
+using Hellclient.World.Infras.Adapters;
+
 namespace Hellclient.World.Types;
 
 public class Alias
@@ -54,6 +56,13 @@ public class Alias
             return Sequence.CompareTo(other.Sequence);
         }
         return ID.CompareTo(other.ID);
+    }
+    public static Alias Create()
+    {
+        return new Alias()
+        {
+            ID = SimpleID.Instance.GenerateID(),
+        };
     }
 
 }

@@ -34,29 +34,26 @@ public class FormHelper
     }
     public static Alias CreateAliasFromForm(CreateAliasForm form)
     {
-        var result = new Alias()
-        {
-            ID = form.ID,
-            Name = form.Name,
-            Enabled = form.Enabled,
-            Match = form.Match,
-            Send = form.Send,
-            Script = form.Script,
-            SendTo = form.SendTo,
-            Sequence = form.Sequence,
-            ExpandVariables = form.ExpandVariables,
-            Temporary = form.Temporary,
-            OneShot = form.OneShot,
-            Regexp = form.Regexp,
-            Group = form.Group,
-            Variable = form.Variable,
-            IgnoreCase = form.IgnoreCase,
-            KeepEvaluating = form.KeepEvaluating,
-            Menu = form.Menu,
-            OmitFromLog = form.OmitFromLog,
-            ReverseSpeedwalk = form.ReverseSpeedwalk,
-            OmitFromOutput = form.OmitFromOutput
-        };
+        var result = Alias.Create();
+        result.Name = form.Name;
+        result.Enabled = form.Enabled;
+        result.Match = form.Match;
+        result.Send = form.Send;
+        result.Script = form.Script;
+        result.SendTo = form.SendTo;
+        result.Sequence = form.Sequence;
+        result.ExpandVariables = form.ExpandVariables;
+        result.Temporary = form.Temporary;
+        result.OneShot = form.OneShot;
+        result.Regexp = form.Regexp;
+        result.Group = form.Group;
+        result.Variable = form.Variable;
+        result.IgnoreCase = form.IgnoreCase;
+        result.KeepEvaluating = form.KeepEvaluating;
+        result.Menu = form.Menu;
+        result.OmitFromLog = form.OmitFromLog;
+        result.ReverseSpeedwalk = form.ReverseSpeedwalk;
+        result.OmitFromOutput = form.OmitFromOutput;
         result.SetByUser(form.ByUser);
         return result;
     }
@@ -224,25 +221,23 @@ public class FormHelper
     }
     public static Timer CreateTimerFromForm(CreateTimerForm form)
     {
-        var result = new Timer()
-        {
-            ID = form.Name,
-            Enabled = form.Enabled,
-            Hour = form.Hour,
-            Minute = form.Minute,
-            Second = form.Second,
-            SendTo = form.SendTo,
-            Send = form.Send,
-            Script = form.Script,
-            Group = form.Group,
-            Variable = form.Variable,
-            AtTime = form.AtTime,
-            ActionWhenDisconnectd = form.ActionWhenDisconnectd,
-            OneShot = form.OneShot,
-            Temporary = form.Temporary,
-            OmitFromOutput = form.OmitFromOutput,
-            OmitFromLog = form.OmitFromLog
-        };
+        var result = Timer.Create();
+        result.Name = form.Name;
+        result.Enabled = form.Enabled;
+        result.Hour = form.Hour;
+        result.Minute = form.Minute;
+        result.Second = form.Second;
+        result.SendTo = form.SendTo;
+        result.Send = form.Send;
+        result.Script = form.Script;
+        result.Group = form.Group;
+        result.Variable = form.Variable;
+        result.AtTime = form.AtTime;
+        result.ActionWhenDisconnectd = form.ActionWhenDisconnectd;
+        result.OneShot = form.OneShot;
+        result.Temporary = form.Temporary;
+        result.OmitFromOutput = form.OmitFromOutput;
+        result.OmitFromLog = form.OmitFromLog;
         result.SetByUser(form.ByUser);
         return result;
     }
@@ -289,31 +284,28 @@ public class FormHelper
     }
     public static Trigger CreateTriggerFromForm(CreateTriggerForm form)
     {
-        var result = new Trigger()
-        {
-            ID = form.ID,
-            Name = form.Name,
-            Enabled = form.Enabled,
-            Match = form.Match,
-            Send = form.Send,
-            Script = form.Script,
-            SendTo = form.SendTo,
-            Sequence = form.Sequence,
-            ExpandVariables = form.ExpandVariables,
-            Temporary = form.Temporary,
-            OneShot = form.OneShot,
-            Regexp = form.Regexp,
-            Group = form.Group,
-            Variable = form.Variable,
-            IgnoreCase = form.IgnoreCase,
-            KeepEvaluating = form.KeepEvaluating,
-            OmitFromLog = form.OmitFromLog,
-            OmitFromOutput = form.OmitFromOutput,
-            MultiLine = form.MultiLine,
-            Repeat = form.Repeat,
-            LinesToMatch = form.LinesToMatch,
-            WildcardLowerCase = form.WildcardLowerCase
-        };
+        var result =Trigger.Create();
+        result.Name = form.Name;
+        result.Enabled = form.Enabled;
+        result.Match = form.Match;
+        result.Send = form.Send;
+        result.Script = form.Script;
+        result.SendTo = form.SendTo;
+        result.Sequence = form.Sequence;
+        result.ExpandVariables = form.ExpandVariables;
+        result.Temporary = form.Temporary;
+        result.OneShot = form.OneShot;
+        result.Regexp = form.Regexp;
+        result.Group = form.Group;
+        result.Variable = form.Variable;
+        result.IgnoreCase = form.IgnoreCase;
+        result.KeepEvaluating = form.KeepEvaluating;
+        result.OmitFromLog = form.OmitFromLog;
+        result.OmitFromOutput = form.OmitFromOutput;
+        result.MultiLine = form.MultiLine;
+        result.Repeat = form.Repeat;
+        result.LinesToMatch = form.LinesToMatch;
+        result.WildcardLowerCase = form.WildcardLowerCase;
         result.SetByUser(form.ByUser);
         return result;
     }
@@ -324,6 +316,251 @@ public class FormHelper
             Field = "Name",
             Label = "名称",
             Msg = "名称不可用",
+        }
+    };
+    public static List<FieldError> ValidateUpdateAliasForm(UpdateAliasForm form)
+    {
+        var result = new List<FieldError>();
+        if (form.SendTo < SendTo.SendToMin || form.SendTo > SendTo.SendToMax)
+        {
+            result.Add(new FieldError()
+            {
+                Field = "SendTo",
+                Label = "发送到",
+                Msg = "发送到无效",
+            });
+        }
+        if (form.Match == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Match",
+                Label = "别名",
+                Msg = "别名不能为空",
+            });
+        }
+        if (result.Count == 0)
+        {
+            if (form.Name != "" && IDRegexp.MatchString(form.Name) == false)
+            {
+                result.Add(new FieldError()
+                {
+                    Field = "Name",
+                    Label = "名称",
+                    Msg = "名称不可用",
+                });
+            }
+        }
+        return result;
+    }
+    public static void UpdateAliasFromForm(Alias alias, UpdateAliasForm form)
+    {
+        alias.ID = form.ID;
+        alias.Name = form.Name;
+        alias.Enabled = form.Enabled;
+        alias.Match = form.Match;
+        alias.Send = form.Send;
+        alias.Script = form.Script;
+        alias.SendTo = form.SendTo;
+        alias.Sequence = form.Sequence;
+        alias.ExpandVariables = form.ExpandVariables;
+        alias.Temporary = form.Temporary;
+        alias.OneShot = form.OneShot;
+        alias.Regexp = form.Regexp;
+        alias.Group = form.Group;
+        alias.Variable = form.Variable;
+        alias.IgnoreCase = form.IgnoreCase;
+        alias.KeepEvaluating = form.KeepEvaluating;
+        alias.Menu = form.Menu;
+        alias.OmitFromLog = form.OmitFromLog;
+        alias.ReverseSpeedwalk = form.ReverseSpeedwalk;
+        alias.OmitFromOutput = form.OmitFromOutput;
+    }
+    public static List<FieldError> UpdateAliasDuplicateErrors = new List<FieldError>()
+    {
+        new ()
+        {
+            Field = "Name",
+            Label = "名称",
+            Msg = "名称重复",
+        }
+    };
+    public static List<FieldError> UpdateAliasNotFoundErrors = new List<FieldError>()
+    {
+        new ()
+        {
+            Field = "ID",
+            Label = "ID",
+            Msg = "未找到",
+        }
+    };
+    public static List<FieldError> ValidateUpdateTimerForm(UpdateTimerForm form)
+    {
+        var result = new List<FieldError>();
+        if (form.ID == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "ID",
+                Label = "ID",
+                Msg = "无效的ID",
+            });
+        }
+        if (form.SendTo < SendTo.SendToMin || form.SendTo > SendTo.SendToMax)
+        {
+            result.Add(new FieldError()
+            {
+                Field = "SendTo",
+                Label = "发送到",
+                Msg = "发送到无效",
+            });
+        }
+        if (form.Hour == 0 && form.Minute == 0 && form.Second == 0 && form.AtTime == false)
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Second",
+                Label = "时间",
+                Msg = "时间无效",
+            });
+        }
+        if (result.Count == 0)
+        {
+            if (form.Name != "" && IDRegexp.MatchString(form.Name) == false)
+            {
+                result.Add(new FieldError()
+                {
+                    Field = "Name",
+                    Label = "名称",
+                    Msg = "名称不可用",
+                });
+            }
+        }
+        return result;
+    }
+    public static void UpdateTimerFromForm(Timer timer, UpdateTimerForm form)
+    {
+        timer.ID = form.ID;
+        timer.Hour = form.Hour;
+        timer.Minute = form.Minute;
+        timer.Second = form.Second;
+        timer.Name = form.Name;
+        timer.SendTo = form.SendTo;
+        timer.Send = form.Send;
+        timer.Script = form.Script;
+        timer.Group = form.Group;
+        timer.Variable = form.Variable;
+        timer.AtTime = form.AtTime;
+        timer.Enabled = form.Enabled;
+        timer.ActionWhenDisconnectd = form.ActionWhenDisconnectd;
+        timer.OneShot = form.OneShot;
+        timer.Temporary = form.Temporary;
+        timer.OmitFromOutput = form.OmitFromOutput;
+        timer.OmitFromLog = form.OmitFromLog;
+    }
+    public static List<FieldError> UpdateTimerNotFoundErrors = new List<FieldError>()
+    {
+        new ()
+        {
+            Field = "ID",
+            Label = "ID",
+            Msg = "未找到",
+        }
+    };
+    public static List<FieldError> UpdateTimerDuplicateErrors = new List<FieldError>()
+    {
+        new ()
+        {
+            Field = "Name",
+            Label = "名称",
+            Msg = "名称重复",
+        }
+    };
+    public static List<FieldError> ValidateUpdateTriggerForm(UpdateTriggerForm form)
+    {
+        var result = new List<FieldError>();
+        if (form.ID == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "ID",
+                Label = "ID",
+                Msg = "无效的ID",
+            });
+        }
+        if (form.SendTo < SendTo.SendToMin || form.SendTo > SendTo.SendToMax)
+        {
+            result.Add(new FieldError()
+            {
+                Field = "SendTo",
+                Label = "发送到",
+                Msg = "发送到无效",
+            });
+        }
+        if (form.Match == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Match",
+                Label = "匹配",
+                Msg = "匹配不能为空",
+            });
+        }
+        if (result.Count == 0)
+        {
+            if (form.Name != "" && IDRegexp.MatchString(form.Name) == false)
+            {
+                result.Add(new FieldError()
+                {
+                    Field = "Name",
+                    Label = "名称",
+                    Msg = "名称不可用",
+                });
+            }
+        }
+        return result;
+    }
+    public static void UpdateTriggerFromForm(Trigger trigger, UpdateTriggerForm form)
+    {
+        trigger.ID = form.ID;
+        trigger.Name = form.Name;
+        trigger.Enabled = form.Enabled;
+        trigger.Match = form.Match;
+        trigger.Send = form.Send;
+        trigger.Script = form.Script;
+        trigger.SendTo = form.SendTo;
+        trigger.Sequence = form.Sequence;
+        trigger.ExpandVariables = form.ExpandVariables;
+        trigger.Temporary = form.Temporary;
+        trigger.OneShot = form.OneShot;
+        trigger.Regexp = form.Regexp;
+        trigger.Group = form.Group;
+        trigger.Variable = form.Variable;
+        trigger.IgnoreCase = form.IgnoreCase;
+        trigger.KeepEvaluating = form.KeepEvaluating;
+        trigger.OmitFromLog = form.OmitFromLog;
+        trigger.OmitFromOutput = form.OmitFromOutput;
+        trigger.MultiLine = form.MultiLine;
+        trigger.Repeat = form.Repeat;
+        trigger.LinesToMatch = form.LinesToMatch;
+        trigger.WildcardLowerCase = form.WildcardLowerCase;
+    }
+    public static List<FieldError> UpdateTriggerNotFoundErrors = new List<FieldError>()
+    {
+        new ()
+        {
+            Field = "ID",
+            Label = "ID",
+            Msg = "未找到",
+        }
+    };
+    public static List<FieldError> UpdateTriggerDuplicateErrors = new List<FieldError>()
+    {
+        new ()
+        {
+            Field = "Name",
+            Label = "名称",
+            Msg = "名称重复",
         }
     };
 }

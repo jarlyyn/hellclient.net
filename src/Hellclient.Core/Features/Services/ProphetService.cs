@@ -6,6 +6,7 @@ using Hellclient.Core.Infras.Components;
 using Hellclient.World.Types;
 using Hellclient.Core.Types.Forms;
 using Hellclient.Core.Helpers;
+using Hellclient.World.Utils;
 
 namespace Hellclient.Core.Features.Services;
 
@@ -331,7 +332,7 @@ public class ProphetService : IProphetService
         {
             TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
         }
- 
+
     }
     public void OnCmdDeleteTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -363,7 +364,39 @@ public class ProphetService : IProphetService
     }
     public void OnCmdUpdateTimer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.UpdateTimer(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<UpdateTimerForm>(cmd.Data(), JsonContext.Instance.UpdateTimerForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateUpdateTimerForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var model = new World.Types.Timer();
+        FormHelper.UpdateTimerFromForm(model, form);
+        var result = TitanService.DoUpdateTimer(ctx.TitanContext, form.World, model);
+        if (result != MushString.UpdateOK)
+        {
+            switch (result)
+            {
+                case MushString.UpdateFailDuplicateName:
+                    TitanService.OnCreateFail(ctx.TitanContext, FormHelper.UpdateTimerDuplicateErrors);
+                    break;
+                case MushString.UpdateFailNotFound:
+                    TitanService.OnCreateFail(ctx.TitanContext, FormHelper.UpdateTimerNotFoundErrors);
+                    break;
+            }
+            return;
+        }
+        TitanService.OnUpdateTimerSuccess(ctx.TitanContext, form.World, form.ID);
+        TitanService.HandleCmdTimers(ctx.TitanContext, form.World, form.ByUser);
+        if (form.ByUser)
+        {
+            TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
+        }
     }
     public void OnCmdAliases(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -430,7 +463,39 @@ public class ProphetService : IProphetService
     }
     public void OnCmdUpdateAlias(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.UpdateAlias(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<UpdateAliasForm>(cmd.Data(), JsonContext.Instance.UpdateAliasForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateUpdateAliasForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var model = new Alias();
+        FormHelper.UpdateAliasFromForm(model, form);
+        var result = TitanService.DoUpdateAlias(ctx.TitanContext, form.World, model);
+        if (result != MushString.UpdateOK)
+        {
+            switch (result)
+            {
+                case MushString.UpdateFailDuplicateName:
+                    TitanService.OnCreateFail(ctx.TitanContext, FormHelper.UpdateAliasDuplicateErrors);
+                    break;
+                case MushString.UpdateFailNotFound:
+                    TitanService.OnCreateFail(ctx.TitanContext, FormHelper.UpdateAliasNotFoundErrors);
+                    break;
+            }
+            return;
+        }
+        TitanService.OnUpdateAliasSuccess(ctx.TitanContext, form.World, form.ID);
+        TitanService.HandleCmdAliases(ctx.TitanContext, form.World, form.ByUser);
+        if (form.ByUser)
+        {
+            TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
+        }
     }
     public void OnCmdTriggers(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -494,7 +559,39 @@ public class ProphetService : IProphetService
     }
     public void OnCmdUpdateTrigger(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // forms.UpdateTrigger(p.Titan, cmd.Data())
+        var form = JsonSerializer.Deserialize<UpdateTriggerForm>(cmd.Data(), JsonContext.Instance.UpdateTriggerForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateUpdateTriggerForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        var model = new Trigger();
+        FormHelper.UpdateTriggerFromForm(model, form);
+        var result = TitanService.DoUpdateTrigger(ctx.TitanContext, form.World, model);
+        if (result != MushString.UpdateOK)
+        {
+            switch (result)
+            {
+                case MushString.UpdateFailDuplicateName:
+                    TitanService.OnCreateFail(ctx.TitanContext, FormHelper.UpdateTriggerDuplicateErrors);
+                    break;
+                case MushString.UpdateFailNotFound:
+                    TitanService.OnCreateFail(ctx.TitanContext, FormHelper.UpdateTriggerNotFoundErrors);
+                    break;
+            }
+            return;
+        }
+        TitanService.OnUpdateTriggerSuccess(ctx.TitanContext, form.World, form.ID);
+        TitanService.HandleCmdTriggers(ctx.TitanContext, form.World, form.ByUser);
+        if (form.ByUser)
+        {
+            TitanService.HandleCmdAutoSaveWorld(ctx.TitanContext, form.World);
+        }
     }
     public void OnCmdParams(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {

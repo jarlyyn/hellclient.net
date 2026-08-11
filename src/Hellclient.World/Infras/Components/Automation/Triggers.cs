@@ -188,6 +188,11 @@ public class Triggers
         {
             return MushString.UpdateFailNotFound;
         }
+        ti.SetByUser(old.Data.ByUser());
+        if (ti.Name != "" && ti.Name != old.Data.Name && Named.ContainsKey(ti.PrefixedName()))
+        {
+            return MushString.UpdateFailDuplicateName;
+        }
         unloadTrigger(old.Data.ID);
         old.Data = ti;
         loadTrigger(old);
