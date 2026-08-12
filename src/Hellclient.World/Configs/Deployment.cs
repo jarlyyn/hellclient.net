@@ -20,6 +20,7 @@ public class Deployment
             LogsPath = System.IO.Path.Combine(rootPath, "appdata", "logs"),
             ResourcesPath = System.IO.Path.Combine(rootPath, "resources"),
             SystemPath = System.IO.Path.Combine(rootPath, "system"),
+            AppdataPath = System.IO.Path.Combine(rootPath, "appdata"),
         };
         Directory.CreateDirectory(ctx.ConfigPath);
         Directory.CreateDirectory(ctx.PersistDataPath);
@@ -36,6 +37,7 @@ public class Deployment
     public string ConfigPath { get; init; } = string.Empty;
     public string PersistDataPath { get; init; } = string.Empty;
     public string GamePath { get; init; } = string.Empty;
+    public string AppdataPath { get; init; } = string.Empty;
     public string WorldsPath { get; init; } = string.Empty;
     public string ModsPath { get; init; } = string.Empty;
     public string ScriptsPath { get; init; } = string.Empty;
