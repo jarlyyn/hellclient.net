@@ -189,53 +189,45 @@ public class AutomationService : IAutomationService
     }
     public bool MatchAlias(WorldContext context, string message)
     {
-        context.Lock.Wait();
-        try
+        bool matched = false;
+        var queue = context.Automation.Aliases.Queue();
+        foreach (var v in queue)
         {
-            bool matched = false;
-            var queue = context.Automation.Aliases.Queue();
-            foreach (var v in queue)
+            var r = v.Match(message);
+            if (r is null)
             {
-                var r = v.Match(message);
-                if (r is null)
-                {
-                    continue;
-                }
-                matched = true;
-                var send = "";
-                var data = v.Data;
-                if (data.Send != "")
-                {
-                    var rl = r.ReplaceList(data.Name);
-                    if (v.Data.ExpandVariables)
-                    {
-                        rl.AddRange(Replacer.BuildParamsReplacer(context.Config.Data.Params));
-                    }
-                    send = Replacer.Replace(data.Send, rl);
-                }
-                if (send != "")
-                {
-                    trySendTo(context, data.SendTo, send, data.Variable, data.OmitFromLog, data.OmitFromOutput);
-                }
-                if (data.Script != "")
-                {
-                    ScriptService.SendAlias(context, message, v.Data, r);
-                }
-                if (data.OneShot)
-                {
-                    context.Automation.Aliases.RemoveAlias(data.ID);
-                }
-                if (!data.KeepEvaluating)
-                {
-                    return true;
-                }
+                continue;
             }
-            return matched;
+            matched = true;
+            var send = "";
+            var data = v.Data;
+            if (data.Send != "")
+            {
+                var rl = r.ReplaceList(data.Name);
+                if (v.Data.ExpandVariables)
+                {
+                    rl.AddRange(Replacer.BuildParamsReplacer(context.Config.Data.Params));
+                }
+                send = Replacer.Replace(data.Send, rl);
+            }
+            if (send != "")
+            {
+                trySendTo(context, data.SendTo, send, data.Variable, data.OmitFromLog, data.OmitFromOutput);
+            }
+            if (data.Script != "")
+            {
+                ScriptService.SendAlias(context, message, v.Data, r);
+            }
+            if (data.OneShot)
+            {
+                context.Automation.Aliases.RemoveAlias(data.ID);
+            }
+            if (!data.KeepEvaluating)
+            {
+                return true;
+            }
         }
-        finally
-        {
-            context.Lock.Release();
-        }
+        return matched;
     }
     public void DoExecute(WorldContext context, string cmd)
     {
