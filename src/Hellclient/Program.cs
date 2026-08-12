@@ -12,5 +12,6 @@ Application.Instance.Config();
 CharsetUtil.InstallEncodingProvider();
 V8ScriptEngineFactory.Install();
 WebUI.Instance.Init();
-Console.WriteLine($"Starting web server at http://{AppConfig.System.Addr}");
+Console.WriteLine($"Hellclient version {AppVersion.Version.FullVersionCode()} (API {AppVersion.APIVersion.FullVersionCode()})");
+Console.WriteLine($"Listening http on {AppConfig.System.Addr}");
 await WebApp.Instance.Start(ConfigHelper.ConvertListenUrl(AppConfig.System.Addr));

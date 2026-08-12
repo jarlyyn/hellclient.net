@@ -835,6 +835,7 @@ public class ProphetService : IProphetService
             Username = username,
             Password = password
         };
+        UserPasswordRepo.Save(au);
         ctx.UserPassword = au;
     }
     public bool CheckAuth(ProphetContext ctx, string username, string password)

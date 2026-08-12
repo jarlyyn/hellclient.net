@@ -22,6 +22,6 @@ public class DateVersion
         var day = Day.ToString().PadLeft(2, '0');
         var patch = Patch == 0 ? "" : $".{Patch}";
         var build = string.IsNullOrEmpty(Build) ? "" : $" {Build}";
-        return $"{Major}.{Year}-{month}-{day}.{patch}{build}";
+        return $"{Major}.{Year}-{month}-{day}{patch}{build}";
     }
 }
