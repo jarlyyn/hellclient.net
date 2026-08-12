@@ -7,6 +7,8 @@ using Hellclient.World.Types;
 using Hellclient.Core.Types.Forms;
 using Hellclient.Core.Helpers;
 using Hellclient.World.Utils;
+using Hellclient.Core.Features.Repos;
+using Hellclient.World.Configs;
 
 namespace Hellclient.Core.Features.Services;
 
@@ -81,11 +83,17 @@ public interface IProphetService
     string GetCurrent(ProphetContext ctx);
     public void SetAuth(ProphetContext ctx, string username, string password);
     public bool CheckAuth(ProphetContext ctx, string username, string password);
+    public void LoadAuth(ProphetContext ctx);
 }
 public class ProphetService : IProphetService
 {
+    public ProphetService(IUserPasswordRepo userPasswordRepo)
+    {
+        this.UserPasswordRepo = userPasswordRepo;
+    }
 
     public ITitanService TitanService { get; set; } = new TitanService();
+    public IUserPasswordRepo UserPasswordRepo { get; init; }
     public void Publish(ProphetContext ctx, Types.Message message)
     {
         ctx.Adapter.Exec(message);
@@ -815,7 +823,11 @@ public class ProphetService : IProphetService
     {
         TitanService.HandleCmdBatchCommandScripts(ctx.TitanContext);
     }
-
+    public void LoadAuth(ProphetContext ctx)
+    {
+        var au = UserPasswordRepo.Load();
+        ctx.UserPassword = au == null ? new UserPassword() { Username = AppConfig.System.Username, Password = AppConfig.System.Password } : au;
+    }
     public void SetAuth(ProphetContext ctx, string username, string password)
     {
         var au = new UserPassword()

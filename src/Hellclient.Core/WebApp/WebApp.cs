@@ -12,7 +12,7 @@ public class WebApp
     {
         if (App == null)
         {
-            var app = buildApp();
+            var app = BuildApp();
             App = app;
             OnInit?.Invoke(this, app);
             await app.RunAsync(ListenAddress);
@@ -24,7 +24,7 @@ public class WebApp
         App?.DisposeAsync();
         App = null;
     }
-    private WebApplication buildApp()
+    private WebApplication BuildApp()
     {
         var builder = WebApplication.CreateSlimBuilder();
         builder.Logging.ClearProviders();

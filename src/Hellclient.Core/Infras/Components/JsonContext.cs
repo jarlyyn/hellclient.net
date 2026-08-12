@@ -55,6 +55,7 @@ namespace Hellclient.Core.Infras.Components;
 [JsonSerializable(typeof(UpdateGameForm))]
 [JsonSerializable(typeof(UpdateScriptForm))]
 [JsonSerializable(typeof(RequiredParamsForm))]
+[JsonSerializable(typeof(UserPassword))]
 
 public partial class JsonContext : JsonSerializerContext
 {
@@ -158,6 +159,8 @@ public partial class JsonContext : JsonSerializerContext
                 return JsonSerializer.SerializeToUtf8Bytes(ugf, JsonContext.Instance.UpdateGameForm);
             case UpdateScriptForm usf:
                 return JsonSerializer.SerializeToUtf8Bytes(usf, JsonContext.Instance.UpdateScriptForm);
+            case UserPassword up:
+                return JsonSerializer.SerializeToUtf8Bytes(up, JsonContext.Instance.UserPassword);
             case null:
                 return Encoding.UTF8.GetBytes("null");
             default:
