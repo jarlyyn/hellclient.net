@@ -79,6 +79,8 @@ public interface IProphetService
     public void OnClose(ProphetContext ctx, IConnection conn);
     public void Publish(ProphetContext ctx, Types.Message message);
     string GetCurrent(ProphetContext ctx);
+    public void SetAuth(ProphetContext ctx, string username, string password);
+    public bool CheckAuth(ProphetContext ctx, string username, string password);
 }
 public class ProphetService : IProphetService
 {
@@ -123,7 +125,7 @@ public class ProphetService : IProphetService
     public void Change(ProphetContext ctx, string roomid)
     {
         onLeave(ctx, roomid);
-        Interlocked.Exchange(ref ctx.Current!, roomid);
+        ctx.Current = roomid;
         onCurrent(ctx, roomid);
         TitanService.ExecClients(ctx.TitanContext);
     }
@@ -178,7 +180,7 @@ public class ProphetService : IProphetService
     }
     private string getCurrent(ProphetContext ctx)
     {
-        return Interlocked.CompareExchange(ref ctx.Current!, null, null);
+        return ctx.Current!;
     }
     public void OnCmdSend(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
@@ -812,5 +814,20 @@ public class ProphetService : IProphetService
     public void OnCmdBatchCommandScripts(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         TitanService.HandleCmdBatchCommandScripts(ctx.TitanContext);
+    }
+
+    public void SetAuth(ProphetContext ctx, string username, string password)
+    {
+        var au = new UserPassword()
+        {
+            Username = username,
+            Password = password
+        };
+        ctx.UserPassword = au;
+    }
+    public bool CheckAuth(ProphetContext ctx, string username, string password)
+    {
+        var au = ctx.UserPassword;
+        return au.Username == "" || (au.Username == username && au.Password == password);
     }
 }

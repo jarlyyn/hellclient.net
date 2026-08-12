@@ -27,4 +27,6 @@ public partial class Prophet
     public void OnOpen(IConnection conn) => ProphetService.OnOpen(Context, conn);
     public void OnClose(IConnection conn) => ProphetService.OnClose(Context, conn);
     public string GetCurrent() => ProphetService.GetCurrent(Context);
+    public void SetAuth(string username, string password) => ProphetService.SetAuth(Context, username, password);
+    public bool CheckAuth(string username, string password) => ProphetService.CheckAuth(Context, username, password);
 }
