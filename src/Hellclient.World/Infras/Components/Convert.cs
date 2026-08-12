@@ -62,7 +62,7 @@ public class Convert : IConvert
             return;
         }
         line.Type = Line.LineTypeReal;
-        OnLine?.Invoke(this, line);
+        Task.Run(async () => OnLine?.Invoke(this, line));
         Debounce?.Reset();
         _buffer.Clear();
         var pl = Line.New();

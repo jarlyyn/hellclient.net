@@ -194,7 +194,7 @@ public class ConnService : IConnService
         }
         if (cmd.History)
         {
-
+            context.Info.History.Add(cmd.Message);
         }
         await context.Connection.Send(bytes);
         await context.Connection.Send(new byte[] { 13 });

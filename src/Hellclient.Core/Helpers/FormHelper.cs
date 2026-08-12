@@ -637,4 +637,36 @@ public class FormHelper
         script.OnLoseFocus = form.OnLoseFocus;
         script.Channel = form.Channel;
     }
+    public static List<FieldError>ValidateUpdatePasswordForm(UpdatePasswordForm form)
+    {
+        var result = new List<FieldError>();
+        if (form.Username.Trim() == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Username",
+                Label = "用户名",
+                Msg = "用户名为空",
+            });
+        }
+        if (form.Password.Trim() == "")
+        {
+            result.Add(new FieldError()
+            {
+                Field = "Password",
+                Label = "密码",
+                Msg = "密码为空",
+            });
+        }
+        if (form.Password != form.RepeatPassword)
+        {
+            result.Add(new FieldError()
+            {
+                Field = "RepeatPassword",
+                Label = "重复密码",
+                Msg = "密码不匹配",
+            });
+        }
+        return result;
+    }
 }

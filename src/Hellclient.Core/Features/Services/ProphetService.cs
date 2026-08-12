@@ -797,9 +797,19 @@ public class ProphetService : IProphetService
 
     public void OnCmdUpdatePassword(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
-        // if forms.UpdatePassword(p.Titan, cmd.Data()) {
-        //     conn.Close()
-        // }
+        var form = JsonSerializer.Deserialize<UpdatePasswordForm>(cmd.Data(), JsonContext.Instance.UpdatePasswordForm)!;
+        if (form is null)
+        {
+            return;
+        }
+        var errors = FormHelper.ValidateUpdatePasswordForm(form);
+        if (errors.Count > 0)
+        {
+            TitanService.OnCreateFail(ctx.TitanContext, errors);
+            return;
+        }
+        SetAuth(ctx, form.Username, form.Password);
+        conn.Close();
     }
 
     public void OnCmdSortClients(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
