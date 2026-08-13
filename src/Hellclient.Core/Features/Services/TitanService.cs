@@ -679,10 +679,6 @@ public class TitanService : ITitanService
             return true;
         }
     }
-    private string prefixedName(string name, bool byuser)
-    {
-        return $"{(byuser ? PrefixUtil.PrefixByUser : PrefixUtil.PrefixByScript)}{name}";
-    }
 
     public bool IsAliasNameAvaliable(TitanContext context, string id, string name, bool byuser)
     {
@@ -691,7 +687,7 @@ public class TitanService : ITitanService
         {
             return false;
         }
-        name = prefixedName(name, byuser);
+        name = PrefixUtil.PrefixedName(name, byuser);
         return world.HasNamedAlias(name);
     }
     public bool DoCreateAlias(TitanContext context, string id, Alias alias)
@@ -822,7 +818,7 @@ public class TitanService : ITitanService
         var world = World(context, id);
         if (world != null)
         {
-            name = prefixedName(name, byuser);
+            name = PrefixUtil.PrefixedName(name, byuser);
             return world.HasNamedTrigger(name);
         }
         return false;
@@ -954,7 +950,7 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            name = prefixedName(name, byuser);
+            name = PrefixUtil.PrefixedName(name, byuser);
             return w.HasNamedTimer(name);
         }
         return false;
