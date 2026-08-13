@@ -681,7 +681,7 @@ public class TitanService : ITitanService
     }
     private string prefixedName(string name, bool byuser)
     {
-        return $"{(byuser ? Prefix.PrefixByUser : Prefix.PrefixByScript)}{name}";
+        return $"{(byuser ? PrefixUtil.PrefixByUser : PrefixUtil.PrefixByScript)}{name}";
     }
 
     public bool IsAliasNameAvaliable(TitanContext context, string id, string name, bool byuser)
