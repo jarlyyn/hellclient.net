@@ -12,6 +12,16 @@ public class Word
     public bool Underlined { get; set; } = false;
     public bool Blinking { get; set; } = false;
     public bool Inverse { get; set; } = false;
+    public int GetColorRGB()
+    {
+        return Colour.Colours.TryGetValue(this.Color, out var rgb) ? rgb : 0;
+    }
+
+    public int GetBGColorRGB()
+    {
+        return Colour.Colours.TryGetValue(this.Background, out var rgb) ? rgb : 0;
+    }
+
     public Word Inherit()
     {
         return new Word
@@ -74,6 +84,12 @@ public class Line
     public List<string> Triggers { get; set; } = [];
     public string CreatorType { get; set; } = string.Empty;
     public string Creator { get; set; } = string.Empty;
+    public bool IsNewline()
+    {
+        var text = ToPlainText();
+        var newline = text.Length > 1 && text[text.Length - 1] == '\n';
+        return newline;
+    }
 
     public string ToPlainText()
     {
@@ -101,6 +117,26 @@ public class Line
             }
         }
     }
+    public int GetWordStartColumn(int idx)
+    {
+        if (idx < 1 || idx > Words.Count)
+        {
+            return -1;
+        }
+        var result = 0;
+        for (var k = 0; k < Words.Count; k++)
+        {
+            var v = Words[k];
+            if (k < idx - 1)
+            {
+                result = result + v.Text.Length;
+                continue;
+            }
+            break;
+        }
+        return result;
+    }
+
     public static Line New()
     {
         return new Line

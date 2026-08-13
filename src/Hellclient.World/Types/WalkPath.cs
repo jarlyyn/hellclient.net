@@ -1,6 +1,6 @@
 namespace Hellclient.World.Types;
 
-public class Path
+public class WalkPath
 {
     public string Command { get; set; } = string.Empty;
     public int Delay { get; set; } = 0;

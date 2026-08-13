@@ -25,7 +25,17 @@ public class AuthorizeHelper
         return pattern == domain;
 
     }
-    public string CleanPath(string _base, string newpath)
+    public static string CleanInsidePath(string _base, string newpath)
+    {
+        var path = Path.GetFullPath(_base);
+        var cleanpath = CleanPath(_base, newpath);
+        if (!cleanpath.StartsWith(path))
+        {
+            return "";
+        }
+        return cleanpath;
+    }
+    public static string CleanPath(string _base, string newpath)
     {
         if (!Path.IsPathRooted(newpath))
         {

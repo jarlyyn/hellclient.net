@@ -1,4 +1,5 @@
 using Hellclient.World.Infras.Adapters;
+using Hellclient.World.Utils;
 
 namespace Hellclient.World.Types;
 
@@ -47,7 +48,7 @@ public class Alias
     }
     public string PrefixedName()
     {
-        return $"{(byuser ? Prefix.PrefixByUser : Prefix.PrefixByScript)}{Name}";
+        return PrefixUtil.PrefixedName(Name, byuser);
     }
     public int CompareTo(Alias other)
     {

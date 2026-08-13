@@ -13,5 +13,6 @@ public partial class World
     public string GetScriptModPath() => Service.PathService.GetScriptModPath(Context);
     public string GetLogsPath() => Service.PathService.GetLogsPath(Context);
     public string GetScriptHome() => Service.PathService.GetScriptHome(Context);
+    public string GetSharedPath() => Service.PathService.GetSharedPath(Context);
 
 }

@@ -4,6 +4,6 @@ public class Mapper
 {
     public List<Room> Rooms { get; set; } = [];
     public Dictionary<string, bool> Tags { get; set; } = [];
-    public List<Path> Fly { get; set; } = [];
+    public List<WalkPath> Fly { get; set; } = [];
 
 }

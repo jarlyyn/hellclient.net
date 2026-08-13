@@ -2,8 +2,6 @@ using Hellclient.Core.Features.Services;
 using Hellclient.Core.Features.States;
 using Hellclient.Core.Infras.Components;
 using Hellclient.Core.Types;
-using Hellclient.World.Configs;
-using Hellclient.World.Infras.Components;
 
 namespace Hellclient.Core.Cores;
 
