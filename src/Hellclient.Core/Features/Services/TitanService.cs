@@ -802,7 +802,7 @@ public class TitanService : ITitanService
             try
             {
                 var aliases = w.GetAliasesByType(byuser);
-                aliases.Sort();
+                aliases.Sort((a, b) => a.CompareTo(b));
                 if (byuser)
                 {
                     MsgHelper.PublishUserAliases(context.EventBus, id, aliases);
@@ -935,7 +935,7 @@ public class TitanService : ITitanService
             try
             {
                 var triggers = w.GetTriggersByType(byuser);
-                triggers.Sort();
+                triggers.Sort((a,b)=> a.CompareTo(b));
                 if (byuser)
                 {
                     MsgHelper.PublishUserTriggers(context.EventBus, id, triggers);
@@ -1077,7 +1077,7 @@ public class TitanService : ITitanService
             try
             {
                 var timers = w.GetTimersByType(byuser);
-                timers.Sort();
+                timers.Sort((a,b)=> a.CompareTo(b));
                 if (byuser)
                 {
                     MsgHelper.PublishUserTimers(context.EventBus, id, timers);

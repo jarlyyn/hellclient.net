@@ -14,7 +14,16 @@ public partial class V8ScriptService : IV8ScriptService
     public void InstallTo(V8EngineContext context)
     {
         initEval(context);
+        initMetronome(context);
         initJsAPI(context);
+    }
+    public void handleError(V8EngineContext context, Exception ex)
+    {
+        if (ex is Microsoft.ClearScript.ScriptEngineException scriptEx)
+        {
+            Console.WriteLine($"Script Error: {scriptEx.ErrorDetails}");
+        }
+        context.World.HandleScriptError(ex);
     }
     public void Open(V8EngineContext context)
     {
@@ -33,6 +42,9 @@ public partial class V8ScriptService : IV8ScriptService
         context.Events.OnFocus = data.OnFocus;
         context.Events.OnLoseFocus = data.OnLoseFocus;
         context.Events.OnKeyUp = data.OnKeyUp;
+        var entry = Path.Combine(context.World.GetPluginOptions().Location, "main.js");
+        var entrydata = File.ReadAllText(entry);
+        context.Runtime.Execute(entry, entrydata);
         if (data.OnOpen != "")
         {
             callByName(context, data.OnOpen);
@@ -51,7 +63,7 @@ public partial class V8ScriptService : IV8ScriptService
         }
         catch (Exception ex)
         {
-            context.World.HandleScriptError(ex);
+            handleError(context, ex);
         }
         return null;
     }
@@ -63,7 +75,7 @@ public partial class V8ScriptService : IV8ScriptService
         }
         catch (Exception ex)
         {
-            context.World.HandleScriptError(ex);
+            handleError(context, ex);
         }
     }
 }

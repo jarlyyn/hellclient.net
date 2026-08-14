@@ -1,11 +1,12 @@
 using Microsoft.ClearScript.V8;
 using Hellclient.V8Engine.Features.States;
+using System.Dynamic;
 
 namespace Hellclient.V8Engine.Features.Services;
 
 public partial class V8ScriptService
 {
-    private void AppendToWorld(V8ScriptEngine engine, Dictionary<string, object> world, string name, object call)
+    private void AppendToWorld(V8ScriptEngine engine, IDictionary<string, object> world, string name, object call)
     {
         engine.AddHostObject(name, call);
         world[name.ToLower()] = call;
@@ -18,7 +19,7 @@ public partial class V8ScriptService
     {
         var local = context.Runtime;
         var a = context.JsAPI;
-        var world = new Dictionary<string, object>();
+        var world = new ExpandoObject() as IDictionary<string, object>;
 #pragma warning disable CS8974 // 将方法组转换为非委托类型
         AppendToWorld(local, world, "print", a.Print);
         AppendToWorld(local, world, "Note", a.Note);

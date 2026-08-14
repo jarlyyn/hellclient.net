@@ -3,11 +3,13 @@ using System.Text;
 using System.Text.Unicode;
 using Hellclient.World.Cores;
 using Hellclient.World.Utils;
+using Microsoft.ClearScript.V8;
 
 namespace Hellclient.V8Engine.Infras.Components;
 
-public class JsAPI(ScriptAPI api)
+public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
 {
+    private V8ScriptEngine _runtime { get; init; } = runtime;
     private ScriptAPI _api { get; init; } = api;
     public void Print(params object[] args)
     {
@@ -23,7 +25,7 @@ public class JsAPI(ScriptAPI api)
         }
         _api.Note(string.Join(" ", msg));
     }
-    private object? GetArg(object[] args, int idx)
+    public static object? GetArg(object[] args, int idx)
     {
         if (idx < 0 || idx >= args.Length)
         {
@@ -31,7 +33,7 @@ public class JsAPI(ScriptAPI api)
         }
         return args[idx];
     }
-    private bool HasArg(object[] args, int idx)
+    public static bool HasArg(object[] args, int idx)
     {
         if (idx < 0 || idx >= args.Length)
         {
@@ -39,11 +41,11 @@ public class JsAPI(ScriptAPI api)
         }
         return args[idx] is not null;
     }
-    private string GetStringArg(object[] args, int idx)
+    public static string GetStringArg(object[] args, int idx)
     {
         return GetArg(args, idx)?.ToString() ?? "";
     }
-    private int GetIntArg(object[] args, int idx)
+    public static int GetIntArg(object[] args, int idx)
     {
         var arg = GetArg(args, idx);
         switch (arg)
@@ -59,7 +61,7 @@ public class JsAPI(ScriptAPI api)
 
         }
     }
-    private List<string> GetStringArrayArg(object[] args, int idx)
+    public static List<string> GetStringArrayArg(object[] args, int idx)
     {
         var arg = GetArg(args, idx);
         switch (arg)
@@ -74,7 +76,7 @@ public class JsAPI(ScriptAPI api)
                 return new List<string>();
         }
     }
-    private bool GetBoolArg(object[] args, int idx)
+    public static bool GetBoolArg(object[] args, int idx)
     {
         var arg = GetArg(args, idx);
         switch (arg)
@@ -91,7 +93,7 @@ public class JsAPI(ScriptAPI api)
                 return false;
         }
     }
-    private double GetDoubleArg(object[] args, int idx)
+    public static double GetDoubleArg(object[] args, int idx)
     {
         var arg = GetArg(args, idx);
         switch (arg)
@@ -105,6 +107,15 @@ public class JsAPI(ScriptAPI api)
             default:
                 return 0.0;
         }
+    }
+    public object ToJsArray(List<string> list)
+    {
+        var result = _runtime.Script.Array();
+        foreach (var v in list)
+        {
+            result.push(v);
+        }
+        return result;
     }
     public object? Request(params object[] args)
     {
@@ -260,12 +271,12 @@ public class JsAPI(ScriptAPI api)
     public object? GetWorldIdList(params object[] args)
     {
 
-        return new List<string>();
+        return _runtime.Script.Array();
     }
     public object? GetWorldList(params object[] args)
     {
 
-        return new List<string>();
+        return _runtime.Script.Array();
     }
     public object? WorldName(params object[] args)
     {
@@ -419,12 +430,12 @@ public class JsAPI(ScriptAPI api)
         var list = _api.GetTimerList();
 
 
-        var result = new List<string>();
+        var result = _runtime.Script.Array();
         foreach (var v in list)
         {
-            result.Add(v);
+            result.push(v);
         }
-        return result.ToArray();
+        return result;
     }
     public object? IsTimer(params object[] args)
     {
@@ -580,12 +591,12 @@ public class JsAPI(ScriptAPI api)
     {
 
         var list = _api.GetAliasList();
-        var result = new List<string>();
+        var result = _runtime.Script.Array();
         foreach (var v in list)
         {
-            result.Add(v);
+            result.push(v);
         }
-        return result.ToArray();
+        return result;
     }
     public object? IsAlias(params object[] args)
     {
@@ -736,10 +747,10 @@ public class JsAPI(ScriptAPI api)
     public object? GetTriggerList(params object[] args)
     {
         var list = _api.GetTriggerList();
-        var result = new List<string>();
+        var result = _runtime.Script.Array();
         foreach (var v in list)
         {
-            result.Add(v);
+            result.push(v);
         }
         return result;
     }
@@ -909,7 +920,7 @@ public class JsAPI(ScriptAPI api)
     {
 
         var lines = _api.ReadHomeLines(GetStringArg(args, 0));
-        return lines;
+        return ToJsArray(lines);
     }
 
     public object? NewMakeSharedFolderAPI(params object[] args)
@@ -936,7 +947,7 @@ public class JsAPI(ScriptAPI api)
     {
 
         var lines = _api.ReadSharedLines(GetStringArg(args, 0));
-        return lines;
+        return ToJsArray(lines);
     }
 
     public object? NewReadModFileAPI(params object[] args)
@@ -947,12 +958,12 @@ public class JsAPI(ScriptAPI api)
     public object? NewReadLinesAPI(params object[] args)
     {
         var lines = _api.ReadLines(GetStringArg(args, 0));
-        return lines;
+        return ToJsArray(lines);
     }
     public object? NewReadModLinesAPI(params object[] args)
     {
         var lines = _api.ReadModLines(GetStringArg(args, 0));
-        return lines;
+        return ToJsArray(lines);
     }
     public object? SplitNfunc(params object[] args)
     {
@@ -960,7 +971,7 @@ public class JsAPI(ScriptAPI api)
         var sep = GetStringArg(args, 1);
         var n = GetIntArg(args, 2);
         var s = _api.SplitN(text, sep, n);
-        return s;
+        return ToJsArray(s);
     }
 
     public object? UTF8Len(params object[] args)

@@ -19,13 +19,12 @@ public partial class V8ScriptService
         }
         catch (Exception ex)
         {
-            context.World.HandleScriptError(ex);
+            handleError(context, ex);
         }
         return null;
     }
     private void initEval(V8EngineContext context)
     {
         context.Runtime.AddHostObject("eval", (params object[] values) => HandleEval(context, values));
-        context.Runtime.AddHostType("Console", typeof(System.Console));
     }
 }
