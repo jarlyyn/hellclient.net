@@ -446,6 +446,11 @@ public class ScriptAPI(IWorld world)
     {
         return World.DoDeleteTemporaryTimers();
     }
+    public int DeleteTemporaryTriggers()
+    {
+        return World.DoDeleteTemporaryTriggers();
+    }
+    
     public int DeleteTimer(string name)
     {
         name = PrefixUtil.PrefixedName(name, false);

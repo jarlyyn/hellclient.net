@@ -1,5 +1,4 @@
 namespace Hellclient.World.Types;
-using Hellclient.World.Types;
 public interface IScriptEngine
 {
     public void Open();

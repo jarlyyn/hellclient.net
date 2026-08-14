@@ -14,6 +14,7 @@ public class WorldService : IWorldService
         ConfigService.InstallTo(context);
         ScriptService.InstallTo(context);
         AutomationService.InstallTo(context);
+        ScriptBridgeService.InstallTo(context);
     }
     public void RemoveFrom(WorldContext context)
     {

@@ -123,7 +123,11 @@ public class TitanService : ITitanService
     {
         return new WorldPaths()
         {
-            // TODO
+            ScriptPath = Deployment.Instance.ScriptsPath,
+            ModPath = Deployment.Instance.ModsPath,
+            LogsPath = Deployment.Instance.LogsPath,
+            SharedPath = Deployment.Instance.SharedPath,
+            WorldsPath = Deployment.Instance.WorldsPath
         };
     }
     public IWorld? NewWorld(TitanContext context, string id)
@@ -309,8 +313,16 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var h = w.GetHistories();
-            MsgHelper.PublishHistory(context.EventBus, id, h);
+            w.Lock.Wait();
+            try
+            {
+                var h = w.GetHistories();
+                MsgHelper.PublishHistory(context.EventBus, id, h);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void Focus(TitanContext context, string id)
@@ -318,8 +330,17 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            w.UpdateLastActive();
-            w.HandleFocus();
+            w.Lock.Wait();
+            try
+            {
+
+                w.UpdateLastActive();
+                w.HandleFocus();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void LoseFocus(TitanContext context, string id)
@@ -332,8 +353,17 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var lines = w.GetHUDContent();
-            MsgHelper.PublishHUDContent(context.EventBus, id, lines);
+            w.Lock.Wait();
+            try
+            {
+
+                var lines = w.GetHUDContent();
+                MsgHelper.PublishHUDContent(context.EventBus, id, lines);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
 
@@ -359,13 +389,22 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var alllines = w.GetCurrentLines();
-            var start = alllines.Count - AppConfig.System.LinesPerScreen;
-            if (start < 0)
+            w.Lock.Wait();
+            try
             {
-                start = 0;
+
+                var alllines = w.GetCurrentLines();
+                var start = alllines.Count - AppConfig.System.LinesPerScreen;
+                if (start < 0)
+                {
+                    start = 0;
+                }
+                MsgHelper.PublishLines(context.EventBus, id, alllines.GetRange(start, alllines.Count - start));
             }
-            MsgHelper.PublishLines(context.EventBus, id, alllines.GetRange(start, alllines.Count - start));
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdPrompt(TitanContext context, string id)
@@ -373,8 +412,17 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            var prompt = w.GetPrompt();
-            MsgHelper.PublishPrompt(context.EventBus, id, prompt);
+            w.Lock.Wait();
+            try
+            {
+
+                var prompt = w.GetPrompt();
+                MsgHelper.PublishPrompt(context.EventBus, id, prompt);
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
     }
     public void HandleCmdNotOpened(TitanContext context)
@@ -388,7 +436,16 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            w.UpdateLastActive();
+            w.Lock.Wait();
+            try
+            {
+
+                w.UpdateLastActive();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
         }
         return ok;
     }
@@ -469,6 +526,7 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
+            w.Lock.Wait();
             try
             {
                 w.DoReloadScript();
@@ -484,6 +542,7 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
+            w.Lock.Wait();
             try
             {
                 w.DoSendCallbackToScript(cb);
@@ -500,8 +559,10 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
+            w.Lock.Wait();
             try
             {
+
 
                 w.DoAssist();
             }
@@ -916,11 +977,19 @@ public class TitanService : ITitanService
         var w = World(context, world);
         if (w != null)
         {
-            var trigger = w.GetTrigger(id);
-            if (trigger != null)
+            w.Lock.Wait();
+            try
             {
-                var result = trigger.ByUser();
-                return result;
+                var trigger = w.GetTrigger(id);
+                if (trigger != null)
+                {
+                    var result = trigger.ByUser();
+                    return result;
+                }
+            }
+            finally
+            {
+                w.Lock.Release();
             }
         }
         return null;

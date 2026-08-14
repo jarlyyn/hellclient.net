@@ -1,22 +1,22 @@
-using Hellclient.V8ScriptEngine.Features.States;
+using Hellclient.V8Engine.Features.States;
 using Hellclient.World.Types;
 using Hellclient.World.Cores;
 using Timer = Hellclient.World.Types.Timer;
 using Path = System.IO.Path;
 using Hellclient.World.Configs;
-namespace Hellclient.V8ScriptEngine.Cores;
+using Hellclient.V8Engine.Features.Services;
+namespace Hellclient.V8Engine.Cores;
 
 public class V8ScriptEngine : IScriptEngine
 {
     public V8ScriptEngine(IWorld world)
     {
         this.Context = new V8EngineContext(world);
+        Service.InstallTo(Context);
     }
+    public IV8ScriptService Service { get; set; } = new V8ScriptService();
     private V8EngineContext Context { get; init; }
-    public void Open()
-    {
-
-    }
+    public void Open()=>Service.Open(Context);
     public void Close()
     {
 
@@ -79,10 +79,7 @@ public class V8ScriptEngine : IScriptEngine
     {
         return false;
     }
-    public void Run(string script)
-    {
-
-    }
+    public void Run(string script)=>Service.Run(Context,script);
 }
 
 public class V8ScriptEngineFactory : IScriptEngineFactory

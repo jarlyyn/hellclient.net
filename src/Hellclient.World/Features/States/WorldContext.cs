@@ -32,4 +32,5 @@ public class WorldContext
     public required WorldPaths Paths { get; init; }
     public List<string> TType = [];
     public required ILogger logger { get; init; }
+    public required Func<string, IScriptEngine> EngineCreator { get; init; }
 }

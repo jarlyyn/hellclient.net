@@ -58,7 +58,9 @@ public class WebApp
             return;
         }
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"\"";
+        context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"Hellclient\", charset=\"UTF-8\"";
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync("Unauthorized");
     }
 
     private WebApplication BuildApp()

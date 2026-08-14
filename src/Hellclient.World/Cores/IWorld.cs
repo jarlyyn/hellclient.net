@@ -66,8 +66,6 @@ public interface IWorld
     public string GetScriptType();
     public string GetScriptPath();
     public string GetModPath();
-    public string GetCorePath();
-    public string GetScriptModPath();
     public string GetSharedPath();
     public string GetLogsPath();
     public string GetScriptHome();

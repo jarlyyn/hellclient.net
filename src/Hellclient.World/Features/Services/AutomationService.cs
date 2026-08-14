@@ -259,6 +259,7 @@ public class AutomationService : IAutomationService
         {
             var script = cmd[p.Length..];
             ScriptService.Run(context, script);
+            return;
         }
         if (!MatchAlias(context, cmd))
         {

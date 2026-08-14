@@ -1,3 +1,4 @@
+using Hellclient.World.Cores;
 using Hellclient.World.Features.Repo;
 using Hellclient.World.States;
 namespace Hellclient.World.Features.Services;
@@ -25,7 +26,7 @@ public class ScriptBridgeService : IScriptBridgeService
     public IScriptService ScriptService { get; set; } = new ScriptService();
     public void InstallTo(WorldContext context)
     {
-
+        context.EventBus.ReadyEvent += (s, e) => _ready(context);
     }
     public void Save(WorldContext context)
     {
@@ -47,7 +48,7 @@ public class ScriptBridgeService : IScriptBridgeService
         var triggers = AutomationService.GetTriggersByType(context, false);
         triggers.Sort((a, b) => a.CompareTo(b));
         context.Script.Data.Triggers = triggers;
-        ScriptFileRepo.SaveScriptData(context.Script.Data, id);
+        ScriptFileRepo.SaveScriptData(context, context.Script.Data, id);
     }
     public void OpenScript(WorldContext context)
     {
@@ -60,7 +61,7 @@ public class ScriptBridgeService : IScriptBridgeService
         {
             return;
         }
-        var data = ScriptFileRepo.LoadScriptData(id);
+        var data = ScriptFileRepo.LoadScriptData(context, id);
         if (data == null)
         {
             return;
@@ -94,6 +95,9 @@ public class ScriptBridgeService : IScriptBridgeService
     {
         HudService.SetSize(context, 0);
         _open(context);
+        var data = ScriptService.ScriptData(context);
+        context.Script.Engine = context.EngineCreator.Invoke(data.Type);
+        context.Script.Engine.Open();
         return;
     }
     public void Load(WorldContext context)
@@ -114,7 +118,7 @@ public class ScriptBridgeService : IScriptBridgeService
     {
         Unload(context);
     }
-    public void UseScript(WorldContext context,string id)
+    public void UseScript(WorldContext context, string id)
     {
         _unload(context);
         ConfigService.SetScriptID(context, id);

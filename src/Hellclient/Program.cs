@@ -3,7 +3,7 @@ using Hellclient.Application;
 using Hellclient.Core.WebApp;
 using Hellclient.World.Configs;
 using Hellclient.WebUI;
-using Hellclient.V8ScriptEngine.Cores;
+using Hellclient.V8Engine.Cores;
 using Hellclient.Helpers;
 
 

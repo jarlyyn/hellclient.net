@@ -16,9 +16,14 @@ public class WorldFactory : IWorldFactory
         this.logger = logger;
     }
     public ILogger logger { get; init; }
+
     public IWorldService Service { get; set; } = new WorldService();
+    public Func<string, IScriptEngine> ScriptEngineCreatorFactory(IWorld world)
+    {
+        return (type) => ScriptEngineFactoryManager.CreateScriptEngine(type, world);
+    }
     public IWorld CreateWorld(string id, WorldPaths paths)
     {
-        return new Hellclient.World.Cores.World(id, Service, paths, logger);
+        return new Hellclient.World.Cores.World(id, Service, paths, logger, ScriptEngineCreatorFactory);
     }
 }

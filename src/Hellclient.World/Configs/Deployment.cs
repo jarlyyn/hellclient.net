@@ -17,10 +17,12 @@ public class Deployment
             WorldsPath = System.IO.Path.Combine(rootPath, "appdata", "game", "worlds"),
             ModsPath = System.IO.Path.Combine(rootPath, "appdata", "game", "mods"),
             ScriptsPath = System.IO.Path.Combine(rootPath, "appdata", "game", "scripts"),
-            LogsPath = System.IO.Path.Combine(rootPath, "appdata", "logs"),
+            LogsPath = System.IO.Path.Combine(rootPath, "appdata", "game","logs"),
+            SharedPath=System.IO.Path.Combine(rootPath, "appdata", "game","shared"),
             ResourcesPath = System.IO.Path.Combine(rootPath, "resources"),
             SystemPath = System.IO.Path.Combine(rootPath, "system"),
             AppdataPath = System.IO.Path.Combine(rootPath, "appdata"),
+    
         };
         Directory.CreateDirectory(ctx.ConfigPath);
         Directory.CreateDirectory(ctx.PersistDataPath);
@@ -31,6 +33,7 @@ public class Deployment
         Directory.CreateDirectory(ctx.LogsPath);
         Directory.CreateDirectory(ctx.ResourcesPath);
         Directory.CreateDirectory(ctx.SystemPath);
+        Directory.CreateDirectory(ctx.SharedPath);
         return ctx;
     }
     public string RootPath { get; init; } = string.Empty;
@@ -44,5 +47,6 @@ public class Deployment
     public string LogsPath { get; init; } = string.Empty;
     public string ResourcesPath { get; init; } = string.Empty;
     public string SystemPath { get; init; } = string.Empty;
+    public string SharedPath { get; init; } = string.Empty;
 
 }

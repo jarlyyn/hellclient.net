@@ -9,7 +9,7 @@ namespace Hellclient.World.Cores;
 
 public partial class World : IWorld
 {
-    public World(string id, IWorldService service, WorldPaths paths, ILogger logger)
+    public World(string id, IWorldService service, WorldPaths paths, ILogger logger, Func<IWorld,Func<string, IScriptEngine>> scriptEngineCreatorFactory)
     {
         Context = new WorldContext()
         {
@@ -22,6 +22,7 @@ public partial class World : IWorld
                 Recent = new Ring<Line>(AppConfig.System.MaxRecent),
             },
             logger = logger,
+            EngineCreator = scriptEngineCreatorFactory.Invoke(this),
         };
         Service = service;
         Service.InstallTo(Context);

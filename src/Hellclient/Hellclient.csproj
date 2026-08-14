@@ -24,6 +24,6 @@
     <TrimmerRootAssembly Include="System.Security.Cryptography" />
     <ProjectReference Include="..\Hellclient.Core\Hellclient.Core.csproj" />
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
-    <ProjectReference Include="..\Hellclient.V8ScriptEngine\Hellclient.V8ScriptEngine.csproj" />
+    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj" />
   </ItemGroup>
 </Project>
