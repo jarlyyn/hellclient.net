@@ -29,7 +29,7 @@ public class AutomationTimer
         {
             _timer = new System.Timers.Timer(Data.GetDuration().TotalMilliseconds)
             {
-                AutoReset = false
+                AutoReset = true
             };
             _timer.Elapsed += (sender, e) =>
             {

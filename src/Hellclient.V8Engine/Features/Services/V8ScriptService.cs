@@ -1,4 +1,7 @@
+using System.Dynamic;
+using System.Text;
 using Hellclient.V8Engine.Features.States;
+using Hellclient.World.Types;
 
 namespace Hellclient.V8Engine.Features.Services;
 
@@ -8,6 +11,22 @@ public interface IV8ScriptService
     public void InstallTo(V8EngineContext context);
     public void Open(V8EngineContext context);
     public void Run(V8EngineContext context, string script);
+    public void Close(V8EngineContext context);
+    public void OnConnect(V8EngineContext context);
+    public void OnDisconnect(V8EngineContext context);
+    public void OnTrigger(V8EngineContext context, Line line, Trigger trigger, MatchResult matchResult);
+    public void OnAlias(V8EngineContext context, string message, Alias alias, MatchResult matchResult);
+    public void OnTimer(V8EngineContext context, World.Types.Timer timer);
+    public void OnCallback(V8EngineContext context, Callback cb);
+    public void OnBroadCast(V8EngineContext context, Broadcast bc);
+    public void OnHUDClick(V8EngineContext context, Click c);
+    public void OnResponse(V8EngineContext context, Message msg);
+    public void OnAssist(V8EngineContext context, string script);
+    public bool OnBuffer(V8EngineContext context, byte[] data);
+    public void OnFocus(V8EngineContext context);
+    public void OnLoseFocus(V8EngineContext context);
+    public void OnKeyUp(V8EngineContext context, string key);
+    public bool OnSubneg(V8EngineContext context, byte code, byte[] data);
 }
 public partial class V8ScriptService : IV8ScriptService
 {
@@ -50,14 +69,14 @@ public partial class V8ScriptService : IV8ScriptService
             callByName(context, data.OnOpen);
         }
     }
-    private object? callByName(V8EngineContext context, string funcname)
+    private object? callByName(V8EngineContext context, string funcname, params object?[] args)
     {
         try
         {
             var func = context.Runtime.Evaluate(funcname);
             if (func is not null && func is Microsoft.ClearScript.ScriptObject scriptfunc)
             {
-                return scriptfunc.InvokeAsFunction();
+                return scriptfunc.InvokeAsFunction(args);
             }
 
         }
@@ -78,4 +97,157 @@ public partial class V8ScriptService : IV8ScriptService
             handleError(context, ex);
         }
     }
+    public void Close(V8EngineContext context)
+    {
+        if (context.Events.OnClose != "")
+        {
+            callByName(context, context.Events.OnClose);
+        }
+    }
+    public void OnConnect(V8EngineContext context)
+    {
+        if (context.Events.OnConnect != "")
+        {
+            callByName(context, context.Events.OnConnect);
+        }
+    }
+    public void OnDisconnect(V8EngineContext context)
+    {
+        if (context.Events.OnDisconnect != "")
+        {
+            callByName(context, context.Events.OnDisconnect);
+        }
+    }
+    public void OnTrigger(V8EngineContext context, Line line, Trigger trigger, MatchResult matchResult)
+    {
+        if (trigger.Script == "")
+        {
+            return;
+        }
+        var model = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        if (model == null)
+        {
+            return;
+        }
+        foreach (var kv in matchResult.Named)
+        {
+            model[kv.Key] = kv.Value;
+        }
+        for (var k = 0; k < matchResult.List.Count; k++)
+        {
+            switch (k)
+            {
+                case 0:
+                    model["10"] = matchResult.List[k];
+                    break;
+                case > 9:
+                    break;
+
+            }
+            model[$"{(k - 1).ToString()}"] = matchResult.List[k];
+        }
+        callByName(context, trigger.Script, trigger.Name, line.ToPlainText(), model);
+    }
+    public void OnAlias(V8EngineContext context, string message, Alias alias, MatchResult matchResult)
+    {
+        if (alias.Script == "")
+        {
+            return;
+        }
+        var model = new ExpandoObject() as IDictionary<string, object>;
+        foreach (var kv in matchResult.Named)
+        {
+            model[kv.Key] = kv.Value;
+        }
+        for (var k = 0; k < matchResult.List.Count; k++)
+        {
+            switch (k)
+            {
+                case 0:
+                    model["10"] = matchResult.List[k];
+                    break;
+                case > 9:
+                    break;
+
+            }
+            model[$"{(k - 1).ToString()}"] = matchResult.List[k];
+        }
+        callByName(context, alias.Script, alias.Name, message, model);
+
+    }
+    public void OnTimer(V8EngineContext context, World.Types.Timer timer)
+    {
+        callByName(context, timer.Script, timer.Name);
+    }
+    public void OnCallback(V8EngineContext context, Callback cb)
+    {
+        callByName(context, cb.Script, cb.Name, cb.ID, cb.Code, cb.Data);
+    }
+    public void OnBroadCast(V8EngineContext context, Broadcast bc)
+    {
+        callByName(context, context.Events.OnBroadcast, bc.Message, bc.Global, bc.Channel, bc.ID);
+    }
+    public void OnHUDClick(V8EngineContext context, Click c)
+    {
+        callByName(context, context.Events.OnHUDClick, c.X, c.Y);
+    }
+    public void OnResponse(V8EngineContext context, Message msg)
+    {
+        callByName(context, context.Events.OnResponse, msg.Type, msg.ID, msg.Data);
+    }
+    public void OnAssist(V8EngineContext context, string script)
+    {
+        callByName(context, script);
+    }
+    public bool OnBuffer(V8EngineContext context, byte[] data)
+    {
+        if (context.Events.OnBuffer == "")
+        {
+            return false;
+        }
+        var l = data.Length;
+        if (l < context.Events.OnBufferMin || l > context.Events.OnBufferMax)
+        {
+            return false;
+        }
+        if (data != null)
+        {
+            return callByName(context, context.Events.OnBuffer, Encoding.UTF8.GetString(data), data) is bool result && result;
+
+        }
+        else
+        {
+            return callByName(context, context.Events.OnBuffer, null, null) is bool result && result;
+        }
+    }
+    public void OnFocus(V8EngineContext context)
+    {
+        if (context.Events.OnFocus != "")
+        {
+            callByName(context, context.Events.OnFocus);
+        }
+    }
+    public void OnLoseFocus(V8EngineContext context)
+    {
+        if (context.Events.OnLoseFocus != "")
+        {
+            callByName(context, context.Events.OnLoseFocus);
+        }
+    }
+    public void OnKeyUp(V8EngineContext context, string key)
+    {
+        if (context.Events.OnKeyUp != "")
+        {
+            callByName(context, context.Events.OnKeyUp, key);
+        }
+    }
+    public bool OnSubneg(V8EngineContext context, byte code, byte[] data)
+    {
+        if (context.Events.OnSubneg == "")
+        {
+            return false;
+        }
+        return callByName(context, context.Events.OnSubneg, code, data) is bool result && result;
+    }
+
 }

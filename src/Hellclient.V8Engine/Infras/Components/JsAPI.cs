@@ -72,6 +72,8 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
                 return new List<string> { s };
             case object[] arr:
                 return arr.Select(a => a?.ToString() ?? "").ToList();
+            case IList<object> arr:
+                return arr.Select(a => a?.ToString() ?? "").ToList();
             default:
                 return new List<string>();
         }

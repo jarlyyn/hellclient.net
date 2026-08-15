@@ -16,70 +16,25 @@ public class V8ScriptEngine : IScriptEngine
     }
     public IV8ScriptService Service { get; set; } = new V8ScriptService();
     private V8EngineContext Context { get; init; }
-    public void Open()=>Service.Open(Context);
-    public void Close()
-    {
+    public void Open() => Service.Open(Context);
+    public void Close() => Service.Close(Context);
 
-    }
-    public void OnConnect()
-    {
-
-    }
-    public void OnDisconnect()
-    {
-
-    }
-    public void OnTrigger(Line line, Trigger trigger, MatchResult matchResult)
-    {
-
-    }
-    public void OnAlias(string message, Alias alias, MatchResult matchResult)
-    {
-
-    }
-    public void OnTimer(Timer timer)
-    {
-
-    }
-    public void OnCallback(Callback cb)
-    {
-
-    }
-    public void OnBroadCast(Broadcast bc)
-    {
-
-    }
-    public void OnHUDClick(Click c)
-    {
-
-    }
-    public void OnResponse(Message msg)
-    {
-
-    }
-    public void OnAssist(string script)
-    { }
-    public bool OnBuffer(byte[] data)
-    {
-        return false;
-    }
-    public void OnFocus()
-    {
-
-    }
-    public void OnLoseFocus()
-    {
-
-    }
-    public void OnKeyUp(string key)
-    {
-
-    }
-    public bool OnSubneg(byte code, byte[] data)
-    {
-        return false;
-    }
-    public void Run(string script)=>Service.Run(Context,script);
+    public void OnConnect() => Service.OnConnect(Context);
+    public void OnDisconnect() => Service.OnDisconnect(Context);
+    public void OnTrigger(Line line, Trigger trigger, MatchResult matchResult) => Service.OnTrigger(Context, line, trigger, matchResult);
+    public void OnAlias(string message, Alias alias, MatchResult matchResult) => Service.OnAlias(Context, message, alias, matchResult);
+    public void OnTimer(Timer timer) => Service.OnTimer(Context, timer);
+    public void OnCallback(Callback cb) => Service.OnCallback(Context, cb);
+    public void OnBroadCast(Broadcast bc) => Service.OnBroadCast(Context, bc);
+    public void OnHUDClick(Click c) => Service.OnHUDClick(Context, c);
+    public void OnResponse(Message msg) => Service.OnResponse(Context, msg);
+    public void OnAssist(string script) => Service.OnAssist(Context, script);
+    public bool OnBuffer(byte[] data) => Service.OnBuffer(Context, data);
+    public void OnFocus() => Service.OnFocus(Context);
+    public void OnLoseFocus() => Service.OnLoseFocus(Context);
+    public void OnKeyUp(string key) => Service.OnKeyUp(Context, key);
+    public bool OnSubneg(byte code, byte[] data) => Service.OnSubneg(Context, code, data);
+    public void Run(string script) => Service.Run(Context, script);
 }
 
 public class V8ScriptEngineFactory : IScriptEngineFactory
@@ -95,14 +50,14 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
     }
     public void NewScript(string ID)
     {
-        if( Directory.Exists(Path.Combine(Deployment.Instance.ScriptsPath, ID)))
+        if (Directory.Exists(Path.Combine(Deployment.Instance.ScriptsPath, ID)))
         {
             throw new Exception($"Script {ID} already exists");
         }
         Directory.CreateDirectory(Path.Combine(Deployment.Instance.ScriptsPath, ID));
-        var data=File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "v8.toml"));
+        var data = File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "v8.toml"));
         File.WriteAllText(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script.toml"), data);
-        var scriptdata=File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "v8.js"));
-        File.WriteAllText(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script","script.js"), scriptdata);
+        var scriptdata = File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "v8.js"));
+        File.WriteAllText(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script", "script.js"), scriptdata);
     }
 }

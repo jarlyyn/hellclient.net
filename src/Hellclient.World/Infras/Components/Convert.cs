@@ -12,10 +12,10 @@ public interface IConvert
     public event EventHandler<Line>? OnPrompt;
     public Debounce? Debounce { get; set; }
 
-    public void OnByte(object sender, byte data);
     public byte[] GetBuffer();
     public void Prompt();
     public void Publish();
+    public void AppendBuffer(byte data);
 }
 public class Convert : IConvert
 {
@@ -32,27 +32,16 @@ public class Convert : IConvert
     public string Charset { get; set; } = CharsetUtil.UTF8;
     public Debounce? Debounce { get; set; }
 
-    private List<byte> _buffer = new List<byte>();
+    public List<byte> _buffer = new List<byte>();
     public event EventHandler<Line>? OnLine;
     public event EventHandler<Line>? OnPrompt;
     public byte[] GetBuffer()
     {
         return _buffer.ToArray();
     }
-    public void OnByte(object sender, byte data)
+    public void AppendBuffer(byte data)
     {
-        if (data == 13)
-        {
-            Publish();
-            return;
-        }
-        if (data == 10)
-        {
-            Publish();
-            return;
-        }
         _buffer.Add(data);
-        Task.Run(async () => await Debounce!.Exec());
     }
     public void Publish()
     {
@@ -62,7 +51,7 @@ public class Convert : IConvert
             return;
         }
         line.Type = Line.LineTypeReal;
-        Task.Run(async () => OnLine?.Invoke(this, line));
+        OnLine?.Invoke(this, line);
         Debounce?.Reset();
         _buffer.Clear();
         var pl = Line.New();

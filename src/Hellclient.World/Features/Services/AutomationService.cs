@@ -79,7 +79,7 @@ public class AutomationService : IAutomationService
     public IConfigService ConfigService { get; set; } = new ConfigService();
     public void InstallTo(WorldContext context)
     {
-        context.EventBus.LineEvent += async (_, line) => await OnLine(context, line);
+        context.EventBus.LineEvent += (_, line) => OnLine(context, line);
         context.EventBus.CloseEvent += (_, _) => OnClose(context);
         context.Automation.Timers.OnFire += (_, timer) => OnTimer(context, timer);
         // Install automation service to the world context
@@ -100,83 +100,74 @@ public class AutomationService : IAutomationService
             context.Lock.Release();
         }
     }
-    public async Task OnLine(WorldContext context, Line? line)
+    public void OnLine(WorldContext context, Line? line)
     {
         if (line is null || line.Type != Line.LineTypeReal)
         {
             return;
         }
-        context.Lock.Wait();
-        try
+        var text = line.ToPlainText();
+        context.Automation.ReadyForLine();
+        context.Automation.MultiLinesAppend(text);
+        var queue = context.Automation.Triggers.Queue();
+        var trictx = new TriggerContext(text, context.Config.Data.Params);
+        for (int i = 0; i < queue.Count; i++)
         {
-
-            var text = line.ToPlainText();
-            context.Automation.ReadyForLine();
-            context.Automation.MultiLinesAppend(text);
-            var queue = context.Automation.Triggers.Queue();
-            var trictx = new TriggerContext(text, context.Config.Data.Params);
-            for (int i = 0; i < queue.Count; i++)
+            var v = queue[i];
+            var r = v.Match(trictx, context.Automation.MultiLines);
+            if (r is null)
             {
-                var v = queue[i];
-                var r = v.Match(trictx, context.Automation.MultiLines);
-                if (r is null)
-                {
-                    continue;
-                }
-                var rawtrigger = context.Automation.Triggers.All.TryGetValue(v.Data.ID, out var t) ? t : null;
-                if (rawtrigger is not null)
-                {
-                    rawtrigger.Wildcards = r;
-                }
-                string send = "";
-                Trigger data;
-                data = v.Data;
-                if (data.Script != "")
-                {
-                    line.Triggers.Add(data.Script);
-                }
-                else
-                {
-                    line.Triggers.Add($"#{data.ID}");
-                }
-                if (v.Data.Send != "")
-                {
-                    var rl = r.ReplaceList(v.Data.Name);
-                    if (v.Data.ExpandVariables)
-                    {
-                        rl.AddRange(Replacer.BuildParamsReplacer(trictx.Params));
-                    }
-                    send = Replacer.Replace(v.Data.Send, rl);
-                }
-                if (data.OneShot)
-                {
-                    context.Automation.Triggers.RemoveTrigger(data.ID);
-                }
-                if (data.OneShot)
-                {
-                    InfoService.OmitOutput(context);
-                }
-                if (data.OmitFromLog)
-                {
-                    line.OmitFromLog = true;
-                }
-                if (send != "")
-                {
-                    trySendTo(context, data.SendTo, send, data.Variable, data.OmitFromLog, data.OmitFromOutput);
-                }
-                if (data.Script != "")
-                {
-                    ScriptService.SendTrigger(context, line, data, r);
-                }
-                if (!data.KeepEvaluating || context.Automation.EvaluatingTriggersStop())
-                {
-                    return;
-                }
+                continue;
             }
-        }
-        finally
-        {
-            context.Lock.Release();
+            var rawtrigger = context.Automation.Triggers.All.TryGetValue(v.Data.ID, out var t) ? t : null;
+            if (rawtrigger is not null)
+            {
+                rawtrigger.Wildcards = r;
+            }
+            string send = "";
+            Trigger data;
+            data = v.Data;
+            if (data.Script != "")
+            {
+                line.Triggers.Add(data.Script);
+            }
+            else
+            {
+                line.Triggers.Add($"#{data.ID}");
+            }
+            if (v.Data.Send != "")
+            {
+                var rl = r.ReplaceList(v.Data.Name);
+                if (v.Data.ExpandVariables)
+                {
+                    rl.AddRange(Replacer.BuildParamsReplacer(trictx.Params));
+                }
+                send = Replacer.Replace(v.Data.Send, rl);
+            }
+            if (data.OneShot)
+            {
+                context.Automation.Triggers.RemoveTrigger(data.ID);
+            }
+            if (data.OneShot)
+            {
+                InfoService.OmitOutput(context);
+            }
+            if (data.OmitFromLog)
+            {
+                line.OmitFromLog = true;
+            }
+            if (send != "")
+            {
+                trySendTo(context, data.SendTo, send, data.Variable, data.OmitFromLog, data.OmitFromOutput);
+            }
+            if (data.Script != "")
+            {
+                ScriptService.SendTrigger(context, line, data, r);
+            }
+            if (!data.KeepEvaluating || context.Automation.EvaluatingTriggersStop())
+            {
+                return;
+            }
         }
     }
     public MatchResult? GetTriggerWildcard(WorldContext context, string name)

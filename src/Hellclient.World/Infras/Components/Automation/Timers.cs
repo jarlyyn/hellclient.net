@@ -290,7 +290,7 @@ public class Timers
     }
     public bool _addTimer(Timer timer)
     {
-        if (!All.ContainsKey(timer.ID))
+        if (All.ContainsKey(timer.ID))
         {
             return false;
         }

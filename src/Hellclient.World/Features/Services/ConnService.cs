@@ -56,20 +56,31 @@ public class ConnService : IConnService
         });
         Listen(context);
     }
+    private void OnByte(WorldContext context, byte data)
+    {
+        context.Lock.Wait();
+        try
+        {
+
+            if (data == 13 || data == 10)
+            {
+                context.Convert.Publish();
+                return;
+            }
+        }
+        finally
+        {
+            context.Lock.Release();
+        }
+        context.Convert.AppendBuffer(data);
+        Task.Run(async () => await context.Convert.Debounce!.Exec());
+    }
+
     private void Listen(WorldContext context)
     {
-        context.Connection.OnDataReceived += (sender, data) =>
-        {
-            context.Convert.OnByte(this, data);
-        };
-        context.Connection.OnCommandReceived += (sender, cmd) =>
-        {
-            OnCommandReceived(context, cmd);
-        };
-        context.Convert.OnLine += (sender, line) =>
-        {
-            context.EventBus.LineEvent?.Invoke(this, line);
-        };
+        context.Connection.OnDataReceived += (sender, data) => OnByte(context, data);
+        context.Connection.OnCommandReceived += (sender, cmd) => OnCommandReceived(context, cmd);
+        context.Convert.OnLine += (sender, line) => context.EventBus.LineEvent?.Invoke(this, line);
     }
     public async void OnCommandReceived(WorldContext context, TelnetCommand cmd)
     {

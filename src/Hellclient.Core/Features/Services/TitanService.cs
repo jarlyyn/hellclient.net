@@ -935,7 +935,7 @@ public class TitanService : ITitanService
             try
             {
                 var triggers = w.GetTriggersByType(byuser);
-                triggers.Sort((a,b)=> a.CompareTo(b));
+                triggers.Sort((a, b) => a.CompareTo(b));
                 if (byuser)
                 {
                     MsgHelper.PublishUserTriggers(context.EventBus, id, triggers);
@@ -1077,7 +1077,7 @@ public class TitanService : ITitanService
             try
             {
                 var timers = w.GetTimersByType(byuser);
-                timers.Sort((a,b)=> a.CompareTo(b));
+                timers.Sort((a, b) => a.CompareTo(b));
                 if (byuser)
                 {
                     MsgHelper.PublishUserTimers(context.EventBus, id, timers);
@@ -1434,12 +1434,13 @@ public class TitanService : ITitanService
             w.SetParamComment(name, value);
             MsgHelper.PublishParamUpdated(context.EventBus, id, name);
             AutoSaveWorld(context, id);
-            HandleCmdParams(context, id);
         }
         finally
         {
             w.Lock.Release();
         }
+        HandleCmdParams(context, id);
+
     }
     public void HandleCmdWorldSettings(TitanContext context, string id)
     {

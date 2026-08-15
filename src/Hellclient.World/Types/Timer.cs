@@ -57,7 +57,7 @@ public class Timer
             }
             return target - now;
         }
-        var d = new TimeSpan(Hour, Minute, (int)Second);
+        var d = TimeSpan.FromHours(Hour) + TimeSpan.FromMinutes(Minute) + TimeSpan.FromSeconds(Second);
         if (d <= TimeSpan.Zero)
         {
             d = new TimeSpan(0, 0, 1);

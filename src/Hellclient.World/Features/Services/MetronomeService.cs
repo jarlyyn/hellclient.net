@@ -29,6 +29,7 @@ public class MetronomeService : IMetronomeService
     public void SetInterval(WorldContext context, TimeSpan interval)
     {
         context.Metronome.Interval = interval;
+        startTick(context);
     }
     public TimeSpan Interval(WorldContext context)
     {
@@ -191,35 +192,48 @@ public class MetronomeService : IMetronomeService
     }
     public async Task play(WorldContext context)
     {
-        if (!context.Connection.IsConnected())
+        try
         {
-            return;
-        }
-        clean(context);
-        var b = getBeats(context);
-        while (context.Metronome.Queue.Count != 0 && context.Metronome.Sent.Count < b)
-        {
-            var cmds = context.Metronome.Queue[0];
-            if (b - context.Metronome.Sent.Count < cmds.Count)
+            await context.Lock.WaitAsync();
+            if (!context.Connection.IsConnected())
             {
-                //避免cmds长于beats时永远不发送
-                if (context.Metronome.Sent.Count() != 0)
+                return;
+            }
+            clean(context);
+            var b = getBeats(context);
+            while (context.Metronome.Queue.Count != 0 && context.Metronome.Sent.Count < b)
+            {
+                var cmds = context.Metronome.Queue[0];
+                if (b - context.Metronome.Sent.Count < cmds.Count)
                 {
-                    return;
+                    //避免cmds长于beats时永远不发送
+                    if (context.Metronome.Sent.Count() != 0)
+                    {
+                        return;
+                    }
+                }
+                context.Metronome.Queue.RemoveAt(0);
+                foreach (var cmd in cmds)
+                {
+                    await ConnService.DoSend(context, cmd);
+                    var t = DateTime.Now;
+                    context.Metronome.Sent.Add(t);
                 }
             }
-            context.Metronome.Queue.RemoveAt(0);
-            foreach (var cmd in cmds)
-            {
-                await ConnService.DoSend(context, cmd);
-                var t = DateTime.Now;
-                context.Metronome.Sent.Add(t);
-            }
+        }
+        finally
+        {
+            context.Lock.Release();
         }
     }
+
     public async Task Play(WorldContext context)
     {
         _ = play(context);
+    }
+    public void Stop(WorldContext context)
+    {
+        stopTick(context);
     }
     public void stopTick(WorldContext context)
     {
@@ -229,27 +243,28 @@ public class MetronomeService : IMetronomeService
         }
         context.Metronome.ticker = null;
     }
+    public void Start(WorldContext context)
+    {
+        startTick(context);
+    }
     public void startTick(WorldContext context)
     {
         stopTick(context);
+        Task.Run(async () => await nextTick(context));
+    }
+    public async Task nextTick(WorldContext context)
+    {
         var interval = context.Metronome.Interval;
         if (interval <= TimeSpan.Zero)
         {
             interval = Metronome.DefaultInterval;
         }
         context.Metronome.ticker = new PeriodicTimer(interval);
-        Task.Run(async () => await nextTick(context));
-    }
-    public async Task nextTick(WorldContext context)
-    {
-        if (context.Metronome.ticker == null)
-        {
-            return;
-        }
         if (await context.Metronome.ticker.WaitForNextTickAsync())
         {
             await play(context);
         }
+        _ = nextTick(context);
     }
     public async Task Push(WorldContext context, List<Command> cmds, bool grouped)
     {
