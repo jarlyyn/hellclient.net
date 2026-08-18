@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hellclient.Core.Types;
 using Hellclient.Core.Types.Forms;
+using Hellclient.Script.Types.Userinput;
 using Hellclient.World.Types;
 using Timer = Hellclient.World.Types.Timer;
 
@@ -57,12 +58,20 @@ namespace Hellclient.Core.Infras.Components;
 [JsonSerializable(typeof(RequiredParamsForm))]
 [JsonSerializable(typeof(UserPassword))]
 [JsonSerializable(typeof(UpdatePasswordForm))]
-
+[JsonSerializable(typeof(Userinput))]
+[JsonSerializable(typeof(Datagrid))]
+[JsonSerializable(typeof(DataList))]
+[JsonSerializable(typeof(VisualPrompt))]
+[JsonSerializable(typeof(Item))]
+[JsonSerializable(typeof(List<Item>))]
+[JsonSerializable(typeof(List<VisualPrompt>))]
+[JsonSerializable(typeof(Dictionary<string, object>))]
 public partial class JsonContext : JsonSerializerContext
 {
     public static JsonSerializerOptions JsonOptions = new()
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        PropertyNameCaseInsensitive = true,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
     };
     public static JsonContext Instance = new JsonContext(JsonOptions);
@@ -164,6 +173,18 @@ public partial class JsonContext : JsonSerializerContext
                 return JsonSerializer.SerializeToUtf8Bytes(up, JsonContext.Instance.UserPassword);
             case UpdatePasswordForm upf:
                 return JsonSerializer.SerializeToUtf8Bytes(upf, JsonContext.Instance.UpdatePasswordForm);
+            case Userinput ui:
+                return JsonSerializer.SerializeToUtf8Bytes(ui, JsonContext.Instance.Userinput);
+            case Datagrid dg:
+                return JsonSerializer.SerializeToUtf8Bytes(dg, JsonContext.Instance.Datagrid);
+            case DataList dl:
+                return JsonSerializer.SerializeToUtf8Bytes(dl, JsonContext.Instance.DataList);
+            case VisualPrompt vp:
+                return JsonSerializer.SerializeToUtf8Bytes(vp, JsonContext.Instance.VisualPrompt);
+            case Item item:
+                return JsonSerializer.SerializeToUtf8Bytes(item, JsonContext.Instance.Item);
+            case List<Item> itemList:
+                return JsonSerializer.SerializeToUtf8Bytes(itemList, JsonContext.Instance.ListItem);
             case null:
                 return Encoding.UTF8.GetBytes("null");
             default:

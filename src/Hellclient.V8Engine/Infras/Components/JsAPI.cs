@@ -6,6 +6,7 @@ using Hellclient.Script.Infras.Components;
 using Hellclient.World.Cores;
 using Hellclient.World.Utils;
 using Microsoft.ClearScript.V8;
+using Microsoft.ClearScript.JavaScript;
 
 namespace Hellclient.V8Engine.Infras.Components;
 
@@ -43,13 +44,16 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
         }
         return args[idx] is not null;
     }
+    public static string ConvertString(object? arg)
+    {
+        return arg?.ToString() ?? "";
+    }
     public static string GetStringArg(object[] args, int idx)
     {
-        return GetArg(args, idx)?.ToString() ?? "";
+        return ConvertString(GetArg(args, idx));
     }
-    public static int GetIntArg(object[] args, int idx)
+    public static int ConvertInt(object? arg)
     {
-        var arg = GetArg(args, idx);
         switch (arg)
         {
             case int i:
@@ -60,12 +64,14 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
                 return i;
             default:
                 return 0;
-
         }
     }
-    public static List<string> GetStringArrayArg(object[] args, int idx)
+    public static int GetIntArg(object[] args, int idx)
     {
-        var arg = GetArg(args, idx);
+        return ConvertInt(GetArg(args, idx));
+    }
+    public static List<string> ConvertStringArray(object? arg)
+    {
         switch (arg)
         {
             case List<string> list:
@@ -80,9 +86,12 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
                 return new List<string>();
         }
     }
-    public static bool GetBoolArg(object[] args, int idx)
+    public static List<string> GetStringArrayArg(object[] args, int idx)
     {
-        var arg = GetArg(args, idx);
+        return ConvertStringArray(GetArg(args, idx));
+    }
+    public static bool ConvertBool(object? arg)
+    {
         switch (arg)
         {
             case bool b:
@@ -97,9 +106,12 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
                 return false;
         }
     }
-    public static double GetDoubleArg(object[] args, int idx)
+    public static bool GetBoolArg(object[] args, int idx)
     {
-        var arg = GetArg(args, idx);
+        return ConvertBool(GetArg(args, idx));
+    }
+    public static double ConvertDouble(object? arg)
+    {
         switch (arg)
         {
             case double d:
@@ -112,6 +124,25 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
                 return 0.0;
         }
     }
+    public static double GetDoubleArg(object[] args, int idx)
+    {
+        return ConvertDouble(GetArg(args, idx));
+    }
+    // public static Dictionary<string, string> ConvertStringDictionary(object? arg)
+    // {
+    //     var result = new Dictionary<string, string>();
+    //     switch (arg)
+    //     {
+    //         case IJavaScriptObject dict:
+    //             foreach (var key in dict.PropertyNames)
+    //             {
+    //                 var value = dict.GetProperty(key);
+    //                 result[key] = ConvertString(value);
+    //             }
+    //             break;
+    //     }
+    //     return result;
+    // }
     public object ToJsArray(List<string> list)
     {
         var result = _runtime.Script.Array();

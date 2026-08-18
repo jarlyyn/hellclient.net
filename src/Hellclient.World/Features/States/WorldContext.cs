@@ -28,7 +28,7 @@ public class WorldContext
 
     public Automation Automation { get; set; } = new Automation();
 
-    public Script Script { get; set; } = new Script();
+    public Hellclient.World.Infras.Components.Script Script { get; set; } = new Hellclient.World.Infras.Components.Script();
     public required WorldPaths Paths { get; init; }
     public List<string> TType = [];
     public required ILogger logger { get; init; }
