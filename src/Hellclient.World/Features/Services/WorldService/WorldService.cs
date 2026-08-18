@@ -20,6 +20,7 @@ public class WorldService : IWorldService
     {
         context.Dispose();
     }
+    public IConvertService ConvertService { get; set; } = new ConvertService();
     public IConnService ConnService { get; set; } = new ConnService();
     public IAutomationService AutomationService { get; set; } = new AutomationService();
 

@@ -20,5 +20,6 @@ public interface IWorldService
     public IScriptBridgeService ScriptBridgeService { get; set; }
     public ILogService LogService { get; set; }
     public ILoaderService LoaderService { get; set; }
+    public IConvertService ConvertService { get; set; }
 
 }

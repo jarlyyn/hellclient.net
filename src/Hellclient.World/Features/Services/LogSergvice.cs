@@ -16,7 +16,7 @@ public interface ILogService
 
 public class LogService : ILogService
 {
-    public IConnService ConnService { get; set; } = new ConnService();
+    public IConvertService ConvertService { get; set; } = new ConvertService();
     public void DoLog(WorldContext context, string message)
     {
 
@@ -29,6 +29,6 @@ public class LogService : ILogService
     public void HandleTriggerError(WorldContext context, Exception err) { }
     public void HandleScriptError(WorldContext context, Exception err)
     {
-        Task.Run(async () => ConnService.DoPrintSystem(context, err.Message));
+        Task.Run(async () => ConvertService.DoPrintSystem(context, err.Message));
     }
 }

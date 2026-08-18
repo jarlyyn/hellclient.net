@@ -72,7 +72,7 @@ public class AutomationService : IAutomationService
 {
     public IInfoService InfoService { get; set; } = new InfoService();
     public IMetronomeService MetronomeService { get; set; } = new MetronomeService();
-    public IConnService ConnService { get; set; } = new ConnService();
+    public IConvertService ConvertService { get; set; } = new ConvertService();
     public IQueueService QueueService { get; set; } = new QueueService();
     public IScriptService ScriptService { get; set; } = new ScriptService();
 
@@ -281,7 +281,7 @@ public class AutomationService : IAutomationService
                 break;
             case SendTo.SendtoCommand:
             case SendTo.SendtoOutput:
-                ConnService.DoPrint(context, message);
+                ConvertService.DoPrint(context, message);
                 break;
             case SendTo.SendtoStatus:
                 //  ToDO

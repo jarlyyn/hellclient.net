@@ -38,7 +38,7 @@ public class ScriptService : IScriptService
 {
     public IPathService PathService { get; set; } = new PathService();
     public IConfigService ConfigService { get; set; } = new ConfigService();
-    public IConnService ConnService { get; set; } = new ConnService();
+    public IConvertService ConvertService { get; set; } = new ConvertService();
     public void InstallTo(WorldContext context)
     {
         // Install script service to the world context
@@ -85,11 +85,11 @@ public class ScriptService : IScriptService
         SetCreator(context, "broadcast", "");
         if (ConfigService.GetShowBroadcast(context))
         {
-            ConnService.DoPrintGlobalBroadcastIn(context, bc.Message);
+            ConvertService.DoPrintGlobalBroadcastIn(context, bc.Message);
         }
         else
         {
-            ConnService.DoPrintLocalBroadcastIn(context, bc.Message);
+            ConvertService.DoPrintLocalBroadcastIn(context, bc.Message);
         }
         context.Script.Engine.OnBroadCast(bc);
 
@@ -142,7 +142,7 @@ public class ScriptService : IScriptService
         }
         if (ConfigService.GetShowSubneg(context))
         {
-            ConnService.DoPrintSubneg(context, $"[{data[0]}] {string.Join(" ", data.Skip(1).Select(b => b.ToString("X2")))}");
+            ConvertService.DoPrintSubneg(context, $"[{data[0]}] {string.Join(" ", data.Skip(1).Select(b => b.ToString("X2")))}");
         }
         SetCreator(context, "subneg", "");
         return context.Script.Engine.OnBuffer(data);

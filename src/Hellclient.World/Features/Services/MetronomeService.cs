@@ -25,7 +25,7 @@ public interface IMetronomeService
 }
 public class MetronomeService : IMetronomeService
 {
-    public IConnService ConnService { get; set; } = new ConnService();
+    public IConvertService ConvertService { get; set; } = new ConvertService();
     public void SetInterval(WorldContext context, TimeSpan interval)
     {
         context.Metronome.Interval = interval;
@@ -166,7 +166,7 @@ public class MetronomeService : IMetronomeService
     {
         cmd.Split("\n").ToList().ForEach(c =>
         {
-            ConnService.DoSend(context, c);
+            ConvertService.DoSend(context, c);
             var t = DateTime.Now;
             context.Metronome.Sent.Add(t);
         });
@@ -215,7 +215,7 @@ public class MetronomeService : IMetronomeService
                 context.Metronome.Queue.RemoveAt(0);
                 foreach (var cmd in cmds)
                 {
-                    await ConnService.DoSend(context, cmd);
+                    await ConvertService.DoSend(context, cmd);
                     var t = DateTime.Now;
                     context.Metronome.Sent.Add(t);
                 }

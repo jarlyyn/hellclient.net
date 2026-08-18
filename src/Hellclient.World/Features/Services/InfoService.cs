@@ -1,5 +1,6 @@
 using Hellclient.World.States;
 using Hellclient.World.Types;
+using Hellclient.World.Utils;
 
 namespace Hellclient.World.Features.Services;
 
@@ -24,6 +25,7 @@ public interface IInfoService
     public List<Line> GetSummary(WorldContext context);
     public long GetLastActive(WorldContext context);
     void UpdateLastActive(WorldContext context);
+
 }
 
 public class InfoService : IInfoService
