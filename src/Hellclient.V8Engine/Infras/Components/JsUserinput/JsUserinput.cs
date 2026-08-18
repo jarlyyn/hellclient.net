@@ -94,8 +94,9 @@ public class JsUserinput(IWorld world)
     }
     public Object? Convert(params object[] args)
     {
+#pragma warning disable CS8974
         var result = new ExpandoObject() as IDictionary<string, object>;
-        
+
         result["HideAll"] = HideAll;
         result["Prompt"] = Prompt;
         result["Confirm"] = Confirm;
@@ -117,7 +118,7 @@ public class JsUserinput(IWorld world)
         result["newlist"] = NewList;
         result["newdatagrid"] = NewDatagrid;
         result["newvisualprompt"] = NewVisualPrompt;
-
+#pragma warning restore CS8974
         return result;
     }
 }

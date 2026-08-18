@@ -56,7 +56,7 @@ public class JsUserinputDataGrid(IWorld world, Datagrid dataGrid)
     {
         _dataGrid.SetOnSelect(JsAPI.GetStringArg(args, 0));
         return null;
-    }   
+    }
     public Object? SetOnCreate(params object[] args)
     {
         _dataGrid.SetOnCreate(JsAPI.GetStringArg(args, 0));
@@ -89,6 +89,7 @@ public class JsUserinputDataGrid(IWorld world, Datagrid dataGrid)
     }
     public Object? Convert()
     {
+#pragma warning disable CS8974
         var result = new ExpandoObject() as IDictionary<string, object>;
         result["SetPage"] = SetPage;
         result["GetPage"] = GetPage;
@@ -123,7 +124,7 @@ public class JsUserinputDataGrid(IWorld world, Datagrid dataGrid)
         result["append"] = Append;
         result["publish"] = Publish;
         result["hide"] = Hide;
-
+#pragma warning restore CS8974
         return result;
     }
 }

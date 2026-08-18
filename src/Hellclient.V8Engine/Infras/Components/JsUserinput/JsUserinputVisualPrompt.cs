@@ -36,11 +36,12 @@ public class JsUserinputVisualPrompt(IWorld world, VisualPrompt visualPrompt)
     }
     public Object? Append(params object[] args)
     {
-        _visualPrompt.Append(JsAPI.GetStringArg(args, 0),JsAPI.GetStringArg(args, 1));
+        _visualPrompt.Append(JsAPI.GetStringArg(args, 0), JsAPI.GetStringArg(args, 1));
         return null;
     }
     public Object? Convert()
     {
+#pragma warning disable CS8974
         var result = new ExpandoObject() as IDictionary<string, object>;
         result["Publish"] = Publish;
         result["SetMediaType"] = SetMediaType;
@@ -57,5 +58,6 @@ public class JsUserinputVisualPrompt(IWorld world, VisualPrompt visualPrompt)
         result["append"] = Append;
 
         return result;
+#pragma warning restore CS8974
     }
 }

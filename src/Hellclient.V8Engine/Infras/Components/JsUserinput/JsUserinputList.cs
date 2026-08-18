@@ -31,6 +31,7 @@ public class JsUserinputList(IWorld world, DataList dataList)
     }
     public Object? Convert()
     {
+#pragma warning disable CS8974
         var result = new ExpandoObject() as IDictionary<string, object>;
         result["Append"] = Append;
         result["Publish"] = Publish;
@@ -44,5 +45,6 @@ public class JsUserinputList(IWorld world, DataList dataList)
         result["setmulti"] = SetMulti;
         result["setmutli"] = SetMulti;//backwards compatibility
         return result;
+#pragma warning restore CS8974
     }
 }

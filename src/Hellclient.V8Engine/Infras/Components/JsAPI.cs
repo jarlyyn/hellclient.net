@@ -7,6 +7,7 @@ using Hellclient.World.Cores;
 using Hellclient.World.Utils;
 using Microsoft.ClearScript.V8;
 using Microsoft.ClearScript.JavaScript;
+using Microsoft.ClearScript;
 
 namespace Hellclient.V8Engine.Infras.Components;
 
@@ -145,10 +146,10 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     // }
     public object ToJsArray(List<string> list)
     {
-        var result = _runtime.Script.Array();
+        var result = (ScriptObject)_runtime.Evaluate("[]");
         foreach (var v in list)
         {
-            result.push(v);
+            result.InvokeMethod("push", v);
         }
         return result;
     }
@@ -306,12 +307,12 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     public object? GetWorldIdList(params object[] args)
     {
 
-        return _runtime.Script.Array();
+        return (ScriptObject)_runtime.Evaluate("[]");
     }
     public object? GetWorldList(params object[] args)
     {
 
-        return _runtime.Script.Array();
+        return (ScriptObject)_runtime.Evaluate("[]");
     }
     public object? WorldName(params object[] args)
     {
@@ -465,10 +466,10 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
         var list = _api.GetTimerList();
 
 
-        var result = _runtime.Script.Array();
+        var result = (ScriptObject)_runtime.Evaluate("[]");
         foreach (var v in list)
         {
-            result.push(v);
+            result.InvokeMethod("push", v);
         }
         return result;
     }
@@ -626,10 +627,10 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     {
 
         var list = _api.GetAliasList();
-        var result = _runtime.Script.Array();
+        var result = (ScriptObject)_runtime.Evaluate("[]");
         foreach (var v in list)
         {
-            result.push(v);
+            result.InvokeMethod("push", v);
         }
         return result;
     }
@@ -782,10 +783,10 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     public object? GetTriggerList(params object[] args)
     {
         var list = _api.GetTriggerList();
-        var result = _runtime.Script.Array();
+        var result = (ScriptObject)_runtime.Evaluate("[]");
         foreach (var v in list)
         {
-            result.push(v);
+            result.InvokeMethod("push", v);
         }
         return result;
     }
