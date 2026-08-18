@@ -452,7 +452,7 @@ public class TitanService : ITitanService
         var w = World(context, id);
         if (w != null)
         {
-            w.Lock.Wait();
+            await w.Lock.WaitAsync();
             try
             {
 
@@ -765,15 +765,18 @@ public class TitanService : ITitanService
             InstallTo(context, world!);
             context.Worlds[id] = world!;
         }
-
-        world?.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
+        if (world == null)
+        {
+            return false;
+        }
+        world.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
         try
         {
-            await world!.DoConnectServer();
+            await world.DoConnectServer();
         }
         catch (Exception ex)
         {
-            world?.HandleConnError(ex);
+            world.HandleConnError(ex);
         }
         return true;
     }
@@ -1787,7 +1790,7 @@ public class TitanService : ITitanService
     {
         context.HellSwitch.OnGlobalMessage += (sender, e) => OnGlobalMessage(context, e);
         context.HellSwitch.OnSwitchStatusChange += (sender, e) => OnSwitchStatusChange(context, e);
-        context.HellSwitch.Start();
+        //context.HellSwitch.Start();
     }
     public void Stop(TitanContext context)
     {

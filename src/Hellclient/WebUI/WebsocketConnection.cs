@@ -25,10 +25,16 @@ public class WebsocketConnection : IConnection
                 ValueWebSocketReceiveResult result;
                 do
                 {
-                    result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
+                    try
+                    {
+                        result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
+                    }
+                    catch
+                    {
+                        return;
+                    }
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
-                        await Close();
                         return;
                     }
                     ms.Write(buffer.Span[..result.Count]);
@@ -37,7 +43,8 @@ public class WebsocketConnection : IConnection
                 ms.Seek(0, SeekOrigin.Begin);
                 OnMessage?.Invoke(this, ms.ToArray());
             }
-        }finally
+        }
+        finally
         {
             await Close();
         }

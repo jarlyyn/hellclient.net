@@ -41,13 +41,21 @@ public class HellSwitch
             Start();
         }
     }
-    private void close()
+    private async Task close()
     {
-        lock (this)
+        await Lock.WaitAsync();
+        try
         {
-            _conn?.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None).Wait();
+            if (_conn == null)
+            {
+                return;
+            }
             _conn?.Dispose();
             _conn = null;
+        }
+        finally
+        {
+            Lock.Release();
         }
     }
     public int Status()
@@ -92,7 +100,7 @@ public class HellSwitch
             {
                 return;
             }
-            await _conn.SendAsync(new ArraySegment<byte>(msg), WebSocketMessageType.Binary, true, CancellationToken.None);
+            await _conn.SendAsync(new ArraySegment<byte>(msg), WebSocketMessageType.Text, true, CancellationToken.None);
         }
         finally
         {
@@ -103,34 +111,32 @@ public class HellSwitch
     {
         byte[] buffer = new byte[4096];
         _ = Send(CmdHello);
-        try
+        while (_conn != null && _conn.State == WebSocketState.Open)
         {
-            while (_conn != null && _conn.State == WebSocketState.Open)
+            WebSocketReceiveResult result;
+            try
             {
-                var result = await _conn.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                if (result.MessageType == WebSocketMessageType.Close)
-                {
-                    break;
-                }
-                if (result.MessageType == WebSocketMessageType.Text)
-                {
-                    OnGlobalMessage?.Invoke(this, buffer.Take(result.Count).ToArray());
-                }
+                result = await _conn.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            }
+            catch (Exception)
+            {
+                break;
+            }
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                break;
+            }
+            if (result.MessageType == WebSocketMessageType.Text)
+            {
+                OnGlobalMessage?.Invoke(this, buffer.Take(result.Count).ToArray());
             }
         }
-        catch (Exception)
-        {
-
-        }
-        finally
-        {
-            close();
-            OnSwitchStatusChange?.Invoke(this, StatusDisconnected);
-        }
-
+        await close();
+        OnSwitchStatusChange?.Invoke(this, StatusDisconnected);
     }
     public void Start()
     {
+        return;
         Lock.Wait();
         try
         {
@@ -151,15 +157,13 @@ public class HellSwitch
                 _conn.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(ui)));
             }
             _conn.ConnectAsync(u, CancellationToken.None).Wait();
-            Task.Run(async () => await Listen());
+            Task.Run(Listen);
             OnSwitchStatusChange?.Invoke(this, StatusConnected);
-
         }
         catch (Exception)
         {
-            _conn?.Dispose();
-            _conn = null;
-
+            close().Wait();
+            OnSwitchStatusChange?.Invoke(this, StatusDisconnected);
         }
         finally
         {

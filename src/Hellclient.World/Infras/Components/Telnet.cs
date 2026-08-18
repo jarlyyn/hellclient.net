@@ -121,37 +121,29 @@ public class Telnet : IMudConnection
         {
             _stream = stream;
             byte[] buffer = new byte[1];
-            try
+            while (_client.Connected)
             {
-                while (_client.Connected)
+                int bytesRead = 0;
+                try
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, _cts.Token);
-                    if (bytesRead == 0)
-                    {
-                        break;
-                    }
-
-                    OnByte(buffer[0]);
+                    bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, _cts.Token);
                 }
-            }
-            catch (OperationCanceledException oex)
-            {
-                Logger(oex);
-            }
-            catch (SocketException sex)
-            {
-                Logger(sex);
-            }
-            catch (Exception ex)
-            {
-                Logger(ex);
-            }
-            finally
-            {
-                _ = Disconnected();
-                // Console.WriteLine("已退出监听循环，正在清理当前连接资源...");
-            }
+                catch (Exception ex)
+                {
+                    Logger(ex);
+                    _ = Disconnected();
+                    return;
+                }
 
+                if (bytesRead == 0)
+                {
+                    break;
+                }
+
+                OnByte(buffer[0]);
+
+            }
+            _ = Disconnected();
         }
 
     }
