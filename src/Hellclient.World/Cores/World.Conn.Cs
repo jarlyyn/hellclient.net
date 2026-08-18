@@ -8,7 +8,6 @@ public partial class World
         public async Task DoConnectServer() => await Service.ConnService.Connect(Context);
         public async Task DoCloseServer() => await Service.ConnService.Close(Context);
         public bool GetConnConnected() => Service.ConnService.IsConnected(Context);
-        public async Task DoSend(Command cmd) => await Service.ConvertService.DoSend(Context, cmd);
         public void DoPrint(string msg) => Service.ConvertService.DoPrint(Context, msg);
         public void DoPrintSystem(string msg) => Service.ConvertService.DoPrintSystem(Context, msg);
         public void DoPrintGlobalBroadcastIn(string msg)=> Service.ConvertService.DoPrintGlobalBroadcastIn(Context, msg);

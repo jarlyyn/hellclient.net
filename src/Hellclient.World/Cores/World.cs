@@ -21,6 +21,10 @@ public partial class World : IWorld
                 History = new Ring<string>(AppConfig.System.MaxHistory),
                 Recent = new Ring<Line>(AppConfig.System.MaxRecent),
             },
+            Connection=new Telnet()
+            {
+                Logger = (ex) => service.LogService.HandleConnError(Context!, ex)
+            },
             logger = logger,
             EngineCreator = scriptEngineCreatorFactory.Invoke(this),
         };

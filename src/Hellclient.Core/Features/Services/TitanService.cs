@@ -234,9 +234,15 @@ public class TitanService : ITitanService
     public void OnCreateSuccess(TitanContext context, string id)
     {
         MsgHelper.PublishCreateSuccess(context.EventBus, id);
-
         var world = context.Worlds.TryGetValue(id, out var w) ? w : null;
-        world?.DoConnectServer();
+        try
+        {
+            world?.DoConnectServer();
+        }
+        catch (Exception ex)
+        {
+            world?.HandleCmdError(ex);
+        }
     }
     public void OnUpdateSuccess(TitanContext context, string id)
     {
@@ -266,6 +272,10 @@ public class TitanService : ITitanService
             {
                 w.DoConnectServer();
             }
+            catch (Exception ex)
+            {
+                w.HandleConnError(ex);
+            }
             finally
             {
                 w.Lock.Release();
@@ -281,6 +291,10 @@ public class TitanService : ITitanService
             try
             {
                 w.DoCloseServer();
+            }
+            catch (Exception ex)
+            {
+                w.HandleConnError(ex);
             }
             finally
             {
@@ -461,6 +475,10 @@ public class TitanService : ITitanService
             {
                 SaveWorld(context, id);
             }
+            catch (Exception ex)
+            {
+                w.HandleConnError(ex);
+            }
             finally
             {
                 w.Lock.Release();
@@ -476,6 +494,10 @@ public class TitanService : ITitanService
             try
             {
                 w.DoSaveScript();
+            }
+            catch (Exception ex)
+            {
+                w.HandleConnError(ex);
             }
             finally
             {
@@ -532,6 +554,10 @@ public class TitanService : ITitanService
             try
             {
                 w.DoReloadScript();
+            }
+            catch (Exception ex)
+            {
+                w.HandleConnError(ex);
             }
             finally
             {
@@ -711,6 +737,7 @@ public class TitanService : ITitanService
     }
     public async Task<bool> OpenWorld(TitanContext context, string id)
     {
+        IWorld? world;
         lock (context.Worlds)
         {
             if (context.Worlds.ContainsKey(id))
@@ -722,25 +749,33 @@ public class TitanService : ITitanService
             {
                 data = File.ReadAllText(GetWorldPath(context, id), Encoding.UTF8);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
-            var world = context.WorldFactory.CreateWorld(id, createPaths(context, id));
+            world = context.WorldFactory.CreateWorld(id, createPaths(context, id));
             try
             {
                 world?.DoDecode(data);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
             InstallTo(context, world!);
             context.Worlds[id] = world!;
-            world!.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
-            _ = world!.DoConnectServer();
-            return true;
         }
+
+        world?.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
+        try
+        {
+            await world!.DoConnectServer();
+        }
+        catch (Exception ex)
+        {
+            world?.HandleConnError(ex);
+        }
+        return true;
     }
 
     public bool IsAliasNameAvaliable(TitanContext context, string id, string name, bool byuser)

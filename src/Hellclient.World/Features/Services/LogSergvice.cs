@@ -6,7 +6,6 @@ public interface ILogService
 {
     public void DoLog(WorldContext context, string message) { }
 
-    public void HandleConnReceive(WorldContext context, byte[] msg) { }
     public void HandleConnError(WorldContext context, Exception err) { }
     public void HandleConverterError(WorldContext context, Exception err) { }
     public void HandleCmdError(WorldContext context, Exception err) { }
@@ -21,14 +20,30 @@ public class LogService : ILogService
     {
 
     }
-
-    public void HandleConnReceive(WorldContext context, byte[] msg) { }
-    public void HandleConnError(WorldContext context, Exception err) { }
-    public void HandleConverterError(WorldContext context, Exception err) { }
-    public void HandleCmdError(WorldContext context, Exception err) { }
-    public void HandleTriggerError(WorldContext context, Exception err) { }
+    private void dolog(WorldContext context, string message)
+    {
+        Task.Run(async () => ConvertService.DoPrintSystem(context, message));
+        Console.Error.WriteLine(message);
+        DoLog(context, message);
+    }
+    public void HandleConnError(WorldContext context, Exception err)
+    {
+        dolog(context, err.Message);
+    }
+    public void HandleConverterError(WorldContext context, Exception err)
+    {
+        dolog(context, err.Message);
+    }
+    public void HandleCmdError(WorldContext context, Exception err)
+    {
+        dolog(context, err.Message);
+    }
+    public void HandleTriggerError(WorldContext context, Exception err)
+    {
+        dolog(context, err.Message);
+    }
     public void HandleScriptError(WorldContext context, Exception err)
     {
-        Task.Run(async () => ConvertService.DoPrintSystem(context, err.Message));
+        dolog(context, err.Message);
     }
 }

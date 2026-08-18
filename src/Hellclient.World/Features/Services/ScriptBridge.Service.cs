@@ -18,6 +18,7 @@ public interface IScriptBridgeService
 
 public class ScriptBridgeService : IScriptBridgeService
 {
+    public ILogService LogService { get; set; } = new LogService();
     public IConfigService ConfigService { get; set; } = new ConfigService();
     public IScriptFileRepo ScriptFileRepo { get; set; } = new ScriptFileRepo();
     public IAutomationService AutomationService { get; set; } = new AutomationService();
@@ -122,6 +123,13 @@ public class ScriptBridgeService : IScriptBridgeService
     {
         _unload(context);
         ConfigService.SetScriptID(context, id);
-        Load(context);
+        try
+        {
+            Load(context);
+        }
+        catch (Exception ex)
+        {
+            LogService.HandleScriptError(context, ex);
+        }
     }
 }

@@ -17,7 +17,7 @@ public class WorldContext
     public string ID { get; set; } = string.Empty;
     public WorldEventBus EventBus { get; set; } = new WorldEventBus();
     public IScriptEngine ScriptEngine { get; set; } = new NopScriptEngine();
-    public IMudConnection Connection { get; set; } = new Telnet();
+    public required IMudConnection Connection { get; set; }
     public IConvert Convert { get; set; } = new Convert();
     public Metronome Metronome { get; set; } = new Metronome();
     public Queue Queue { get; set; } = new Queue();

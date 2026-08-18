@@ -75,7 +75,6 @@ public interface IWorld
     public PlainOptions GetPluginOptions();
     public void DoReloadPermissions();
     public void DoSendToConn(byte[] cmd);
-    public Task DoSend(Command command);
     public void DoSendToQueue(Command command);
     public void DoExecute(string message);
     public string DoEncode();
@@ -174,7 +173,6 @@ public interface IWorld
     public void AddHistory(string value);
     public List<string> GetHistories();
     public void FlushHistories();
-    public void HandleConnReceive(byte[] msg);
     public void HandleConnError(Exception err);
     public Task DoConnectServer();
     public Task DoCloseServer();

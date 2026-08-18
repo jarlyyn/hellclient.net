@@ -18,6 +18,7 @@ public class Telnet : IMudConnection
     private List<byte> _buffer = [];
     private int status = StatusNormal;
     private byte currentcmd = 0;
+    public required Action<Exception> Logger;
     public EventHandler<byte>? OnDataReceived { get; set; }
     public EventHandler<TelnetCommand>? OnCommandReceived { get; set; }
 
@@ -127,25 +128,23 @@ public class Telnet : IMudConnection
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, _cts.Token);
                     if (bytesRead == 0)
                     {
-                        // Console.WriteLine("【连接中止】服务器已主动断开连接。");
                         break;
                     }
 
                     OnByte(buffer[0]);
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException oex)
             {
-                // Console.WriteLine("【连接中止】读取流时任务已取消。");
+                Logger(oex);
             }
-            catch (SocketException ex)
+            catch (SocketException sex)
             {
-                // 物理断网、超时或服务器崩溃会触发此异常
-                // Console.WriteLine($"【连接中止】网络套接字异常: {ex.Message}");
+                Logger(sex);
             }
             catch (Exception ex)
             {
-                // Console.WriteLine($"【连接中止】读取流时发生未知错误: {ex.GetType().Name} :{ex.Message}");
+                Logger(ex);
             }
             finally
             {

@@ -71,6 +71,7 @@ public interface IAutomationService
 public class AutomationService : IAutomationService
 {
     public IInfoService InfoService { get; set; } = new InfoService();
+    public ILogService LogService { get; set; } = new LogService();
     public IMetronomeService MetronomeService { get; set; } = new MetronomeService();
     public IConvertService ConvertService { get; set; } = new ConvertService();
     public IQueueService QueueService { get; set; } = new QueueService();
@@ -114,7 +115,16 @@ public class AutomationService : IAutomationService
         for (int i = 0; i < queue.Count; i++)
         {
             var v = queue[i];
-            var r = v.Match(trictx, context.Automation.MultiLines);
+            MatchResult? r;
+            try
+            {
+                r = v.Match(trictx, context.Automation.MultiLines);
+            }
+            catch (Exception ex)
+            {
+                LogService.HandleTriggerError(context, ex);
+                continue;
+            }
             if (r is null)
             {
                 continue;
@@ -184,7 +194,16 @@ public class AutomationService : IAutomationService
         var queue = context.Automation.Aliases.Queue();
         foreach (var v in queue)
         {
-            var r = v.Match(message);
+            MatchResult? r;
+            try
+            {
+                r = v.Match(message);
+            }
+            catch (Exception ex)
+            {
+                LogService.HandleTriggerError(context, ex);
+                continue;
+            }
             if (r is null)
             {
                 continue;

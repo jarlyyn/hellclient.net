@@ -39,10 +39,6 @@ public partial class V8ScriptService : IV8ScriptService
     }
     public void handleError(V8EngineContext context, Exception ex)
     {
-        if (ex is Microsoft.ClearScript.ScriptEngineException scriptEx)
-        {
-            Console.WriteLine($"Script Error: {scriptEx.ErrorDetails}");
-        }
         context.World.HandleScriptError(ex);
     }
     public void Open(V8EngineContext context)
