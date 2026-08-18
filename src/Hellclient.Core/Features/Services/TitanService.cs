@@ -100,6 +100,7 @@ public interface ITitanService
     public void OnUpdateTriggerSuccess(TitanContext context, string world, string id);
     public void OnUpdateSuccess(TitanContext context, string id);
     public void OnUpdateScriptSuccess(TitanContext context, string id);
+    public void Start(TitanContext context);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService
@@ -218,7 +219,7 @@ public class TitanService : ITitanService
 
         if (bc.Global)
         {
-            context.HellSwitch.Broadcast(Encoding.UTF8.GetBytes($"{bc.Channel} {bc.Message}"));
+            Task.Run(async () => context.HellSwitch.Broadcast(Encoding.UTF8.GetBytes($"{bc.Channel} {bc.Message}")));
         }
     }
     private void onRequest(TitanContext context, IWorld world, World.Types.Message msg)
@@ -1758,6 +1759,5 @@ public class TitanService : ITitanService
         context.HellSwitch.OnGlobalMessage = null;
         context.HellSwitch.OnSwitchStatusChange = null;
         context.HellSwitch.Stop();
-        context.HellSwitch.Close();
     }
 }

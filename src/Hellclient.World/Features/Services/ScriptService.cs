@@ -31,7 +31,7 @@ public interface IScriptService
     public void SendCallback(WorldContext context, Callback cb);
     public void Assist(WorldContext context);
     public void KeyUp(WorldContext context, string key);
-    
+
 }
 
 public class ScriptService : IScriptService
@@ -85,11 +85,14 @@ public class ScriptService : IScriptService
         SetCreator(context, "broadcast", "");
         if (ConfigService.GetShowBroadcast(context))
         {
-            ConvertService.DoPrintGlobalBroadcastIn(context, bc.Message);
-        }
-        else
-        {
-            ConvertService.DoPrintLocalBroadcastIn(context, bc.Message);
+            if (bc.Global)
+            {
+                ConvertService.DoPrintGlobalBroadcastIn(context, bc.Message);
+            }
+            else
+            {
+                ConvertService.DoPrintLocalBroadcastIn(context, bc.Message);
+            }
         }
         context.Script.Engine.OnBroadCast(bc);
 
@@ -106,7 +109,7 @@ public class ScriptService : IScriptService
     }
     public void Assist(WorldContext context)
     {
-        var onassist=context.Script.Data.OnAssist;
+        var onassist = context.Script.Data.OnAssist;
         if (onassist == "")
         {
             return;

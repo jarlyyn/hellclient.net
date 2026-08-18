@@ -13,6 +13,7 @@ public partial class Prophet
         initHandlers();
         Context.TitanContext.EventBus.MsgEvent += (sender, msg) => ProphetService.Publish(Context, msg);
         ProphetService.LoadAuth(Context);
+        ProphetService.Start(Context);
     }
 
     public required ProphetContext Context { private get; init; }

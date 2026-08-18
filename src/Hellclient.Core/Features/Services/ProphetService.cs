@@ -83,6 +83,7 @@ public interface IProphetService
     public void SetAuth(ProphetContext ctx, string username, string password);
     public bool CheckAuth(ProphetContext ctx, string username, string password);
     public void LoadAuth(ProphetContext ctx);
+    public void Start(ProphetContext ctx);
 }
 public class ProphetService : IProphetService
 {
@@ -851,5 +852,9 @@ public class ProphetService : IProphetService
     {
         var au = ctx.UserPassword;
         return au.Username == "" || (au.Username == username && au.Password == password);
+    }
+    public void Start(ProphetContext ctx)
+    {
+        TitanService.Start(ctx.TitanContext);
     }
 }
