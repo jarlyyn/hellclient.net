@@ -1,15 +1,16 @@
 using Hellclient.V8Engine.Features.States;
 using Hellclient.World.Types;
 using Hellclient.World.Cores;
+using Hellclient.Script.Cores;
 using Timer = Hellclient.World.Types.Timer;
 using Path = System.IO.Path;
 using Hellclient.World.Configs;
 using Hellclient.V8Engine.Features.Services;
 namespace Hellclient.V8Engine.Cores;
 
-public class V8ScriptEngine : IScriptEngine
+public class V8JsScriptEngine : IScriptEngine
 {
-    public V8ScriptEngine(IWorld world)
+    public V8JsScriptEngine(IWorld world)
     {
         this.Context = new V8EngineContext(world);
         Service.InstallTo(Context);
@@ -46,7 +47,7 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
     }
     public IScriptEngine CreateScriptEngine(IWorld world)
     {
-        return new V8ScriptEngine(world);
+        return new V8JsScriptEngine(world);
     }
     public void NewScript(string ID)
     {

@@ -58,21 +58,22 @@ public class ConnService : IConnService
     }
     private void OnByte(WorldContext context, byte data)
     {
-        context.Lock.Wait();
         try
         {
 
             if (data == 13 || data == 10)
             {
+                context.Lock.Wait();
+
                 context.Convert.Publish();
                 return;
             }
+            context.Convert.AppendBuffer(data);
         }
         finally
         {
             context.Lock.Release();
         }
-        context.Convert.AppendBuffer(data);
         Task.Run(async () => await context.Convert.Debounce!.Exec());
     }
 

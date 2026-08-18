@@ -5,6 +5,7 @@ using Hellclient.Core.Helpers;
 using Hellclient.Core.Types;
 using Hellclient.World.Configs;
 using Hellclient.World.Cores;
+using Hellclient.Script.Cores;
 using Hellclient.World.Helpers;
 using Hellclient.World.Infras.Components;
 using Hellclient.World.Types;

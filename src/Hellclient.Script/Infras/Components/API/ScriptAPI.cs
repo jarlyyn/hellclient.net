@@ -1,7 +1,8 @@
-namespace Hellclient.World.Cores;
+namespace Hellclient.Script.Infras.Components;
 
 using Hellclient.World.Components.Automation;
 using Hellclient.World.Configs;
+using Hellclient.World.Cores;
 using Hellclient.World.Helpers;
 using Hellclient.World.Infras.Adapters;
 using Hellclient.World.Infras.Components;
@@ -450,7 +451,7 @@ public class ScriptAPI(IWorld world)
     {
         return World.DoDeleteTemporaryTriggers();
     }
-    
+
     public int DeleteTimer(string name)
     {
         name = PrefixUtil.PrefixedName(name, false);
@@ -809,7 +810,7 @@ public class ScriptAPI(IWorld world)
         {
             return result;
         }
-        var index=Int32.TryParse(wildcard, out var idx) ? idx : -1;
+        var index = Int32.TryParse(wildcard, out var idx) ? idx : -1;
         if (index < 0 || index >= w.List.Count)
         {
             return null;
@@ -1464,7 +1465,7 @@ public class ScriptAPI(IWorld world)
         {
             return;
         }
-        var bc = Types.Broadcast.CreateBroadcast(channel, msg, gloabl);
+        var bc = Hellclient.World.Types.Broadcast.CreateBroadcast(channel, msg, gloabl);
         World.EventBus.BroadcastEvent?.Invoke(this, bc);
         if (World.GetShowBroadcast())
         {

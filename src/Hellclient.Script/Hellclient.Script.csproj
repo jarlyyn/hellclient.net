@@ -7,15 +7,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
-    <ProjectReference Include="..\Hellclient.Script\Hellclient.Script.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NWebDav.Server" Version="0.2.0-beta.2" />
   </ItemGroup>
 </Project>

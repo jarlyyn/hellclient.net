@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
+    <ProjectReference Include="..\Hellclient.Script\Hellclient.Script.csproj" />
     <TrimmerRootAssembly Include="Microsoft.ClearScript" />
     <TrimmerRootAssembly Include="Microsoft.ClearScript.V8" />
   </ItemGroup>

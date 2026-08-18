@@ -1,6 +1,8 @@
 using System.IO.Pipelines;
 using System.Text;
 using System.Text.Unicode;
+using Hellclient.V8Engine.Cores;
+using Hellclient.Script.Infras.Components;
 using Hellclient.World.Cores;
 using Hellclient.World.Utils;
 using Microsoft.ClearScript.V8;

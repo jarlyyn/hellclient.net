@@ -1,7 +1,8 @@
-namespace Hellclient.World.Cores;
+namespace Hellclient.Script.Cores;
 
 using Hellclient.World.Types;
 using Hellclient.World.Infras.Adapters;
+using Hellclient.World.Cores;
 
 public interface IScriptEngineFactory
 {

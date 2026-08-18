@@ -1,6 +1,7 @@
 using Hellclient.Core.Types;
 using Hellclient.Core.Types.Forms;
 using Hellclient.World.Cores;
+using Hellclient.Script.Cores;
 using Hellclient.World.Types;
 using Hellclient.World.Utils;
 using Timer = Hellclient.World.Types.Timer;

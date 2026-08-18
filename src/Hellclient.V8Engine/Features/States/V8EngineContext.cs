@@ -1,3 +1,4 @@
+using Hellclient.Script.Infras.Components;
 using Hellclient.V8Engine.Infras.Components;
 using Hellclient.V8Engine.Types;
 using Hellclient.World.Cores;
