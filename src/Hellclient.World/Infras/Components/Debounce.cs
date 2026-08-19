@@ -48,9 +48,9 @@ public class DebounceTimer
             {
                 return;
             }
-            _timer.Elapsed += async (sender, e) =>
+            _timer.Elapsed += (sender, e) =>
             {
-                await callback(this);
+                Task.Run(() => callback(this));
             };
         }
     }

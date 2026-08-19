@@ -91,15 +91,18 @@ public class AutomationService : IAutomationService
     }
     public void OnTimer(WorldContext context, Timer timer)
     {
-        context.Lock.Wait();
-        try
+        Task.Run(() =>
         {
-            ScriptService.SendTimer(context, timer);
-        }
-        finally
-        {
-            context.Lock.Release();
-        }
+            context.Lock.Wait();
+            try
+            {
+                ScriptService.SendTimer(context, timer);
+            }
+            finally
+            {
+                context.Lock.Release();
+            }
+        });
     }
     public void OnLine(WorldContext context, Line? line)
     {

@@ -216,20 +216,17 @@ public class ProphetService : IProphetService
             TitanService.OnCreateFail(ctx.TitanContext, errors);
             return;
         }
-        lock (ctx.TitanContext.Worlds)
+        var w = TitanService.NewWorld(ctx.TitanContext, form.ID);
+        if (w == null)
         {
-            var w = TitanService.NewWorld(ctx.TitanContext, form.ID);
-            if (w == null)
-            {
-                return;
-            }
-            w.SetHost(form.Host);
-            w.SetPort(form.Port);
-            w.SetCharset(form.Charset);
-            TitanService.OnCreateSuccess(ctx.TitanContext, form.ID);
-            TitanService.ExecClients(ctx.TitanContext);
-            TitanService.SaveWorld(ctx.TitanContext, form.ID);
+            return;
         }
+        w.SetHost(form.Host);
+        w.SetPort(form.Port);
+        w.SetCharset(form.Charset);
+        TitanService.OnCreateSuccess(ctx.TitanContext, form.ID);
+        TitanService.ExecClients(ctx.TitanContext);
+        TitanService.SaveWorld(ctx.TitanContext, form.ID);
     }
     public void OnCmdNotOpened(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {

@@ -44,6 +44,9 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
     public static string Name => "v8";
     public static void Install()
     {
+        //在低配置(1核2g)的机器上，会造成死锁。
+        // V8Settings.GlobalFlags |= V8GlobalFlags.DisableJITCompilation;
+        V8Settings.GlobalFlags |= V8GlobalFlags.DisableBackgroundWork;
         ScriptEngineFactoryManager.RegisterFactory(Name, new V8ScriptEngineFactory());
     }
     public IScriptEngine CreateScriptEngine(IWorld world)

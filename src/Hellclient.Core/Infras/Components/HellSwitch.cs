@@ -29,7 +29,7 @@ public class HellSwitch
         while (true)
         {
             await PingTimer.WaitForNextTickAsync();
-            await Ping();
+            Ping();
         }
     }
 
@@ -78,39 +78,42 @@ public class HellSwitch
             Lock.Release();
         }
     }
-    public async Task Ping()
+    public void Ping()
     {
-        await Send(CmdPing);
+        Send(CmdPing);
     }
-    public async Task Broadcast(byte[] msg)
+    public void Broadcast(byte[] msg)
     {
         using var ms = new MemoryStream();
         {
             ms.Write(CmdBroadcast, 0, CmdBroadcast.Length);
             ms.Write(msg, 0, msg.Length);
-            await Send(ms.ToArray());
+            Send(ms.ToArray());
         }
     }
-    private async Task Send(byte[] msg)
+    private void Send(byte[] msg)
     {
-        await Lock.WaitAsync();
-        try
-        {
-            if (_conn == null || _conn.State != WebSocketState.Open)
-            {
-                return;
-            }
-            await _conn.SendAsync(new ArraySegment<byte>(msg), WebSocketMessageType.Text, true, CancellationToken.None);
-        }
-        finally
-        {
-            Lock.Release();
-        }
+        Task.Run(async () =>
+       {
+           await Lock.WaitAsync();
+           try
+           {
+               if (_conn == null || _conn.State != WebSocketState.Open)
+               {
+                   return;
+               }
+               await _conn.SendAsync(new ArraySegment<byte>(msg), WebSocketMessageType.Text, true, CancellationToken.None);
+           }
+           finally
+           {
+               Lock.Release();
+           }
+       });
     }
     private async Task Listen()
     {
         byte[] buffer = new byte[4096];
-        _ = Send(CmdHello);
+        Send(CmdHello);
         while (_conn != null && _conn.State == WebSocketState.Open)
         {
             WebSocketReceiveResult result;
