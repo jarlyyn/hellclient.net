@@ -40,6 +40,10 @@ public partial class V8ScriptService : IV8ScriptService
     public void handleError(V8EngineContext context, Exception ex)
     {
         context.World.HandleScriptError(ex);
+        if (ex is Microsoft.ClearScript.ScriptEngineException scriptEx)
+        {
+            context.World.DoPrintSystem($"[Script Error] {scriptEx.ErrorDetails}");
+        }
     }
     public void Open(V8EngineContext context)
     {
@@ -158,7 +162,12 @@ public partial class V8ScriptService : IV8ScriptService
         {
             return;
         }
-        var model = new ExpandoObject() as IDictionary<string, object>;
+        var model = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        if (model == null)
+        {
+            return;
+        }
+
         foreach (var kv in matchResult.Named)
         {
             model[kv.Key] = kv.Value;

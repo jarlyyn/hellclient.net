@@ -2,12 +2,14 @@ using Hellclient.World.Cores;
 using Hellclient.Script.Types.Userinput;
 using Hellclient.Script.Helpers;
 using System.Dynamic;
+using Microsoft.ClearScript.V8;
 
 namespace Hellclient.V8Engine.Infras.Components.JsUserinput;
 
-public class JsUserinputDataGrid(IWorld world, Datagrid dataGrid)
+public class JsUserinputDataGrid(IWorld world, V8ScriptEngine engine,Datagrid dataGrid)
 {
     private readonly IWorld _world = world;
+    private readonly V8ScriptEngine _engine = engine;
     private readonly Datagrid _dataGrid = dataGrid;
     public Object? SetPage(params object[] args)
     {
@@ -90,7 +92,11 @@ public class JsUserinputDataGrid(IWorld world, Datagrid dataGrid)
     public Object? Convert()
     {
 #pragma warning disable CS8974
-        var result = new ExpandoObject() as IDictionary<string, object>;
+        var result = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        if (result is null)
+        {
+            throw new Exception("Failed to create script object");
+        }
         result["SetPage"] = SetPage;
         result["GetPage"] = GetPage;
         result["SetMaxPage"] = SetMaxPage;

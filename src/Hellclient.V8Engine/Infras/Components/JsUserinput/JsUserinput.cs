@@ -2,13 +2,15 @@ using System.Dynamic;
 using Hellclient.Script.Helpers;
 using Hellclient.Script.Types.Userinput;
 using Hellclient.World.Cores;
+using Microsoft.ClearScript.V8;
 
 namespace Hellclient.V8Engine.Infras.Components.JsUserinput;
 
-public class JsUserinput(IWorld world)
+public class JsUserinput(IWorld world, V8ScriptEngine engine)
 {
 
     private readonly IWorld _world = world;
+    private readonly V8ScriptEngine _engine = engine;
     public Object? HideAll(params object[] args)
     {
         UserinputHelper.HideAll(_world);
@@ -80,23 +82,26 @@ public class JsUserinput(IWorld world)
     public Object? NewList(params object[] args)
     {
         var list = DataList.Create(JsAPI.GetStringArg(args, 0), JsAPI.GetStringArg(args, 1), JsAPI.GetBoolArg(args, 2));
-        return new JsUserinputList(_world, list).Convert();
+        return new JsUserinputList(_world, _engine, list).Convert();
     }
     public Object? NewDatagrid(params object[] args)
     {
         var grid = Datagrid.Create(JsAPI.GetStringArg(args, 0), JsAPI.GetStringArg(args, 1));
-        return new JsUserinputDataGrid(_world, grid).Convert();
+        return new JsUserinputDataGrid(_world, _engine, grid).Convert();
     }
     public Object? NewVisualPrompt(params object[] args)
     {
         var visualPrompt = VisualPrompt.Create(JsAPI.GetStringArg(args, 0), JsAPI.GetStringArg(args, 1), JsAPI.GetStringArg(args, 2));
-        return new JsUserinputVisualPrompt(_world, visualPrompt).Convert();
+        return new JsUserinputVisualPrompt(_world, _engine, visualPrompt).Convert();
     }
     public Object? Convert(params object[] args)
     {
 #pragma warning disable CS8974
-        var result = new ExpandoObject() as IDictionary<string, object>;
-
+        var result = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        if (result is null)
+        {
+            throw new Exception("Failed to create script object");
+        }
         result["HideAll"] = HideAll;
         result["Prompt"] = Prompt;
         result["Confirm"] = Confirm;

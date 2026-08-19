@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!-- <PublishTrimmed>true</PublishTrimmed> -->
+    <!-- <PublishAot>true</PublishAot> -->
     <!-- <TrimMode>full</TrimMode> -->
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>

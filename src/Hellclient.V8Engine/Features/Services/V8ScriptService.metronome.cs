@@ -10,7 +10,11 @@ public partial class V8ScriptService
     public void initMetronome(V8EngineContext context)
     {
         var met = context.JsMetronome;
-        var m = new ExpandoObject() as IDictionary<string, object>;
+        var m = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        if (m == null)
+        {
+            return;
+        }
 #pragma warning disable CS8974 // 将方法组转换为非委托类型
 
         m["getbeats"] = met.GetBeats;
@@ -42,7 +46,6 @@ public partial class V8ScriptService
         m["SetTick"] = met.SetTick;
         m["Push"] = met.Push;
 #pragma warning restore CS8974 // 将方法组转换为非委托类型
-        context.Runtime.AddHostObject("Metronome", m);
-
+        ((IDictionary<string, object>)context.Runtime.Script)["Metronome"] = m;
     }
 }
