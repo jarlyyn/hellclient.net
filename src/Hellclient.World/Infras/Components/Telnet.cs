@@ -131,7 +131,7 @@ public class Telnet : IMudConnection
                 catch (Exception ex)
                 {
                     Logger(ex);
-                    _ = Disconnected();
+                    await Disconnected();
                     return;
                 }
 
@@ -143,7 +143,7 @@ public class Telnet : IMudConnection
                 OnByte(buffer[0]);
 
             }
-            _ = Disconnected();
+            await Disconnected();
         }
 
     }
@@ -155,7 +155,7 @@ public class Telnet : IMudConnection
         _client = new TcpClient();
         await _client.ConnectAsync(host, port);
         await Connected();
-        _ = listen();
+        _ = Task.Run(async () => await listen());
     }
     public async Task Disconnect()
     {

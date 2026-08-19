@@ -6,6 +6,7 @@ using Timer = Hellclient.World.Types.Timer;
 using Path = System.IO.Path;
 using Hellclient.World.Configs;
 using Hellclient.V8Engine.Features.Services;
+using Microsoft.ClearScript.V8;
 namespace Hellclient.V8Engine.Cores;
 
 public class V8JsScriptEngine : IScriptEngine

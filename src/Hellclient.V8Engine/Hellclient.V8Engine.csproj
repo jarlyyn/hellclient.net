@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
     <OptimizationPreference>Size</OptimizationPreference>
     <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
     <DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>

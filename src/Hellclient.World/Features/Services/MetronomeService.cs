@@ -20,7 +20,7 @@ public interface IMetronomeService
     public void FullTick(WorldContext context);
     public void Full(WorldContext context);
     public void Send(WorldContext context, Command cmd);
-    public Task Push(WorldContext context, List<Command> cmds, bool grouped);
+    public void Push(WorldContext context, List<Command> cmds, bool grouped);
     public void InstallTo(WorldContext context);
 }
 public class MetronomeService : IMetronomeService
@@ -244,9 +244,9 @@ public class MetronomeService : IMetronomeService
         }
     }
 
-    public async Task Play(WorldContext context)
+    public void Play(WorldContext context)
     {
-        _ = play(context);
+        Task.Run(async () => await play(context));
     }
     public void Stop(WorldContext context)
     {
@@ -281,12 +281,12 @@ public class MetronomeService : IMetronomeService
         {
             await play(context);
         }
-        _ = nextTick(context);
+        _ = Task.Run(async () => await nextTick(context));
     }
-    public async Task Push(WorldContext context, List<Command> cmds, bool grouped)
+    public void Push(WorldContext context, List<Command> cmds, bool grouped)
     {
         append(context, cmds, grouped);
-        _ = play(context);
+        Task.Run(async () => await play(context));
     }
     public void InstallTo(WorldContext context)
     {

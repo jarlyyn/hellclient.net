@@ -17,9 +17,9 @@ public class QueueService : IQueueService
 {
     public void InstallTo(WorldContext context)
     {
-        context.EventBus.QueueDelayUpdatedEvent += async (sender, args) =>
+        context.EventBus.QueueDelayUpdatedEvent += (sender, args) =>
         {
-            _ = _onDelayUpdate(context);
+            Task.Run(async () => await _onDelayUpdate(context));
         };
     }
     public MetronomeService MetronomeService { get; set; } = new MetronomeService();

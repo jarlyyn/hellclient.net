@@ -362,7 +362,18 @@ public class TitanService : ITitanService
     public void LoseFocus(TitanContext context, string id)
     {
         var w = World(context, id);
-        w?.HandleLoseFocus();
+        if (w != null)
+        {
+            w.Lock.Wait();
+            try
+            {
+                w.HandleLoseFocus();
+            }
+            finally
+            {
+                w.Lock.Release();
+            }
+        }
     }
     public void HandleCmdHUDContent(TitanContext context, string id)
     {
@@ -620,16 +631,16 @@ public class TitanService : ITitanService
     }
     public void ExecClients(TitanContext context)
     {
+        var result = new List<ClientInfo>();
         lock (context.Worlds)
         {
-            var result = new List<ClientInfo>();
             context.Worlds.ToList().ForEach(kv =>
             {
                 result.Add(kv.Value.GetClientInfo()!);
             });
-            result.Sort((a, b) => a.CompareTo(b));
-            MsgHelper.PublishClients(context.EventBus, result);
         }
+        result.Sort((a, b) => a.CompareTo(b));
+        MsgHelper.PublishClients(context.EventBus, result);
     }
     private void onSave(TitanContext context, IWorld world)
     {
@@ -1434,12 +1445,12 @@ public class TitanService : ITitanService
             w.DeleteParam(name);
             AutoSaveWorld(context, id);
             MsgHelper.PublishParamDeleted(context.EventBus, id, name);
-            HandleCmdParams(context, id);
         }
         finally
         {
             w.Lock.Release();
         }
+        HandleCmdParams(context, id);
     }
     public void HandleCmdUpdateParam(TitanContext context, string id, string name, string value)
     {
@@ -1454,12 +1465,12 @@ public class TitanService : ITitanService
             w.SetParam(name, value);
             MsgHelper.PublishParamUpdated(context.EventBus, id, name);
             AutoSaveWorld(context, id);
-            HandleCmdParams(context, id);
         }
         finally
         {
             w.Lock.Release();
         }
+        HandleCmdParams(context, id);
     }
     public void HandleCmdUpdateParamComment(TitanContext context, string id, string name, string value)
     {
@@ -1774,7 +1785,18 @@ public class TitanService : ITitanService
                     {
                         foreach (var v in context.Worlds.Values)
                         {
-                            v.DoSendBroadcastToScript(bc);
+                            Task.Run(() =>
+                            {
+                                v.Lock.Wait();
+                                try
+                                {
+                                    v.DoSendBroadcastToScript(bc);
+                                }
+                                finally
+                                {
+                                    v.Lock.Release();
+                                }
+                            });
                         }
                     }
                 }

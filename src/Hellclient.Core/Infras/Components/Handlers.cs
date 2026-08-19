@@ -9,7 +9,7 @@ public class Handlers
     {
         handlers[commandType] = handler;
     }
-    public bool Exec(ConnectionMessage msg)
+    public async Task<bool> Exec(ConnectionMessage msg)
     {
         var cmd=new SeparatedCommand();
         cmd.Decode(msg.Message);

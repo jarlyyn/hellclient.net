@@ -96,7 +96,7 @@ public class ProphetService : IProphetService
     public IUserPasswordRepo UserPasswordRepo { get; init; }
     public void Publish(ProphetContext ctx, Types.Message message)
     {
-        ctx.Adapter.Exec(message);
+        Task.Run(() => ctx.Adapter.Exec(message));
     }
     public void OnOpen(ProphetContext ctx, IConnection conn)
     {
@@ -139,12 +139,12 @@ public class ProphetService : IProphetService
     }
     public void Enter(ProphetContext ctx, IConnection conn)
     {
-        conn.OnClose += (sender, e) => OnClose(ctx, conn);
-        conn.OnMessage += (sender, e) => ctx.Handlers.Exec(new ConnectionMessage()
+        conn.OnClose += (sender, e) => Task.Run(() => OnClose(ctx, conn));
+        conn.OnMessage += (sender, e) => Task.Run(() => ctx.Handlers.Exec(new ConnectionMessage()
         {
             Connection = conn,
             Message = e,
-        });
+        }));
         ctx.Users.Login("user", conn);
         OnOpen(ctx, conn);
     }

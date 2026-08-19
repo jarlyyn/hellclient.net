@@ -76,9 +76,10 @@ public class ConnService : IConnService
 
     private void Listen(WorldContext context)
     {
-        context.Connection.OnDataReceived += (sender, data) => OnByte(context, data);
-        context.Connection.OnCommandReceived += (sender, cmd) => OnCommandReceived(context, cmd);
-        context.Convert.OnLine += (sender, line) => context.EventBus.LineEvent?.Invoke(this, line);
+        var ctx=context;
+        ctx.Connection.OnDataReceived += (sender, data) => OnByte(ctx, data);
+        ctx.Connection.OnCommandReceived += (sender, cmd) => OnCommandReceived(ctx, cmd);
+        ctx.Convert.OnLine += (sender, line) => ctx.EventBus.LineEvent?.Invoke(this, line);
     }
     public async void OnCommandReceived(WorldContext context, TelnetCommand cmd)
     {

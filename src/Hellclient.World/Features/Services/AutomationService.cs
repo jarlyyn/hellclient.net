@@ -82,7 +82,7 @@ public class AutomationService : IAutomationService
     {
         context.EventBus.LineEvent += (_, line) => OnLine(context, line);
         context.EventBus.CloseEvent += (_, _) => OnClose(context);
-        context.Automation.Timers.OnFire += (_, timer) => OnTimer(context, timer);
+        context.Automation.Timers.OnFire += (_, timer) => Task.Run(() => OnTimer(context, timer));
         // Install automation service to the world context
     }
     private void OnClose(WorldContext context)
