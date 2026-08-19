@@ -60,10 +60,17 @@ public partial class V8ScriptService : IV8ScriptService
         context.Events.OnKeyUp = data.OnKeyUp;
         var entry = Path.Combine(context.World.GetPluginOptions().Location, "main.js");
         var entrydata = File.ReadAllText(entry);
-        context.Runtime.Execute(entry, entrydata);
-        if (data.OnOpen != "")
+        try
         {
-            callByName(context, data.OnOpen);
+            context.Runtime.Execute(entry, entrydata);
+            if (data.OnOpen != "")
+            {
+                callByName(context, data.OnOpen);
+            }
+        }
+        catch (Exception ex)
+        {
+            handleError(context, ex);
         }
     }
     private object? callByName(V8EngineContext context, string funcname, params object?[] args)

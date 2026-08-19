@@ -354,7 +354,7 @@ public class Timers
         All.Remove(id);
         if (t.Data.Name != "")
         {
-            Named.Remove(t.Data.Name);
+            Named.Remove(t.Data.PrefixedName());
         }
         if (t.Data.Group != "")
         {

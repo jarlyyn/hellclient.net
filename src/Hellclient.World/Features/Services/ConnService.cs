@@ -63,6 +63,7 @@ public class ConnService : IConnService
 
             if (ScriptService.HandleBuffer(context, context.Convert.GetBuffer()))
             {
+                context.Convert.Publish();
                 return;
             }
         }

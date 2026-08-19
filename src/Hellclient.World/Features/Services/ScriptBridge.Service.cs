@@ -62,7 +62,16 @@ public class ScriptBridgeService : IScriptBridgeService
         {
             return;
         }
-        var data = ScriptFileRepo.LoadScriptData(context, id);
+        Types.ScriptData? data = null;
+        try
+        {
+            data = ScriptFileRepo.LoadScriptData(context, id);
+        }
+        catch (Exception ex)
+        {
+            LogService.HandleScriptError(context, ex);
+            return;
+        }
         if (data == null)
         {
             return;

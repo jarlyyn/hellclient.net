@@ -34,7 +34,7 @@ public class Triggers
         }
         if (tri.Data.Name != "")
         {
-            Named.Remove(tri.Data.Name);
+            Named.Remove(tri.Data.PrefixedName());
         }
         if (tri.Data.Group != "")
         {

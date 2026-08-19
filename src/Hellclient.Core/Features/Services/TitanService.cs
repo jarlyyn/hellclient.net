@@ -1790,7 +1790,7 @@ public class TitanService : ITitanService
     {
         context.HellSwitch.OnGlobalMessage += (sender, e) => OnGlobalMessage(context, e);
         context.HellSwitch.OnSwitchStatusChange += (sender, e) => OnSwitchStatusChange(context, e);
-        //context.HellSwitch.Start();
+        context.HellSwitch.Start();
     }
     public void Stop(TitanContext context)
     {

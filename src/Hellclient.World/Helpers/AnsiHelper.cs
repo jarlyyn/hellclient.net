@@ -75,6 +75,10 @@ public static class AnsiHelpers
                     break;
             }
         }
+        if (result.Words.Count > 0 && result.Words.Last().Text.Length == 0)
+        {
+            result.Words.RemoveAt(result.Words.Count - 1);
+        }
         return result;
     }
     private static void applyFunctionD(Word w, Line line, AnsiControlSequence cs)

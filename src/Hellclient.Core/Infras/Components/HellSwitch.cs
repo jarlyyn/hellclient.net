@@ -136,7 +136,6 @@ public class HellSwitch
     }
     public void Start()
     {
-        return;
         Lock.Wait();
         try
         {
