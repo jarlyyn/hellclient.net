@@ -10,7 +10,7 @@ public partial class V8ScriptService
     public void initMetronome(V8EngineContext context)
     {
         var met = context.JsMetronome;
-        var m = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        using var m = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
         if (m == null)
         {
             return;

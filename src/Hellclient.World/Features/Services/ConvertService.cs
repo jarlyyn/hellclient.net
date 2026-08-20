@@ -28,7 +28,6 @@ public class ConvertService : IConvertService
             return;
         }
         var bytes = CharsetUtil.FromUtf8(context.Config.Data.Charset, cmd.Message);
-        context.Convert.Publish(false);
         if (cmd.Echo)
         {
             DoPrintEcho(context, cmd);

@@ -19,7 +19,7 @@ public partial class V8ScriptService
     {
         var local = context.Runtime;
         var a = context.JsAPI;
-        var world = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        using var world = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
         if (world == null)
         {
             return;

@@ -36,8 +36,9 @@ public class DebounceTimer
             {
                 return;
             }
-            _timer = null;
+            _timer.Stop();
             _timer?.Dispose();
+            _timer = null;
         }
     }
     public void Bind(Action<DebounceTimer> callback)

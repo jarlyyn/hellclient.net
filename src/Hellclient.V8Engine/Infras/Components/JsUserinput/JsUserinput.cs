@@ -94,7 +94,7 @@ public class JsUserinput(IWorld world, V8ScriptEngine engine)
         var visualPrompt = VisualPrompt.Create(JsAPI.GetStringArg(args, 0), JsAPI.GetStringArg(args, 1), JsAPI.GetStringArg(args, 2));
         return new JsUserinputVisualPrompt(_world, _engine, visualPrompt).Convert();
     }
-    public Object? Convert(params object[] args)
+    public Microsoft.ClearScript.ScriptObject Convert(params object[] args)
     {
 #pragma warning disable CS8974
         var result = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;

@@ -16,12 +16,16 @@ public class V8EngineContext
         World = world;
         JsAPI = new JsAPI(new ScriptAPI(world), Runtime);
         JsMetronome = new JsMetronome(world);
-        
+
     }
     public JsAPI JsAPI { get; init; }
     public JsMetronome JsMetronome { get; init; }
     public IWorld World { get; init; }
-    public V8ScriptEngine Runtime { get; set; } = new V8ScriptEngine();
+    public V8ScriptEngine Runtime { get; set; } = new V8ScriptEngine(new V8RuntimeConstraints
+    {
+        MaxOldSpaceSize = 64,
+        MaxNewSpaceSize = 8
+    });
 
     public ScriptEvents Events { get; set; } = new ScriptEvents();
 }

@@ -36,6 +36,7 @@ public partial class V8ScriptService : IV8ScriptService
         initMetronome(context);
         initJsAPI(context);
         initUserinput(context);
+
     }
     public void handleError(V8EngineContext context, Exception ex)
     {
@@ -111,6 +112,7 @@ public partial class V8ScriptService : IV8ScriptService
         {
             callByName(context, context.Events.OnClose);
         }
+        context.Runtime.Dispose();
     }
     public void OnConnect(V8EngineContext context)
     {
@@ -132,7 +134,7 @@ public partial class V8ScriptService : IV8ScriptService
         {
             return;
         }
-        var model = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        using var model = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
         if (model == null)
         {
             return;
@@ -162,7 +164,7 @@ public partial class V8ScriptService : IV8ScriptService
         {
             return;
         }
-        var model = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        using var model = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
         if (model == null)
         {
             return;

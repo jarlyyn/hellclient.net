@@ -89,7 +89,7 @@ public class JsUserinputDataGrid(IWorld world, V8ScriptEngine engine,Datagrid da
         UserinputHelper.HideAll(_world);
         return null;
     }
-    public Object? Convert()
+    public Microsoft.ClearScript.ScriptObject Convert()
     {
 #pragma warning disable CS8974
         var result = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;

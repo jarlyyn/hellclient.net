@@ -31,7 +31,7 @@ public class JsUserinputList(IWorld world, V8ScriptEngine engine, DataList dataL
         _dataList.SetMulti(JsAPI.GetBoolArg(args, 0));
         return null;
     }
-    public Object? Convert()
+    public Microsoft.ClearScript.ScriptObject Convert()
     {
 #pragma warning disable CS8974
         var result = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;

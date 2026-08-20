@@ -182,7 +182,6 @@ public class ConnService : IConnService
     }
     public void Send(WorldContext context, byte[] message)
     {
-        context.Convert.Publish(false);
         context.Connection.Send(message);
     }
     public bool IsConnected(WorldContext context)

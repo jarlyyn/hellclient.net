@@ -14,7 +14,7 @@ public class Telnet : IMudConnection
     private CancellationTokenSource _cts = new CancellationTokenSource();
     public string Host { get; set; } = "";
     public int Port { get; set; } = 0;
-    private MemoryStream _buffer = new MemoryStream();
+    private List<byte> _buffer = new();
     private int status = StatusNormal;
     private byte currentcmd = 0;
     public required Action<Exception> Logger;
@@ -25,7 +25,7 @@ public class Telnet : IMudConnection
     public EventHandler? OnConnected { get; set; }
     private void reset()
     {
-        _buffer.SetLength(0);
+        _buffer.Clear();
         status = StatusNormal;
     }
     private void Publish(byte data)
@@ -82,24 +82,24 @@ public class Telnet : IMudConnection
                 }
                 else
                 {
-                    _buffer.WriteByte(data);
+                    _buffer.Add(data);
                 }
                 return;
             case StatusSbIac:
                 if (data == 0xFF) // IAC
                 {
-                    _buffer.WriteByte(data);
+                    _buffer.Add(data);
                     status = StatusSb;
                 }
                 else if (data == TelnetCommand.CmdEndSubnegotiation)
                 {
                     OnCommandReceived?.Invoke(this, new TelnetCommand(TelnetCommand.CmdSubnegotiation, _buffer.ToArray()));
-                    _buffer.Flush();
+                    _buffer.Clear();
                     status = StatusNormal;
                 }
                 else
                 {
-                    _buffer.Flush();
+                    _buffer.Clear();
                     status = StatusNormal;
                 }
                 return;
@@ -164,6 +164,7 @@ public class Telnet : IMudConnection
         {
             _cts.Cancel();
             _client.Close();
+            _client.Dispose();
         }
     }
 

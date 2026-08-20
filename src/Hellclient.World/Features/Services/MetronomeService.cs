@@ -195,7 +195,10 @@ public class MetronomeService : IMetronomeService
         {
             cmds.ForEach(c =>
             {
-                context.Metronome.Queue.Add([c]);
+                if (c != null)
+                {
+                    context.Metronome.Queue.Add([c]);
+                }
             });
         }
     }
@@ -213,7 +216,7 @@ public class MetronomeService : IMetronomeService
             while (context.Metronome.Queue.Count != 0 && context.Metronome.Sent.Count < b)
             {
                 var cmds = context.Metronome.Queue[0];
-                if (b - context.Metronome.Sent.Count < cmds.Count)
+                if (b - context.Metronome.Sent.Count < (cmds?.Count ?? 0))
                 {
                     //避免cmds长于beats时永远不发送
                     if (context.Metronome.Sent.Count() != 0)
@@ -222,6 +225,10 @@ public class MetronomeService : IMetronomeService
                     }
                 }
                 context.Metronome.Queue.RemoveAt(0);
+                if (cmds is null || cmds.Count == 0)
+                {
+                    continue;
+                }
                 foreach (var cmd in cmds)
                 {
                     try
