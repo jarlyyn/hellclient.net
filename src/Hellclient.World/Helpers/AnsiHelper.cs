@@ -6,9 +6,9 @@ namespace Hellclient.World.Helpers;
 
 public static class AnsiHelpers
 {
-    private static readonly AnsiStringParser parser = new();
     public static Line? Parse(string input)
     {
+        AnsiStringParser parser = new();
         var result = Line.New();
         if (string.IsNullOrEmpty(input))
         {

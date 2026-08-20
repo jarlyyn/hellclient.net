@@ -28,7 +28,23 @@ public class ScriptBridgeService : IScriptBridgeService
     public void InstallTo(WorldContext context)
     {
         context.EventBus.ReadyEvent += (s, e) => _ready(context);
+        context.EventBus.BeforeCloseEvent += (s, e) => _beforeClose(context);
+        context.EventBus.ConnectedEvent += (s, e) => Connected(context);
+        context.EventBus.DisconnectedEvent += (s, e) => Disconnected(context);
+
     }
+    public void Connected(WorldContext context)
+    {
+        AutomationService.DoMultiLinesFlush(context);
+        ScriptService.SetCreator(context, "system", "connected");
+        context.Script.Engine.OnConnect();
+    }
+    public void Disconnected(WorldContext context)
+    {
+        ScriptService.SetCreator(context, "system", "disconnected");
+        context.Script.Engine.OnDisconnect();
+    }
+
     public void Save(WorldContext context)
     {
         _save(context);

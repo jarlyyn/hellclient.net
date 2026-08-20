@@ -56,14 +56,14 @@ public class ConnService : IConnService
             if (data == 13 || data == 10)
             {
 
-                context.Convert.Publish();
+                context.Convert.Publish(true);
                 return;
             }
             context.Convert.AppendBuffer(data);
 
             if (ScriptService.HandleBuffer(context, context.Convert.GetBuffer()))
             {
-                context.Convert.Publish();
+                context.Convert.Publish(true);
                 return;
             }
         }
@@ -71,12 +71,12 @@ public class ConnService : IConnService
         {
             context.Lock.Release();
         }
-        Task.Run(async () => await context.Convert.Debounce!.Exec());
+        Task.Run(() => context.Convert.Debounce!.Exec());
     }
 
     private void Listen(WorldContext context)
     {
-        var ctx=context;
+        var ctx = context;
         ctx.Connection.OnDataReceived += (sender, data) => OnByte(ctx, data);
         ctx.Connection.OnCommandReceived += (sender, cmd) => OnCommandReceived(ctx, cmd);
         ctx.Convert.OnLine += (sender, line) => ctx.EventBus.LineEvent?.Invoke(this, line);
@@ -84,7 +84,7 @@ public class ConnService : IConnService
     public async void OnCommandReceived(WorldContext context, TelnetCommand cmd)
     {
 
-        context.Convert.Publish();
+        context.Convert.Publish(true);
         switch (cmd.Command)
         {
             case TelnetCommand.CmdDo:
@@ -179,7 +179,7 @@ public class ConnService : IConnService
     }
     public void Send(WorldContext context, byte[] message)
     {
-        context.Convert.Publish();
+        context.Convert.Publish(false);
         context.Connection.Send(message);
     }
     public bool IsConnected(WorldContext context)

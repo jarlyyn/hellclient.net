@@ -6,6 +6,7 @@ public class WorldEventBus
 {
         public EventHandler<Line>? LineEvent { get; set; }
         public EventHandler<Line>? PromptEvent { get; set; }
+        public EventHandler? BeforeCloseEvent { get; set; }
         public EventHandler? CloseEvent { get; set; }
         public EventHandler? SaveEvent { get; set; }
         public EventHandler? ConnectedEvent { get; set; }

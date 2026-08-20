@@ -40,7 +40,7 @@ public class DebounceTimer
             _timer?.Dispose();
         }
     }
-    public void Bind(Func<DebounceTimer, Task> callback)
+    public void Bind(Action<DebounceTimer> callback)
     {
         lock (_lock)
         {
@@ -64,7 +64,7 @@ public class Debounce
     public Debounce(TimeSpan duration, Action callback)
     {
         Duration = duration;
-        MaxDuration = 2 * duration;
+        MaxDuration = TimeSpan.Zero;
         Callback = callback;
     }
     //Duration debounce duration
@@ -82,92 +82,103 @@ public class Debounce
 
     public bool Reset()
     {
-        if (_timer is null)
+        lock (this)
         {
-            return false;
-        }
-        if (MaxDuration > TimeSpan.Zero)
-        {
-            _deadLine = DateTime.Now.Add(MaxDuration);
-        }
-        else
-        {
-            _deadLine = DateTime.Now;
-        }
-        _timer.Reset((Duration > MinTimeSpan ? Duration : MinTimeSpan).TotalMilliseconds);
-        return true;
-    }
-    public async Task<bool> Exec()
-    {
-
-        var success = false;
-        TimeSpan duration;
-        if (_timer is not null)
-        {
-            if (_deadLine is not null)
+            if (_timer is null)
             {
-                duration = _deadLine.Value - DateTime.Now;
-                if (duration > Duration)
-                {
-                    duration = Duration;
-                }
-                if (duration <= MinTimeSpan)
-                {
-                    duration = MinTimeSpan;
-                }
+                return false;
+            }
+            if (MaxDuration > TimeSpan.Zero)
+            {
+                _deadLine = DateTime.Now.Add(MaxDuration);
             }
             else
             {
-                duration = Duration;
+                _deadLine = DateTime.Now;
             }
-            _timer.Reset(duration.TotalMilliseconds);
-            success = true;
-        }
-        if (success)
-        {
+            _timer.Reset((Duration > MinTimeSpan ? Duration : MinTimeSpan).TotalMilliseconds);
             return true;
         }
-        if (_timer is not null)
+    }
+    public bool Exec()
+    {
+        lock (this)
         {
-            return false;
-        }
-        _timer = new DebounceTimer(Duration);
+            var success = false;
+            TimeSpan duration;
+            if (_timer is not null)
+            {
+                if (_deadLine is not null)
+                {
+                    duration = _deadLine.Value - DateTime.Now;
+                    if (duration > Duration)
+                    {
+                        duration = Duration;
+                    }
+                    if (duration <= MinTimeSpan)
+                    {
+                        duration = MinTimeSpan;
+                    }
+                }
+                else
+                {
+                    duration = Duration;
+                }
+                _timer.Reset(duration.TotalMilliseconds);
+                success = true;
+            }
+            if (success)
+            {
+                return true;
+            }
+            if (_timer is not null)
+            {
+                return false;
+            }
+            _timer = new DebounceTimer(Duration);
 
-        if (MaxDuration > TimeSpan.Zero)
-        {
-            _deadLine = DateTime.Now.Add(MaxDuration);
-        }
-        else
-        {
-            _deadLine = DateTime.Now;
-        }
+            if (MaxDuration > TimeSpan.Zero)
+            {
+                _deadLine = DateTime.Now.Add(MaxDuration);
+            }
+            else
+            {
+                _deadLine = DateTime.Now;
+            }
 
-        if (Leading)
+            if (Leading)
+            {
+                Callback?.Invoke();
+            }
+            _timer.Bind(run);
+            _timer.Start();
+            return Leading;
+        }
+    }
+    private void run(DebounceTimer timer)
+    {
+        lock (this)
         {
+            if (_timer is not null)
+            {
+                _timer?.Discard();
+                _timer = null;
+            }
+            timer.Discard();
             Callback?.Invoke();
         }
-        _timer.Bind(run);
-        _timer.Start();
-        return Leading;
-    }
-    private async Task run(DebounceTimer timer)
-    {
-        if (_timer is not null)
-        {
-            _timer?.Discard();
-            _timer = null;
-        }
-        timer.Discard();
-        Callback?.Invoke();
-
     }
     public void Discard()
     {
-        if (_timer is null)
+        lock (this)
         {
-            return;
+
+            if (_timer is null)
+            {
+                return;
+            }
+            _timer?.Discard();
+            _timer = null;
         }
-        _timer?.Discard();
-        _timer = null;
     }
 }

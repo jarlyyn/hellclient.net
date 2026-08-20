@@ -168,10 +168,10 @@ public class Telnet : IMudConnection
 
     public async Task Send(byte[] data)
     {
-        if (_client.Connected && _stream != null)
-        {
-            await _stream.WriteAsync(data, 0, data.Length);
-        }
+            if (_client.Connected && _stream != null)
+            {
+                await _stream.WriteAsync(data, 0, data.Length);
+            }
     }
     public bool IsConnected()
     {

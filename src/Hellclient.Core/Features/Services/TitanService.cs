@@ -148,6 +148,8 @@ public class TitanService : ITitanService
     }
     public void Destory(TitanContext context, IWorld world)
     {
+        world.EventBus.BeforeCloseEvent?.Invoke(this, EventArgs.Empty);
+        world.EventBus.CloseEvent?.Invoke(this, EventArgs.Empty);
         world.Dispose();
         RemoveFrom(context, world);
 

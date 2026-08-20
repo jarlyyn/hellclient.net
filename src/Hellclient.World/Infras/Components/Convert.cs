@@ -14,7 +14,7 @@ public interface IConvert
 
     public byte[] GetBuffer();
     public void Prompt();
-    public void Publish();
+    public void Publish(bool force);
     public void AppendBuffer(byte data);
 }
 public class Convert : IConvert
@@ -43,17 +43,20 @@ public class Convert : IConvert
     {
         _buffer.Add(data);
     }
-    public void Publish()
+    public void Publish(bool force)
     {
+        Debounce?.Reset();
         var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
+        if (force || line is not null)
+        {
+            _buffer.Clear();
+        }
         if (line is null)
         {
             return;
         }
         line.Type = Line.LineTypeReal;
         OnLine?.Invoke(this, line);
-        Debounce?.Reset();
-        _buffer.Clear();
         var pl = Line.New();
         pl.Type = Line.LineTypePrompt;
         OnPrompt?.Invoke(this, pl);

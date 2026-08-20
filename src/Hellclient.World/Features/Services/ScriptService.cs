@@ -41,8 +41,9 @@ public class ScriptService : IScriptService
     public IConvertService ConvertService { get; set; } = new ConvertService();
     public void InstallTo(WorldContext context)
     {
-        // Install script service to the world context
+
     }
+
     public void Run(WorldContext context, string script)
     {
         SetCreator(context, "run", "");
