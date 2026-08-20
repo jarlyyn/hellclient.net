@@ -9,9 +9,9 @@ namespace Hellclient.World.Features.Services;
 public interface IConnService
 {
     public void InstallTo(WorldContext context);
-    public Task Connect(WorldContext context);
+    public void Connect(WorldContext context);
     public void Stop(WorldContext context);
-    public Task Close(WorldContext context);
+    public void Close(WorldContext context);
     public void Send(WorldContext context, byte[] message);
     public bool IsConnected(WorldContext context);
     public byte[] GetBuffer(WorldContext context);
@@ -40,10 +40,13 @@ public class ConnService : IConnService
         };
         context.Convert.Debounce = new Debounce(DefaultDebounceDuration, () =>
         {
-            if (context.Connection.IsConnected())
+            Task.Run(() =>
             {
-                context.Convert.Prompt();
-            }
+                if (context.Connection.IsConnected())
+                {
+                    context.Convert.Prompt();
+                }
+            });
         });
         Listen(context);
     }
@@ -81,7 +84,7 @@ public class ConnService : IConnService
         ctx.Connection.OnCommandReceived += (sender, cmd) => OnCommandReceived(ctx, cmd);
         ctx.Convert.OnLine += (sender, line) => ctx.EventBus.LineEvent?.Invoke(this, line);
     }
-    public async void OnCommandReceived(WorldContext context, TelnetCommand cmd)
+    public void OnCommandReceived(WorldContext context, TelnetCommand cmd)
     {
 
         context.Convert.Publish(true);
@@ -91,7 +94,7 @@ public class ConnService : IConnService
                 switch (cmd.Data[0])
                 {
                     case TelnetCommand.OptionTerminalType:
-                        await context.Connection.SendTelnetCommand(TelnetCommand.Will(TelnetCommand.OptionTerminalType));
+                        context.Connection.SendTelnetCommand(TelnetCommand.Will(TelnetCommand.OptionTerminalType));
                         break;
                     default:
                         break;
@@ -108,10 +111,10 @@ public class ConnService : IConnService
                 switch (cmd.Data[0])
                 {
                     case TelnetCommand.OptionEcho:
-                        await context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionEcho));
+                        context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionEcho));
                         break;
                     case TelnetCommand.OptionGMCP:
-                        await context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionGMCP));
+                        context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionGMCP));
                         break;
                     default:
                         break;
@@ -134,7 +137,7 @@ public class ConnService : IConnService
                         case 24:
                             if (cmd.Data.Length > 1 && cmd.Data[1] == 1 && context.TType.Count > 0)
                             {
-                                await context.Connection.Send(TelnetCommand.Subnegotiation(24, new byte[] { 0 }.Concat(Encoding.UTF8.GetBytes(context.TType[0])).ToArray()));
+                                context.Connection.Send(TelnetCommand.Subnegotiation(24, new byte[] { 0 }.Concat(Encoding.UTF8.GetBytes(context.TType[0])).ToArray()));
                                 context.TType.RemoveAt(0);
                             }
                             break;
@@ -147,7 +150,7 @@ public class ConnService : IConnService
         context.EventBus.OnCommand?.Invoke(this, cmd);
     }
 
-    public async Task Connect(WorldContext context)
+    public void Connect(WorldContext context)
     {
         context.Convert.Charset = context.Config.Data.Charset;
         if (AppConfig.System.TerminalType != "")
@@ -163,16 +166,16 @@ public class ConnService : IConnService
         {
             context.TType = [];
         }
-        await context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0);
+        context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0);
     }
     public void Stop(WorldContext context)
     {
         context.Convert.Debounce?.Discard();
     }
-    public async Task Close(WorldContext context)
+    public void Close(WorldContext context)
     {
 
-        await context.Connection.Disconnect();
+        context.Connection.Disconnect();
         context.Convert.Prompt();
         context.Convert.Debounce?.Discard();
         context.EventBus.ServerCloseEvent?.Invoke(this, EventArgs.Empty);

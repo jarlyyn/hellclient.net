@@ -22,7 +22,7 @@ public class LogService : ILogService
     }
     private void dolog(WorldContext context, string message)
     {
-        Task.Run(async () => ConvertService.DoPrintSystem(context, message));
+        Task.Run(() => ConvertService.DoPrintSystem(context, message));
         Console.Error.WriteLine(message);
         DoLog(context, message);
     }

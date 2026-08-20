@@ -32,7 +32,7 @@ public class Convert : IConvert
     public string Charset { get; set; } = CharsetUtil.UTF8;
     public Debounce? Debounce { get; set; }
 
-    public List<byte> _buffer = new List<byte>();
+    public MemoryStream _buffer = new MemoryStream();
     public event EventHandler<Line>? OnLine;
     public event EventHandler<Line>? OnPrompt;
     public byte[] GetBuffer()
@@ -41,7 +41,7 @@ public class Convert : IConvert
     }
     public void AppendBuffer(byte data)
     {
-        _buffer.Add(data);
+        _buffer.WriteByte(data);
     }
     public void Publish(bool force)
     {
@@ -49,7 +49,7 @@ public class Convert : IConvert
         var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
         if (force || line is not null)
         {
-            _buffer.Clear();
+            _buffer.SetLength(0);
         }
         if (line is null)
         {

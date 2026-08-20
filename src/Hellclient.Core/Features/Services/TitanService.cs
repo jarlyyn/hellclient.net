@@ -20,7 +20,7 @@ public interface ITitanService
 {
     IWorld? World(TitanContext context, string id);
     IWorld? NewWorld(TitanContext context, string id);
-    Task<bool> OpenWorld(TitanContext context, string id);
+    bool OpenWorld(TitanContext context, string id);
     void SaveWorld(TitanContext context, string id);
     public void HandleCmdAutoSaveWorld(TitanContext context, string id);
     public void HandleCmdConnect(TitanContext context, string id);
@@ -28,7 +28,7 @@ public interface ITitanService
     public void HandleCmdSend(TitanContext context, string id, string msg);
     public void HandleCmdAllLines(TitanContext context, string id);
     public void HandleCmdNotOpened(TitanContext context);
-    public Task<bool> HandleCmdOpen(TitanContext context, string id);
+    public bool HandleCmdOpen(TitanContext context, string id);
     public void ExecClients(TitanContext context);
     public void CloseWorld(TitanContext context, string id);
     public void HandleCmdSave(TitanContext context, string id);
@@ -459,15 +459,14 @@ public class TitanService : ITitanService
         var list = ListNotOpened(context);
         MsgHelper.PublishNotOpened(context.EventBus, list);
     }
-    public async Task<bool> HandleCmdOpen(TitanContext context, string id)
+    public bool HandleCmdOpen(TitanContext context, string id)
     {
-        var ok = await OpenWorld(context, id);
+        var ok = OpenWorld(context, id);
         var w = World(context, id);
         if (w != null)
         {
-            await w.Lock.WaitAsync();
-            try
-            {
+            w.Lock.Wait();
+            try{
 
                 w.UpdateLastActive();
             }
@@ -748,7 +747,7 @@ public class TitanService : ITitanService
     {
         saveWorld(context, id, true);
     }
-    public async Task<bool> OpenWorld(TitanContext context, string id)
+    public bool OpenWorld(TitanContext context, string id)
     {
         IWorld? world;
         lock (context.Worlds)
@@ -785,7 +784,7 @@ public class TitanService : ITitanService
         world.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
         try
         {
-            await world.DoConnectServer();
+            world.DoConnectServer();
         }
         catch (Exception ex)
         {

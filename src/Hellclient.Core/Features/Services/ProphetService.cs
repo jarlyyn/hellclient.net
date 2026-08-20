@@ -24,7 +24,7 @@ public interface IProphetService
     void OnCmdAllLines(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdCreateGame(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdNotOpened(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
-    Task OnCmdOpen(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
+    void OnCmdOpen(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdClose(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdSave(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdSaveScript(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
@@ -232,11 +232,11 @@ public class ProphetService : IProphetService
     {
         TitanService.HandleCmdNotOpened(ctx.TitanContext);
     }
-    public async Task OnCmdOpen(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
+    public void OnCmdOpen(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         var msg = JsonSerializer.Deserialize<string>(cmd.Data(), JsonContext.Instance.String)!;
 
-        var ok = await TitanService.HandleCmdOpen(ctx.TitanContext, msg);
+        var ok = TitanService.HandleCmdOpen(ctx.TitanContext, msg);
         if (ok)
         {
             change(ctx, conn, msg);

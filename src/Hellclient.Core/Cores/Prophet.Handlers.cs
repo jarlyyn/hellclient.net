@@ -22,7 +22,7 @@ public partial class Prophet
         //未打开游戏清单指令，由于显示打开界面
         Context.Handlers.RegisterHandler("notopened", (conn, cmd) => ProphetService.OnCmdNotOpened(Context, conn, cmd));
         //打开游戏指令
-        Context.Handlers.RegisterHandler("open", async (conn, cmd) => await ProphetService.OnCmdOpen(Context, conn, cmd));
+        Context.Handlers.RegisterHandler("open", (conn, cmd) => ProphetService.OnCmdOpen(Context, conn, cmd));
         //关闭游戏指令
         Context.Handlers.RegisterHandler("close", (conn, cmd) => ProphetService.OnCmdClose(Context, conn, cmd));
         //保存游戏指令

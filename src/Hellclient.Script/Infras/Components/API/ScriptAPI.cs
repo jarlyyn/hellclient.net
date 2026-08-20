@@ -1688,7 +1688,7 @@ public class ScriptAPI(IWorld world)
     public void Simulate(string text)
     {
         var list = text.Split("\n");
-        Task.Run(async () =>
+        Task.Run(() =>
         {
             foreach (var t in list)
             {
@@ -1709,7 +1709,7 @@ public class ScriptAPI(IWorld world)
         {
             return;
         }
-        Task.Run(async () =>
+        Task.Run(() =>
         {
             foreach (var line in list)
             {

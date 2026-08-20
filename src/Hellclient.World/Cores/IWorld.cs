@@ -174,8 +174,8 @@ public interface IWorld
     public List<string> GetHistories();
     public void FlushHistories();
     public void HandleConnError(Exception err);
-    public Task DoConnectServer();
-    public Task DoCloseServer();
+    public void DoConnectServer();
+    public void DoCloseServer();
     public void HandleConverterError(Exception err);
     public void HandleCmdError(Exception err);
     public void HandleTriggerError(Exception err);

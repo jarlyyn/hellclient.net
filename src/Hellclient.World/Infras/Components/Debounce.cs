@@ -72,7 +72,7 @@ public class Debounce
     //MaxDuration max lifetime debouce can live.
     TimeSpan MaxDuration { get; set; }
 
-    private DateTime? _deadLine;
+    private DateTime? _deadLine = null;
     //Leading if the callback should be called before the duration
     public bool Leading { get; set; }
 
@@ -94,7 +94,7 @@ public class Debounce
             }
             else
             {
-                _deadLine = DateTime.Now;
+                _deadLine = null;
             }
             _timer.Reset((Duration > MinTimeSpan ? Duration : MinTimeSpan).TotalMilliseconds);
             return true;
@@ -143,7 +143,7 @@ public class Debounce
             }
             else
             {
-                _deadLine = DateTime.Now;
+                _deadLine = null;
             }
 
             if (Leading)

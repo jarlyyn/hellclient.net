@@ -199,11 +199,11 @@ public class MetronomeService : IMetronomeService
             });
         }
     }
-    public async Task play(WorldContext context)
+    public void play(WorldContext context)
     {
         try
         {
-            await context.Lock.WaitAsync();
+            context.Lock.Wait();
             if (!context.Connection.IsConnected())
             {
                 return;
@@ -226,7 +226,7 @@ public class MetronomeService : IMetronomeService
                 {
                     try
                     {
-                        await ConvertService.DoSend(context, cmd);
+                        ConvertService.DoSend(context, cmd);
                         var t = DateTime.Now;
                         context.Metronome.Sent.Add(t);
                     }
@@ -246,7 +246,7 @@ public class MetronomeService : IMetronomeService
 
     public void Play(WorldContext context)
     {
-        Task.Run(async () => await play(context));
+        Task.Run(() => play(context));
     }
     public void Stop(WorldContext context)
     {
@@ -267,7 +267,7 @@ public class MetronomeService : IMetronomeService
     public void startTick(WorldContext context)
     {
         stopTick(context);
-        Task.Run(async () => await nextTick(context));
+        Task.Run(() => nextTick(context));
     }
     public async Task nextTick(WorldContext context)
     {
@@ -279,14 +279,14 @@ public class MetronomeService : IMetronomeService
         context.Metronome.ticker = new PeriodicTimer(interval);
         if (await context.Metronome.ticker.WaitForNextTickAsync())
         {
-            await play(context);
+            play(context);
         }
-        _ = Task.Run(async () => await nextTick(context));
+        _ = Task.Run(() => nextTick(context));
     }
     public void Push(WorldContext context, List<Command> cmds, bool grouped)
     {
         append(context, cmds, grouped);
-        Task.Run(async () => await play(context));
+        Task.Run(() => play(context));
     }
     public void InstallTo(WorldContext context)
     {

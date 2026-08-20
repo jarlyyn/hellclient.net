@@ -34,7 +34,7 @@ public partial class World : IWorld
     }
     public void Dispose()
     {
-        Task.Run(async () => await DoCloseServer());
+        Task.Run(() => DoCloseServer());
     }
     private IWorldService Service { get; init; }
     public WorldEventBus EventBus { get => Context.EventBus; }

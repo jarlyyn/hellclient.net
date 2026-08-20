@@ -19,7 +19,7 @@ public class QueueService : IQueueService
     {
         context.EventBus.QueueDelayUpdatedEvent += (sender, args) =>
         {
-            Task.Run(async () => await _onDelayUpdate(context));
+            Task.Run(() => _onDelayUpdate(context));
         };
     }
     public MetronomeService MetronomeService { get; set; } = new MetronomeService();
@@ -117,9 +117,9 @@ public class QueueService : IQueueService
             }
         }
     }
-    private async Task _onDelayUpdate(WorldContext context)
+    private void _onDelayUpdate(WorldContext context)
     {
-        await context.Lock.WaitAsync();
+        context.Lock.Wait();
         try
         {
             context.Queue.Pending = false;

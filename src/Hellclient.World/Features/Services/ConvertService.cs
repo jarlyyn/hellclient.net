@@ -6,7 +6,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IConvertService
 {
-    public Task DoSend(WorldContext context, Command cmd);
+    public void DoSend(WorldContext context, Command cmd);
     public void DoPrint(WorldContext context, string msg);
     public void DoPrintSystem(WorldContext context, string msg);
     public void DoPrintLocalBroadcastIn(WorldContext context, string msg);
@@ -21,7 +21,7 @@ public interface IConvertService
 
 public class ConvertService : IConvertService
 {
-    public async Task DoSend(WorldContext context, Command cmd)
+    public void DoSend(WorldContext context, Command cmd)
     {
         if (cmd.Message == "\x0f")
         {
@@ -37,8 +37,8 @@ public class ConvertService : IConvertService
         {
             context.Info.History.Add(cmd.Message);
         }
-        await context.Connection.Send(bytes);
-        await context.Connection.Send(new byte[] { 13 });
+        context.Connection.Send(bytes);
+        context.Connection.Send(new byte[] { 13 });
     }
 
     public void DoPrintEcho(WorldContext context, Command cmd)
