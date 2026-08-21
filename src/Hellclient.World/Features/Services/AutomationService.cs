@@ -7,6 +7,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IAutomationService
 {
+    // 游戏自动化处理功能，包含触发器/计时器/别名的维护
     public void InstallTo(WorldContext context);
     public MatchResult? GetTriggerWildcard(WorldContext context, string name);
     public void DoStopEvaluatingTriggers(WorldContext context);

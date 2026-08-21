@@ -4,6 +4,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IPathService
 {
+    //游戏目录管理
     public string GetScriptPath(WorldContext context);
     public string GetScriptHome(WorldContext context);
     public string GetModPath(WorldContext context);

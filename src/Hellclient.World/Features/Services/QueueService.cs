@@ -6,6 +6,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IQueueService
 {
+    //定时队列，与mush兼容使用
     public void InstallTo(WorldContext context);
     public void Append(WorldContext context, Command cmd);
     public int Flush(WorldContext context, bool force);

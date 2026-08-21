@@ -8,6 +8,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IConnService
 {
+    //原始连接相关的功能，处理byte/byte[]数据流。
     public void InstallTo(WorldContext context);
     public void Connect(WorldContext context);
     public void Stop(WorldContext context);

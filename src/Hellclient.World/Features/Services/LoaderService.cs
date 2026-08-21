@@ -7,6 +7,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface ILoaderService
 {
+    //加载/保存的功能
     public void Decode(WorldContext context, string data);
     public string Encode(WorldContext context);
 }

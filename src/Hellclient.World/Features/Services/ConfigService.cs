@@ -5,6 +5,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IConfigService
 {
+    //配置相关功能
     public void InstallTo(WorldContext context);
     public int GetPosition(WorldContext context);
     public void SetPosition(WorldContext context, int position);

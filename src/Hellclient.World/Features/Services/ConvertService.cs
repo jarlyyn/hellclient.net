@@ -6,6 +6,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IConvertService
 {
+    //转换服务，byte与line/Command的转换和处理
     public void DoSend(WorldContext context, Command cmd);
     public void DoPrint(WorldContext context, string msg);
     public void DoPrintSystem(WorldContext context, string msg);

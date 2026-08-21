@@ -6,6 +6,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IMetronomeService
 {
+    //节拍器，指令的限流发送
     public void SetInterval(WorldContext context, TimeSpan interval);
     public TimeSpan Interval(WorldContext context);
     public void Reset(WorldContext context);

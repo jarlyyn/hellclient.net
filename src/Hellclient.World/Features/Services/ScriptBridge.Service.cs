@@ -5,6 +5,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IScriptBridgeService
 {
+    //脚本顶层管理功能
     public void InstallTo(WorldContext context);
     public void Save(WorldContext context);
     public void OpenScript(WorldContext context);

@@ -6,6 +6,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IInfoService
 {
+    //信息/历史数据管理的功能
     public void InstallTo(WorldContext context);
     public List<Line> CurrentLines(WorldContext context);
     public Line? CurrentPrompt(WorldContext context);

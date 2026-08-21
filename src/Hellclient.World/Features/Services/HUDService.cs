@@ -5,6 +5,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IHUDService
 {
+    // 游戏界面的HUD管理
     public void SetSize(WorldContext context, int size);
     public int GetSize(WorldContext context);
     public bool UpdateContent(WorldContext context, int start, List<Line> lines);

@@ -7,6 +7,7 @@ namespace Hellclient.World.Features.Services;
 
 public interface IScriptService
 {
+    //脚本具体功能，底层接口，供其他服务调用。
     public void InstallTo(WorldContext context);
     public void Run(WorldContext context, string script);
     public void SendAlias(WorldContext context, string message, Alias alias, MatchResult matchResult);
