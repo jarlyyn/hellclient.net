@@ -14,6 +14,7 @@ Hellclient.net是Hellclient(golang)的重写，主要是为了解决v8库的后�
 8. 提供Websocket接口，可以将第三方服务接入，进行实时交互(已实现)
 9. 支持Mushclient的主要API,提供muschclient机器一直的可能(已实现)
 10. 将游戏数据与代码分离，便于将代码部分进行git等现代化代码管理(已实现)
+11. 支持webdav协议，能直接挂载为网盘进行脚本维护(已实现)
 
 
 ## 基础
