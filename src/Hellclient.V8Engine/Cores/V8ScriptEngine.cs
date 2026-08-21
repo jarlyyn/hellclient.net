@@ -49,6 +49,10 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
         V8Settings.GlobalFlags |= V8GlobalFlags.DisableBackgroundWork;
         ScriptEngineFactoryManager.RegisterFactory(Name, new V8ScriptEngineFactory());
     }
+    public string Label()
+    {
+        return "V8 Javascript";
+    }
     public IScriptEngine CreateScriptEngine(IWorld world)
     {
         return new V8JsScriptEngine(world);

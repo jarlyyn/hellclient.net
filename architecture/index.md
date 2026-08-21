@@ -20,7 +20,7 @@ hc.net把项目分为了多个子项目。每个项目中的从上向下架构�
 ## 子项目划分
 
 * Hellclient.World 具体的一个一个游戏的实例。包含了telnet连接，ansi转义，内部Line对象的转换和管理，触发器/别名/计时器功能，各种事件和API提供控制
-* Hellclient.Script 在World之上的，定义控制World的API，可以注入到各个脚本引擎内实现脚本功能。比如Hellclient.V8Engine,就是javascript(V8)的实现
+* Hellclient.Script 在World之上的，定义控制World的API，可以注入到各个脚本引擎内实现脚本功能。比如Hellclient.V8Engine,就是javascript(V8)的实现。可以通过加入其他c#支持的脚本引擎，如lua,python等，通过ScriptEngineFactoryManager.RegisterFactory注册，加入新的脚本支持。
 * Hellclient.Core 核心层，主要是3个内容，Titan,Prophet,Messenger。Titan(天神)负责管理调度所有的world,Go中单例叫做盘古。Prophet(先知)负责沟通最终用户和Titan，Go中的单例叫做老子。Messenger(信使)负责其他程序通过Websocket协议与客户端进行协作.Go中的实例叫做太白金星。
 * Hellcient 入口层，维护了UI(目前只有UI,理论上对接Avalonia等gui),进行生命周期和依赖注入。
 

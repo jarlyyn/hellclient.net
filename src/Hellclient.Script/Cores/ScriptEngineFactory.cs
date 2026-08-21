@@ -7,6 +7,7 @@ using Hellclient.World.Cores;
 public interface IScriptEngineFactory
 {
     public IScriptEngine CreateScriptEngine(IWorld world);
+    public string Label();
     public void NewScript(string ID);
 }
 
@@ -18,6 +19,10 @@ public class NopScriptEngineFactory : IScriptEngineFactory
     }
     public void NewScript(string ID)
     {
+    }
+    public string Label()
+    {
+        return "";
     }
 }
 
