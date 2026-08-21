@@ -116,16 +116,15 @@ public class Debounce
                     {
                         duration = Duration;
                     }
-                    if (duration <= MinTimeSpan)
-                    {
-                        duration = MinTimeSpan;
-                    }
                 }
                 else
                 {
                     duration = Duration;
                 }
-                _timer.Reset(duration.TotalMilliseconds);
+                if (duration >= MinTimeSpan)
+                {
+                    _timer.Reset(duration.TotalMilliseconds);
+                }
                 success = true;
             }
             if (success)
@@ -166,7 +165,10 @@ public class Debounce
                 _timer = null;
             }
             timer.Discard();
-            Callback?.Invoke();
+            if (!Leading)
+            {
+                Callback?.Invoke();
+            }
         }
     }
     public void Discard()

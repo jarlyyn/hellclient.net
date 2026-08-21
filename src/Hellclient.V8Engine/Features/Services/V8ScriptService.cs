@@ -32,6 +32,22 @@ public partial class V8ScriptService : IV8ScriptService
 {
     public void InstallTo(V8EngineContext context)
     {
+        Task.Run(async () =>
+        {
+            try
+            {
+                while (true)
+                {
+                    await context.Timer.WaitForNextTickAsync();
+                    context.Runtime.CollectGarbage(true);
+                }
+
+            }
+            catch (Exception)
+            {
+            }
+
+        });
         initEval(context);
         initMetronome(context);
         initJsAPI(context);
@@ -113,6 +129,7 @@ public partial class V8ScriptService : IV8ScriptService
             callByName(context, context.Events.OnClose);
         }
         context.Runtime.Dispose();
+        context.Timer.Dispose();
     }
     public void OnConnect(V8EngineContext context)
     {

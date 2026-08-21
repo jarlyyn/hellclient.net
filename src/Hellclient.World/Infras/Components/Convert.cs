@@ -45,7 +45,7 @@ public class Convert : IConvert
     }
     public void Publish(bool force)
     {
-        Debounce?.Reset();
+        Debounce?.Discard();
         var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
         if (force || line is not null)
         {

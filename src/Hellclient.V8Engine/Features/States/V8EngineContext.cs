@@ -18,14 +18,11 @@ public class V8EngineContext
         JsMetronome = new JsMetronome(world);
 
     }
+    public PeriodicTimer Timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
     public JsAPI JsAPI { get; init; }
     public JsMetronome JsMetronome { get; init; }
     public IWorld World { get; init; }
-    public V8ScriptEngine Runtime { get; set; } = new V8ScriptEngine(new V8RuntimeConstraints
-    {
-        MaxOldSpaceSize = 64,
-        MaxNewSpaceSize = 8
-    });
+    public V8ScriptEngine Runtime { get; set; } = new V8ScriptEngine();
 
     public ScriptEvents Events { get; set; } = new ScriptEvents();
 }
