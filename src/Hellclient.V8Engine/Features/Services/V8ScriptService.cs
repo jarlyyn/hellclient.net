@@ -49,10 +49,10 @@ public partial class V8ScriptService : IV8ScriptService
 
         });
         initEval(context);
-        initMetronome(context);
         initJsAPI(context);
+        initMetronome(context);
         initUserinput(context);
-
+        initHTTP(context);
     }
     public void handleError(V8EngineContext context, Exception ex)
     {

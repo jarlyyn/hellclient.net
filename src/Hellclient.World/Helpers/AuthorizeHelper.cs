@@ -68,4 +68,15 @@ public class AuthorizeHelper
         }
         return false;
     }
+    public static bool AuthorizePermission(List<string> permissions, string permission)
+    {
+        for (int i = 0; i < permissions.Count; i++)
+        {
+            if (permissions[i] == permission)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

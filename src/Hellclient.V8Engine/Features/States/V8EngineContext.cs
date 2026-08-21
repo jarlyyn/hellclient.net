@@ -1,4 +1,4 @@
-using Hellclient.Script.Infras.Components;
+using Hellclient.Script.Infras.Components.API;
 using Hellclient.V8Engine.Infras.Components;
 using Hellclient.V8Engine.Types;
 using Hellclient.World.Cores;
@@ -15,7 +15,7 @@ public class V8EngineContext
     {
         World = world;
         JsAPI = new JsAPI(new ScriptAPI(world), Runtime);
-        JsMetronome = new JsMetronome(world);
+        JsMetronome = new JsMetronome(world, Runtime);
 
     }
     public PeriodicTimer Timer = new PeriodicTimer(TimeSpan.FromSeconds(10));

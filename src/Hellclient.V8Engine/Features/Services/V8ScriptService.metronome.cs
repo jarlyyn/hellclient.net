@@ -9,43 +9,7 @@ public partial class V8ScriptService
 {
     public void initMetronome(V8EngineContext context)
     {
-        var met = context.JsMetronome;
-        using var m = context.Runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
-        if (m == null)
-        {
-            return;
-        }
-#pragma warning disable CS8974 // 将方法组转换为非委托类型
-
-        m["getbeats"] = met.GetBeats;
-        m["setbeats"] = met.SetBeats;
-        m["reset"] = met.Reset;
-        m["getspace"] = met.GetSpace;
-        m["getqueue"] = met.GetQueue;
-        m["discard"] = met.Discard;
-        m["lockqueue"] = met.LockQueue;
-        m["full"] = met.full;
-        m["fulltick"] = met.FullTick;
-        m["getinterval"] = met.GetInterval;
-        m["setinterval"] = met.SetInterval;
-        m["gettick"] = met.GetTick;
-        m["settick"] = met.SetTick;
-        m["push"] = met.Push;
-        m["GetBeats"] = met.GetBeats;
-        m["SetBeats"] = met.SetBeats;
-        m["Reset"] = met.Reset;
-        m["GetSpace"] = met.GetSpace;
-        m["GetQueue"] = met.GetQueue;
-        m["Discard"] = met.Discard;
-        m["LockQueue"] = met.LockQueue;
-        m["Full"] = met.full;
-        m["FullTick"] = met.FullTick;
-        m["GetInterval"] = met.GetInterval;
-        m["SetInterval"] = met.SetInterval;
-        m["GetTick"] = met.GetTick;
-        m["SetTick"] = met.SetTick;
-        m["Push"] = met.Push;
-#pragma warning restore CS8974 // 将方法组转换为非委托类型
+        using var m = new JsMetronome(context.World, context.Runtime).Convert();
         ((IDictionary<string, object>)context.Runtime.Script)["Metronome"] = m;
     }
 }

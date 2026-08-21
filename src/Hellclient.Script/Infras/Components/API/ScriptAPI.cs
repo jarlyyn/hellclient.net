@@ -1,4 +1,4 @@
-namespace Hellclient.Script.Infras.Components;
+namespace Hellclient.Script.Infras.Components.API;
 
 using Hellclient.World.Components.Automation;
 using Hellclient.World.Configs;

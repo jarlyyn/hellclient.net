@@ -1,11 +1,15 @@
 using Hellclient.World.Cores;
 using Hellclient.World.Types;
+using Microsoft.ClearScript;
+using Microsoft.ClearScript.V8;
 
 namespace Hellclient.V8Engine.Infras.Components;
 
-public class JsMetronome(IWorld world)
+public class JsMetronome(IWorld world, V8ScriptEngine engine)
 {
     private readonly IWorld _world = world;
+    private readonly V8ScriptEngine _engine = engine;
+
 
     public object? GetBeats(params object[] args)
     {
@@ -94,5 +98,45 @@ public class JsMetronome(IWorld world)
         }
         _world.DoPushMetronome(cmds, grouped);
         return null;
+    }
+    public ScriptObject Convert()
+    {
+        var m = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject;
+        if (m == null)
+        {
+            throw new Exception("Failed to create script object");
+        }
+#pragma warning disable CS8974 // 将方法组转换为非委托类型
+
+        m["getbeats"] = GetBeats;
+        m["setbeats"] = SetBeats;
+        m["reset"] = Reset;
+        m["getspace"] = GetSpace;
+        m["getqueue"] = GetQueue;
+        m["discard"] = Discard;
+        m["lockqueue"] = LockQueue;
+        m["full"] = full;
+        m["fulltick"] = FullTick;
+        m["getinterval"] = GetInterval;
+        m["setinterval"] = SetInterval;
+        m["gettick"] = GetTick;
+        m["settick"] = SetTick;
+        m["push"] = Push;
+        m["GetBeats"] = GetBeats;
+        m["SetBeats"] = SetBeats;
+        m["Reset"] = Reset;
+        m["GetSpace"] = GetSpace;
+        m["GetQueue"] = GetQueue;
+        m["Discard"] = Discard;
+        m["LockQueue"] = LockQueue;
+        m["Full"] = full;
+        m["FullTick"] = FullTick;
+        m["GetInterval"] = GetInterval;
+        m["SetInterval"] = SetInterval;
+        m["GetTick"] = GetTick;
+        m["SetTick"] = SetTick;
+        m["Push"] = Push;
+#pragma warning restore CS8974 // 将方法组转换为非委托类型
+        return m;
     }
 }
