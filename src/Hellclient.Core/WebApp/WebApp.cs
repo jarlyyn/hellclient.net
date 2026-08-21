@@ -8,6 +8,7 @@ using Hellclient.Core.Bootstrappers;
 using Hellclient.Core.Infras.Adapters;
 using NWebDav.Server.Stores;
 using Hellclient.World.Configs;
+using Microsoft.Extensions.Hosting;
 
 namespace Hellclient.Core.WebApp;
 
@@ -66,6 +67,10 @@ public class WebApp
     private WebApplication BuildApp()
     {
         var builder = WebApplication.CreateSlimBuilder();
+        builder.Host.ConfigureHostOptions(options =>
+        {
+            options.ShutdownTimeout = TimeSpan.FromSeconds(1);
+        });
         builder.Services.AddNWebDav(opts => opts.Filter = (ctx) =>
         {
             if (ctx.Request.Path.StartsWithSegments("/game"))
