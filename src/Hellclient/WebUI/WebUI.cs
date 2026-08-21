@@ -23,6 +23,7 @@ public class WebUI
     public void BuildApp(WebApplication app)
     {
         app.Map("/ws", WSAction);
+        app.Map("/messenger", MessengerAction);
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(
@@ -36,6 +37,7 @@ public class WebUI
         });
     }
     public EventHandler<WebsocketConnection>? OnWS { get; set; }
+
     public async Task WSAction(HttpContext ctx)
     {
         if (ctx.WebSockets.IsWebSocketRequest)
@@ -44,6 +46,22 @@ public class WebUI
             var conn = new WebsocketConnection(webSocket);
             OnWS?.Invoke(this, conn);
             AppCore.Instance.Prophet.Enter(conn);
+            await conn.Run();
+        }
+        else
+        {
+            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+
+    }
+    public async Task MessengerAction(HttpContext ctx)
+    {
+        if (ctx.WebSockets.IsWebSocketRequest)
+        {
+            using var webSocket = await ctx.WebSockets.AcceptWebSocketAsync();
+            var conn = new WebsocketConnection(webSocket);
+            OnWS?.Invoke(this, conn);
+            AppCore.Instance.Messenger.Enter(conn);
             await conn.Run();
         }
         else

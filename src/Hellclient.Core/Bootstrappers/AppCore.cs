@@ -12,6 +12,7 @@ public class AppCore
 {
     public static AppCore Instance { get; set; } = BuildDefault();
     public required Prophet Prophet { get; set; }
+    public required Messenger Messenger { get; set; }
     public static AppCore BuildDefault()
     {
         var logger = new FileLogger()
@@ -38,9 +39,20 @@ public class AppCore
             ProphetService = new ProphetService(userPasswordRepo)
         };
         prophet.Init();
+        var mctx = new MessengerContext()
+        {
+            TitanContext = tctx
+        };
+        var messenger = new Messenger()
+        {
+            Context = mctx,
+            MessengerService = new MessengerService()
+        };
+        messenger.init();
         var app = new AppCore()
         {
-            Prophet = prophet
+            Prophet = prophet,
+            Messenger = messenger
         };
         return app;
     }

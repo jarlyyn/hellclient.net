@@ -4,6 +4,8 @@ namespace Hellclient.World.Types;
 
 public class Message
 {
+    public const int MessageCommandResponse = 0;
+    public const int MessageCommandBatchCommand = 1;
     public string World { get; set; } = string.Empty;
     public string ID { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;

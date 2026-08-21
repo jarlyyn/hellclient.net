@@ -101,6 +101,8 @@ public interface ITitanService
     public void OnUpdateSuccess(TitanContext context, string id);
     public void OnUpdateScriptSuccess(TitanContext context, string id);
     public void Start(TitanContext context);
+    public void OnResponse(TitanContext context, World.Types.Message msg);
+    public void OnBatchCommandMessage(TitanContext context, World.Types.Message msg);
 }
 //World管理类，用来管理现有所有的游戏
 public class TitanService : ITitanService

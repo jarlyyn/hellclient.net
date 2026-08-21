@@ -66,6 +66,8 @@ namespace Hellclient.Core.Infras.Components;
 [JsonSerializable(typeof(List<Item>))]
 [JsonSerializable(typeof(List<VisualPrompt>))]
 [JsonSerializable(typeof(Dictionary<string, object>))]
+[JsonSerializable(typeof(Hellclient.World.Types.Message),TypeInfoPropertyName="WorldMessage")]
+
 public partial class JsonContext : JsonSerializerContext
 {
     public static JsonSerializerOptions JsonOptions = new()
@@ -185,6 +187,8 @@ public partial class JsonContext : JsonSerializerContext
                 return JsonSerializer.SerializeToUtf8Bytes(item, JsonContext.Instance.Item);
             case List<Item> itemList:
                 return JsonSerializer.SerializeToUtf8Bytes(itemList, JsonContext.Instance.ListItem);
+            case Hellclient.World.Types.Message msg:
+                return JsonSerializer.SerializeToUtf8Bytes(msg, JsonContext.Instance.WorldMessage);
             case null:
                 return Encoding.UTF8.GetBytes("null");
             default:
