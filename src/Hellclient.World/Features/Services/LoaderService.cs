@@ -28,7 +28,7 @@ public class LoaderService : ILoaderService
     }
     public string Encode(WorldContext context)
     {
-        var data = new WorldData();
+        var data = context.Config.Data;
         var timers = AutomationService.GetTimersByType(context, true);
         timers.Sort((a, b) => a.CompareTo(b));
         data.Timers = timers;
