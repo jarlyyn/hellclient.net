@@ -13,8 +13,13 @@ public class ConfigsRepo : IConfigsRepo
 {
     public SystemConfig LoadSystemConfig()
     {
-        var content=System.IO.File.ReadAllText(System.IO.Path.Combine(Deployment.Instance.ConfigPath,"system.toml"));
-        var systemConfig = TomlSerializer.Deserialize<SystemConfig>(content,TomlContext.Default.SystemConfig);
+        if (!System.IO.File.Exists(System.IO.Path.Combine(Deployment.Instance.ConfigPath, "system.toml")))
+        {
+            Console.WriteLine("System config not found, creating default one");
+            System.IO.File.WriteAllText(System.IO.Path.Combine(Deployment.Instance.ConfigPath, "system.toml"), System.IO.File.ReadAllText(System.IO.Path.Combine(Deployment.Instance.SystemPath, "configskeleton", "system.toml")));
+        }
+        var content = System.IO.File.ReadAllText(System.IO.Path.Combine(Deployment.Instance.ConfigPath, "system.toml"));
+        var systemConfig = TomlSerializer.Deserialize<SystemConfig>(content, TomlContext.Default.SystemConfig);
         if (systemConfig == null)
         {
             throw new Exception("Failed to load system config");

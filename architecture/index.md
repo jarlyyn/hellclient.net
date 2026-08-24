@@ -48,3 +48,10 @@ Telnet原始数据->AnsiHelper解析为Line(游戏内核心数据)->InfoService�
 出方向数据为
 
 用户在界面进行操作->Websocket发送指令->Prophet接受指令后，Json反序列化，通过Hanlders进行转发->Titan接受指令，获取对应的World,调用接口->World调用Script引擎或者Alias->发送到telnet或者显示到输出。
+
+
+## debug说明
+
+为了方便运行程序进行调试，debug说明见下
+
+[Debug说明](./howtodebug.md)
