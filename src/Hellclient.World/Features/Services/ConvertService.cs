@@ -52,7 +52,7 @@ public class ConvertService : IConvertService
             Text = cmd.Message,
         };
         line.Words.Add(w);
-        context.EventBus.LineEvent!.Invoke(this, line);
+        context.EventBus.LineEvent?.Invoke(this, line);
     }
     public void DoPrintRequest(WorldContext context, string msg)
     {
@@ -97,6 +97,6 @@ public class ConvertService : IConvertService
         var line = Line.New();
         line.Type = linetype;
         line.Words = [new() { Text = msg }];
-        context.EventBus.LineEvent!.Invoke(this, line);
+        context.EventBus.LineEvent?.Invoke(this, line);
     }
 }

@@ -783,7 +783,7 @@ public class TitanService : ITitanService
         {
             return false;
         }
-        world.EventBus.ReadyEvent!.Invoke(this, EventArgs.Empty);
+        world.EventBus.ReadyEvent?.Invoke(this, EventArgs.Empty);
         try
         {
             world.DoConnectServer();

@@ -19,7 +19,7 @@ public class Timers
         {
             _removeTimer(timer.ID);
         }
-        OnFire!.Invoke(this, timer);
+        OnFire?.Invoke(this, timer);
     }
     public bool AddTimer(Timer timer, bool replace)
     {
