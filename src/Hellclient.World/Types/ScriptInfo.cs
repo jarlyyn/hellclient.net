@@ -20,4 +20,7 @@ public class ScriptInfo
 	public string OnFocus { get; set; } = string.Empty;
 	public string OnLoseFocus { get; set; } = string.Empty;
 	public string OnSubneg { get; set; } = string.Empty;
+	public string OnLine { get; set; } = string.Empty;
+	public string OnAfterLine { get; set; } = string.Empty;
+	public string OnSend { get; set; } = string.Empty;
 }

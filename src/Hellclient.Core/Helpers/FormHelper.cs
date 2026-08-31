@@ -637,6 +637,9 @@ public class FormHelper
         script.OnFocus = form.OnFocus;
         script.OnLoseFocus = form.OnLoseFocus;
         script.Channel = form.Channel;
+        script.OnLine = form.OnLine;
+        script.OnAfterLine = form.OnAfterLine;
+        script.OnSend = form.OnSend;
     }
     public static List<FieldError>ValidateUpdatePasswordForm(UpdatePasswordForm form)
     {

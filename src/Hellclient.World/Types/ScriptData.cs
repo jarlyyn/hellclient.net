@@ -21,6 +21,10 @@ public class ScriptData
     public int OnBufferMin { get; set; } = 0;
     public int OnBufferMax { get; set; } = 0;
     public string Channel { get; set; } = string.Empty;
+    public string OnLine { get; set; } = string.Empty;
+    public string OnAfterLine { get; set; } = string.Empty;
+
+    public string OnSend { get; set; } = string.Empty;
     public List<Trigger> Triggers { get; set; } = new List<Trigger>();
     public List<Timer> Timers { get; set; } = new List<Timer>();
     public List<Alias> Aliases { get; set; } = new List<Alias>();

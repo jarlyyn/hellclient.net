@@ -30,10 +30,13 @@ public class ScriptDataHelper
             info.OnHUDClick = d.OnHUDClick;
             info.OnFocus = d.OnFocus;
             info.OnLoseFocus = d.OnLoseFocus;
+            info.OnLine = d.OnLine;
+            info.OnAfterLine = d.OnAfterLine;
+            info.OnSend = d.OnSend;
         }
         return info;
     }
-    public static ScriptSettings ConvertSettings(string name,ScriptData? d)
+    public static ScriptSettings ConvertSettings(string name, ScriptData? d)
     {
         var settings = new ScriptSettings()
         {
@@ -60,6 +63,9 @@ public class ScriptDataHelper
             settings.OnFocus = d.OnFocus;
             settings.OnLoseFocus = d.OnLoseFocus;
             settings.OnSubneg = d.OnSubneg;
+            settings.OnLine = d.OnLine;
+            settings.OnAfterLine = d.OnAfterLine;
+            settings.OnSend = d.OnSend;
         }
         return settings;
     }
