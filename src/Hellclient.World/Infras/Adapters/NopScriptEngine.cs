@@ -71,7 +71,20 @@ public class NopScriptEngine : IScriptEngine
     {
         return false;
     }
-    public void Run(string script){
+    public void Run(string script)
+    {
         
+    }
+    public bool OnLine(string line)
+    {
+        return false;
+    }
+    public void OnAfterLine(string line)
+    {
+        
+    }
+    public bool OnSend(string message)
+    {
+        return false;
     }
 }

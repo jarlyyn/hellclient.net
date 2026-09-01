@@ -74,7 +74,6 @@ public interface IWorld
     public Trusted GetTrusted();
     public PlainOptions GetPluginOptions();
     public void DoReloadPermissions();
-    public void DoSendToConn(byte[] cmd);
     public void DoSendToQueue(Command command);
     public void DoExecute(string message);
     public string DoEncode();

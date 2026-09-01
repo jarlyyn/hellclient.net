@@ -1,6 +1,7 @@
 using Hellclient.World.Cores;
 using Hellclient.World.Features.Repo;
 using Hellclient.World.States;
+using Hellclient.World.Types;
 namespace Hellclient.World.Features.Services;
 
 public interface IScriptBridgeService
@@ -13,7 +14,9 @@ public interface IScriptBridgeService
     public void Load(WorldContext context);
     public void Reload(WorldContext context);
     public void UseScript(WorldContext context, string id);
+    public void SendBroadcast(WorldContext context, Broadcast bc);
 
+    public bool HandleSubneg(WorldContext context, byte[] data);
 
 }
 
@@ -26,6 +29,7 @@ public class ScriptBridgeService : IScriptBridgeService
     public IHUDService HudService { get; set; } = new HUDService();
     public IInfoService InfoService { get; set; } = new InfoService();
     public IScriptService ScriptService { get; set; } = new ScriptService();
+    public IConvertService ConvertService { get; set; } = new ConvertService();
     public void InstallTo(WorldContext context)
     {
         context.EventBus.ReadyEvent += (s, e) => _ready(context);
@@ -158,4 +162,48 @@ public class ScriptBridgeService : IScriptBridgeService
             LogService.HandleScriptError(context, ex);
         }
     }
+    private bool _verifyChannel(WorldContext context, string channel)
+    {
+        if (channel == "" || context.Script.Data.OnBroadcast == "")
+        {
+            return false;
+        }
+        return channel == context.Script.Data.Channel;
+    }
+
+    public void SendBroadcast(WorldContext context, Broadcast bc)
+    {
+        if (!_verifyChannel(context, bc.Channel))
+        {
+            return;
+        }
+        ScriptService.SetCreator(context, "broadcast", "");
+        if (ConfigService.GetShowBroadcast(context))
+        {
+            if (bc.Global)
+            {
+                ConvertService.DoPrintGlobalBroadcastIn(context, bc.Message);
+            }
+            else
+            {
+                ConvertService.DoPrintLocalBroadcastIn(context, bc.Message);
+            }
+        }
+        context.Script.Engine.OnBroadCast(bc);
+
+    }
+    public bool HandleSubneg(WorldContext context, byte[] data)
+    {
+        if (data.Count() < 2)
+        {
+            return false;
+        }
+        if (ConfigService.GetShowSubneg(context))
+        {
+            ConvertService.DoPrintSubneg(context, $"[{data[0]}] {string.Join(" ", data.Skip(1).Select(b => b.ToString("X2")))}");
+        }
+        ScriptService.SetCreator(context, "subneg", "");
+        return context.Script.Engine.OnBuffer(data);
+    }
+
 }

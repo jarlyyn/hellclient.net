@@ -10,9 +10,9 @@ public partial class World
     public void DoRunScript(string script) => Service.ScriptService.Run(Context, script);
 
     public void DoSendHUDClickToScript(Click click) => Service.ScriptService.SendHUDClick(Context, click);
-    public void DoSendBroadcastToScript(Broadcast broadcast) => Service.ScriptService.SendBroadcast(Context, broadcast);
+    public void DoSendBroadcastToScript(Broadcast broadcast) => Service.ScriptBridgeService.SendBroadcast(Context, broadcast);
     public bool HandleBuffer(byte[] buffer) => Service.ScriptService.HandleBuffer(Context, buffer);
-    public bool HandleSubneg(byte[] buffer) => Service.ScriptService.HandleSubneg(Context, buffer);
+    public bool HandleSubneg(byte[] buffer) => Service.ScriptBridgeService.HandleSubneg(Context, buffer);
     public void HandleFocus() => Service.ScriptService.HandleFocus(Context);
     public void HandleLoseFocus() => Service.ScriptService.HandleLoseFocus(Context);
     public void DoSendTimerToScript(Timer timer) => Service.ScriptService.SendTimer(Context, timer);

@@ -4,7 +4,6 @@ namespace Hellclient.World.Cores;
 
 public partial class World
 {
-        public void DoSendToConn(byte[] cmd) => Service.ConnService.Send(Context, cmd);
         public void DoConnectServer() => Service.ConnService.Connect(Context);
         public void DoCloseServer() => Service.ConnService.Close(Context);
         public bool GetConnConnected() => Service.ConnService.IsConnected(Context);

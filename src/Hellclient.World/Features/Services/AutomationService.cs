@@ -114,6 +114,10 @@ public class AutomationService : IAutomationService
         var text = line.ToPlainText();
         context.Automation.ReadyForLine();
         context.Automation.MultiLinesAppend(text);
+        if (ScriptService.HandleLine(context, text))
+        {
+            return;
+        }
         var queue = context.Automation.Triggers.Queue();
         var trictx = new TriggerContext(text, context.Config.Data.Params);
         for (int i = 0; i < queue.Count; i++)
@@ -180,9 +184,10 @@ public class AutomationService : IAutomationService
             }
             if (!data.KeepEvaluating || context.Automation.EvaluatingTriggersStop())
             {
-                return;
+                break;
             }
         }
+        ScriptService.HandleAfterLine(context, text);
     }
     public MatchResult? GetTriggerWildcard(WorldContext context, string name)
     {

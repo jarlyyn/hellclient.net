@@ -16,11 +16,12 @@ public interface IScriptService
     public void SetCreator(WorldContext context, string creator, string type);
     public void SendTimer(WorldContext context, Timer timer);
     public void SendHUDClick(WorldContext context, Click click);
-    public void SendBroadcast(WorldContext context, Broadcast bc);
     public void HandleFocus(WorldContext context);
     public void HandleLoseFocus(WorldContext context);
     public bool HandleBuffer(WorldContext context, byte[] buffer);
-    public bool HandleSubneg(WorldContext context, byte[] data);
+    public bool HandleLine(WorldContext context, string line);
+    public void HandleAfterLine(WorldContext context, string line);
+    public bool HandleSend(WorldContext context, string message);
     public void ReloadPermissions(WorldContext context);
     public PlainOptions PluginOptions(WorldContext context);
     public ScriptData ScriptData(WorldContext context);
@@ -39,7 +40,6 @@ public class ScriptService : IScriptService
 {
     public IPathService PathService { get; set; } = new PathService();
     public IConfigService ConfigService { get; set; } = new ConfigService();
-    public IConvertService ConvertService { get; set; } = new ConvertService();
     public void InstallTo(WorldContext context)
     {
 
@@ -69,35 +69,6 @@ public class ScriptService : IScriptService
     {
         SetCreator(context, "hudclick", "");
         context.Script.Engine.OnHUDClick(click);
-    }
-    private bool _verifyChannel(WorldContext context, string channel)
-    {
-        if (channel == "" || context.Script.Data.OnBroadcast == "")
-        {
-            return false;
-        }
-        return channel == context.Script.Data.Channel;
-    }
-    public void SendBroadcast(WorldContext context, Broadcast bc)
-    {
-        if (!_verifyChannel(context, bc.Channel))
-        {
-            return;
-        }
-        SetCreator(context, "broadcast", "");
-        if (ConfigService.GetShowBroadcast(context))
-        {
-            if (bc.Global)
-            {
-                ConvertService.DoPrintGlobalBroadcastIn(context, bc.Message);
-            }
-            else
-            {
-                ConvertService.DoPrintLocalBroadcastIn(context, bc.Message);
-            }
-        }
-        context.Script.Engine.OnBroadCast(bc);
-
     }
     public void SendResponse(WorldContext context, Message msg)
     {
@@ -138,19 +109,6 @@ public class ScriptService : IScriptService
     {
         SetCreator(context, "buffer", "");
         return context.Script.Engine.OnBuffer(buffer);
-    }
-    public bool HandleSubneg(WorldContext context, byte[] data)
-    {
-        if (data.Count() < 2)
-        {
-            return false;
-        }
-        if (ConfigService.GetShowSubneg(context))
-        {
-            ConvertService.DoPrintSubneg(context, $"[{data[0]}] {string.Join(" ", data.Skip(1).Select(b => b.ToString("X2")))}");
-        }
-        SetCreator(context, "subneg", "");
-        return context.Script.Engine.OnBuffer(data);
     }
     public void SetCreator(WorldContext context, string creator, string type)
     {
@@ -201,4 +159,17 @@ public class ScriptService : IScriptService
     {
         return context.Script.CanRun() ? context.Script.Data.Type : "";
     }
+    public bool HandleLine(WorldContext context, string line)
+    {
+        return context.Script.Engine.OnLine(line);
+    }
+    public void HandleAfterLine(WorldContext context, string line)
+    {
+        context.Script.Engine.OnAfterLine(line);
+    }
+    public bool HandleSend(WorldContext context, string message)
+    {
+        return context.Script.Engine.OnSend(message);
+    }
+
 }

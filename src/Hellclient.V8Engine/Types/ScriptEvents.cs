@@ -16,5 +16,8 @@ public class ScriptEvents
 	public string OnFocus {get;set;}="";
 	public string OnLoseFocus{get;set;}="";
 	public string OnKeyUp {get;set;}="";
+	public string OnLine {get;set;}="";
+	public string OnAfterLine {get;set;}="";
+	public string OnSend {get;set;}="";
 
 }

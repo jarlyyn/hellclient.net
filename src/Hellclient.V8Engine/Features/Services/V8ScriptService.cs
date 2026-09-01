@@ -1,6 +1,7 @@
 using System.Dynamic;
 using System.Text;
 using Hellclient.V8Engine.Features.States;
+using Hellclient.V8Engine.Infras.Components;
 using Hellclient.World.Types;
 
 namespace Hellclient.V8Engine.Features.Services;
@@ -27,6 +28,9 @@ public interface IV8ScriptService
     public void OnLoseFocus(V8EngineContext context);
     public void OnKeyUp(V8EngineContext context, string key);
     public bool OnSubneg(V8EngineContext context, byte code, byte[] data);
+    public bool OnLine(V8EngineContext context, string line);
+    public void OnAfterLine(V8EngineContext context, string line);
+    public bool OnSend(V8EngineContext context, string message);
 }
 public partial class V8ScriptService : IV8ScriptService
 {
@@ -79,6 +83,9 @@ public partial class V8ScriptService : IV8ScriptService
         context.Events.OnFocus = data.OnFocus;
         context.Events.OnLoseFocus = data.OnLoseFocus;
         context.Events.OnKeyUp = data.OnKeyUp;
+        context.Events.OnLine = data.OnLine;
+        context.Events.OnAfterLine = data.OnAfterLine;
+        context.Events.OnSend = data.OnSend;
         var entry = Path.Combine(context.World.GetPluginOptions().Location, "main.js");
         var entrydata = File.ReadAllText(entry);
         try
@@ -280,6 +287,29 @@ public partial class V8ScriptService : IV8ScriptService
             return false;
         }
         return callByName(context, context.Events.OnSubneg, code, data) is bool result && result;
+    }
+    public bool OnLine(V8EngineContext context, string line)
+    {
+        if (context.Events.OnLine == "")
+        {
+            return false;
+        }
+        return JsAPI.ConvertBool(callByName(context, context.Events.OnLine, line));
+    }
+    public void OnAfterLine(V8EngineContext context, string line)
+    {
+        if (context.Events.OnAfterLine != "")
+        {
+            callByName(context, context.Events.OnAfterLine, line);
+        }
+    }
+    public bool OnSend(V8EngineContext context, string message)
+    {
+        if (context.Events.OnSend == "")
+        {
+            return false;
+        }
+        return JsAPI.ConvertBool(callByName(context, context.Events.OnSend, message));
     }
 
 }

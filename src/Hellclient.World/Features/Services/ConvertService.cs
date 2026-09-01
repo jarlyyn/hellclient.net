@@ -22,9 +22,14 @@ public interface IConvertService
 
 public class ConvertService : IConvertService
 {
+    private readonly IScriptService ScriptService= new ScriptService();
     public void DoSend(WorldContext context, Command cmd)
     {
         if (cmd.Message == "\x0f")
+        {
+            return;
+        }
+        if (ScriptService.HandleSend(context, cmd.Message))
         {
             return;
         }

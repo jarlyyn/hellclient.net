@@ -19,4 +19,7 @@ public interface IScriptEngine
     public void OnKeyUp(string key);
     public bool OnSubneg(byte code, byte[] data);
     public void Run(string script);
+    public bool OnLine(string line);
+    public void OnAfterLine(string line);
+    public bool OnSend(string message);
 }
