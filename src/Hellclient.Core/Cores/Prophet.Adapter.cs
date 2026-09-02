@@ -164,6 +164,8 @@ public partial class Prophet
         Context.Adapter.RegisterHandler("defaultServer", newUserAdapter("defaultServer"));
         //默认编码信息，预期客户端在创建游戏时填入默认编码信息
         Context.Adapter.RegisterHandler("defaultCharset", newUserAdapter("defaultCharset"));
+        //获取支持的脚本类型，在创建脚本是使用
+        Context.Adapter.RegisterHandler("scriptTypes", newUserAdapter("scriptTypes"));
         //授权请求，预期客户端弹授权界面
         Context.Adapter.RegisterHandler("requestPermissions", newRoomAdapter("requestPermissions"));
         //授权域名信息，预期客户端弹出授权域名界面

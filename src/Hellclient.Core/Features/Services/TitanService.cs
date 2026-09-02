@@ -62,6 +62,7 @@ public interface ITitanService
     public void HandleCmdRequiredParams(TitanContext context, string id);
     public void HandleCmdDefaultServer(TitanContext context);
     public void HandleCmdDefaultCharset(TitanContext context);
+    public void HandleCmdListScriptTypes(TitanContext context);
     public void HandleCmdRequestPermissions(TitanContext context, Authorization a);
     public void HandleCmdRequestTrustDomains(TitanContext context, Authorization a);
     public void HandleCmdAuthorized(TitanContext context, string id);
@@ -628,6 +629,11 @@ public class TitanService : ITitanService
     {
         MsgHelper.PublishDefaultCharsetMessage(context.EventBus, AppConfig.System.DefaultCharset);
     }
+    public void HandleCmdListScriptTypes(TitanContext context)
+    {
+        MsgHelper.PublishScriptTypesMessage(context.EventBus, ScriptEngineFactoryManager.ListScriptTypes());
+    }
+
     public void ExecAPIversion(TitanContext context)
     {
         MsgHelper.PublishAPIVersionMessage(context.EventBus, AppVersion.APIVersion);

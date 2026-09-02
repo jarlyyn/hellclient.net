@@ -127,8 +127,11 @@ define(function (require) {
     }
     onButton.createScript = function () {
         vm.createScriptFail = [];
-        vm.scriptCreateForm = {};
+        vm.scriptCreateForm = {
+            Types: []
+        };
         vm.scriptCreateFormVisible = true;
+        send("listScriptTypes")
     }
     onButton.createScriptSubmit = function () {
         send("createScript", vm.scriptCreateForm);
@@ -308,6 +311,9 @@ define(function (require) {
             OnSubneg: vm.scriptSettings.OnSubneg,
             OnFocus: vm.scriptSettings.OnFocus,
             OnLoseFocus: vm.scriptSettings.OnLoseFocus,
+            OnLine: vm.scriptSettings.OnLine,
+            OnAfterLine: vm.scriptSettings.OnAfterLine,
+            OnSend: vm.scriptSettings.OnSend,
         }
         vm.scriptsettingsUpdateFormVisible = true
     }

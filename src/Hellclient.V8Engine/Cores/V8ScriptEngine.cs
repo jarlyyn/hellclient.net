@@ -54,7 +54,7 @@ public class V8ScriptEngineFactory : IScriptEngineFactory
     }
     public string Label()
     {
-        return "V8 Javascript";
+        return "Javascript(V8)";
     }
     public IScriptEngine CreateScriptEngine(IWorld world)
     {

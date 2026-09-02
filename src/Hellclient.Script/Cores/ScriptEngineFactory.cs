@@ -3,6 +3,7 @@ namespace Hellclient.Script.Cores;
 using Hellclient.World.Types;
 using Hellclient.World.Infras.Adapters;
 using Hellclient.World.Cores;
+using Hellclient.Script.Types;
 
 public interface IScriptEngineFactory
 {
@@ -59,5 +60,9 @@ public static class ScriptEngineFactoryManager
         {
             DefaultFactory.NewScript(ID);
         }
+    }
+    public static List<ScriptType> ListScriptTypes()
+    {
+        return _factories.ToList().Where(kv => kv.Key != "").Select(kv => new ScriptType { Key = kv.Key, Label = kv.Value.Label() }).ToList();
     }
 }
