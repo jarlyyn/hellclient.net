@@ -64,7 +64,6 @@ public interface IProphetService
     void OnCmdUpdateRequiredParams(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdDefaultServer(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdDefaultCharset(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
-    void OnCmdListScriptTypes(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdRequestPermissions(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdRequestTrustDomains(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
     void OnCmdAuthorized(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
@@ -108,6 +107,7 @@ public class ProphetService : IProphetService
 
         }
         TitanService.ExecAPIversion(ctx.TitanContext);
+        TitanService.ExecListScriptTypes(ctx.TitanContext);
         TitanService.ExecClients(ctx.TitanContext);
         TitanService.ExecSwitchStatus(ctx.TitanContext);
         onCurrent(ctx, id);
@@ -751,10 +751,6 @@ public class ProphetService : IProphetService
     public void OnCmdDefaultCharset(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {
         TitanService.HandleCmdDefaultCharset(ctx.TitanContext);
-    }
-    public void OnCmdListScriptTypes(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
-    {
-        TitanService.HandleCmdListScriptTypes(ctx.TitanContext);
     }
     public void OnCmdRequestPermissions(ProphetContext ctx, IConnection conn, SeparatedCommand cmd)
     {

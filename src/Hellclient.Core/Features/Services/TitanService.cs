@@ -62,7 +62,6 @@ public interface ITitanService
     public void HandleCmdRequiredParams(TitanContext context, string id);
     public void HandleCmdDefaultServer(TitanContext context);
     public void HandleCmdDefaultCharset(TitanContext context);
-    public void HandleCmdListScriptTypes(TitanContext context);
     public void HandleCmdRequestPermissions(TitanContext context, Authorization a);
     public void HandleCmdRequestTrustDomains(TitanContext context, Authorization a);
     public void HandleCmdAuthorized(TitanContext context, string id);
@@ -75,6 +74,7 @@ public interface ITitanService
     public void HandleBatchCommand(TitanContext context, World.Types.BatchCommand bc);
     public void HandleCmdBatchCommandScripts(TitanContext context);
     public void ExecAPIversion(TitanContext context);
+    public void ExecListScriptTypes(TitanContext context);
     public void ExecSwitchStatus(TitanContext context);
     public void Focus(TitanContext context, string id);
     public void HandleCmdLines(TitanContext context, string id);
@@ -469,7 +469,8 @@ public class TitanService : ITitanService
         if (w != null)
         {
             w.Lock.Wait();
-            try{
+            try
+            {
 
                 w.UpdateLastActive();
             }
@@ -629,14 +630,14 @@ public class TitanService : ITitanService
     {
         MsgHelper.PublishDefaultCharsetMessage(context.EventBus, AppConfig.System.DefaultCharset);
     }
-    public void HandleCmdListScriptTypes(TitanContext context)
-    {
-        MsgHelper.PublishScriptTypesMessage(context.EventBus, ScriptEngineFactoryManager.ListScriptTypes());
-    }
 
     public void ExecAPIversion(TitanContext context)
     {
         MsgHelper.PublishAPIVersionMessage(context.EventBus, AppVersion.APIVersion);
+    }
+    public void ExecListScriptTypes(TitanContext context)
+    {
+        MsgHelper.PublishScriptTypesMessage(context.EventBus, ScriptEngineFactoryManager.ListScriptTypes());
     }
     public void ExecClients(TitanContext context)
     {

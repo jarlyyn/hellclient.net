@@ -103,8 +103,6 @@ public partial class Prophet
         Context.Handlers.RegisterHandler("updateScriptSettings", (conn, cmd) => ProphetService.OnCmdUpdateScriptSettings(Context, conn, cmd));
         //请求默认服务器指令
         Context.Handlers.RegisterHandler("defaultServer", (conn, cmd) => ProphetService.OnCmdDefaultServer(Context, conn, cmd));
-        //请求支持的脚本列表
-        Context.Handlers.RegisterHandler("listScriptTypes", (conn, cmd) => ProphetService.OnCmdListScriptTypes(Context, conn, cmd));
         //请求默认编码指令
         Context.Handlers.RegisterHandler("defaultCharset", (conn, cmd) => ProphetService.OnCmdDefaultCharset(Context, conn, cmd));
         //授权指令
