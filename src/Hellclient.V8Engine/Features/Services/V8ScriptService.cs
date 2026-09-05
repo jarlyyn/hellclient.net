@@ -57,6 +57,7 @@ public partial class V8ScriptService : IV8ScriptService
         initMetronome(context);
         initUserinput(context);
         initHTTP(context);
+        initSnapshot(context);
     }
     public void handleError(V8EngineContext context, Exception ex)
     {
