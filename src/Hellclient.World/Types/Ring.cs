@@ -30,7 +30,7 @@ public class Ring<T> where T : class
         {
             return null;
         }
-        return _items[index];
+        return _items[(index+_index) % _items.Count];
     }
     public List<T> GetAllItems()
     {
