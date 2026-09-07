@@ -241,7 +241,6 @@ public class Triggers
             return false;
         }
         tr.Data.Enabled = enable;
-        Disorder = true;
         return true;
     }
     public int DoEnableTriggerGroup(string group, bool enable)
@@ -258,7 +257,6 @@ public class Triggers
         {
             t.Data.Enabled = enable;
         }
-        Disorder = true;
         return count;
     }
     public List<Trigger> GetTriggersByType(bool byUser)

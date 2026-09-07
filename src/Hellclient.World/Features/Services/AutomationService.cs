@@ -124,6 +124,10 @@ public class AutomationService : IAutomationService
         {
             var v = queue[i];
             MatchResult? r;
+            if (v.Deleted || !v.Data.Enabled)
+            {
+                continue;
+            }
             try
             {
                 r = v.Match(trictx, context.Automation.MultiLines);
@@ -203,6 +207,10 @@ public class AutomationService : IAutomationService
         var queue = context.Automation.Aliases.Queue();
         foreach (var v in queue)
         {
+            if (v.Deleted || !v.Data.Enabled)
+            {
+                continue;
+            }
             MatchResult? r;
             try
             {

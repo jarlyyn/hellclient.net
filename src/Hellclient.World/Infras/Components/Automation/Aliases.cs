@@ -84,6 +84,7 @@ public class Aliases
         {
             Temporary[aldata.ID] = alias;
         }
+        Disorder = true;
     }
     private AutomationAlias createAlias(Alias al)
     {
@@ -231,7 +232,6 @@ public class Aliases
         {
             t.Data.Enabled = enable;
         }
-        Disorder = true;
         return list.Count;
     }
     public int DoDeleteAliasByGroup(string group, bool byUser)
@@ -261,7 +261,6 @@ public class Aliases
             return false;
         }
         al.Data.Enabled = enabled;
-        Disorder = true;
         return true;
     }
     public List<Alias> GetAliasesByType(bool byUser)
