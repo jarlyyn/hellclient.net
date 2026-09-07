@@ -175,16 +175,20 @@ public class ConnService : IConnService
         var proxypassword = "";
         if (proxy != "")
         {
-            var u=Uri.TryCreate(proxy, UriKind.Absolute, out var uri) ? uri : null;
+            var u = Uri.TryCreate(proxy, UriKind.Absolute, out var uri) ? uri : null;
             if (u != null)
             {
                 proxytype = u.Scheme;
                 proxyhost = u.Host;
                 proxyport = u.Port;
+                if (u.UserInfo != null)
+                {
+                    var ui = u.UserInfo.Split(':');
+                    if (ui.Length > 0) proxyusername = ui[0];
+                    if (ui.Length > 1) proxypassword = ui[1];
+                }
+
             }
-            var ui=u.UserInfo.Split(':');
-            if (ui.Length > 0) proxyusername = ui[0];
-            if (ui.Length > 1) proxypassword = ui[1];
         }
         context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0, proxytype, proxyhost, proxyport, proxyusername, proxypassword);
     }

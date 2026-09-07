@@ -281,7 +281,8 @@ public class Telnet : IMudConnection
         _client = new TelnetClient();
         if (proxytype != "")
         {
-            if (proxytype.ToLower() != "socks5")
+            var pt = proxytype.ToLower();
+            if (pt != "socks5" && pt != "socks")
             {
                 throw new NotSupportedException("Only SOCKS5 proxy is supported.");
             }
