@@ -124,10 +124,6 @@ public class AutomationService : IAutomationService
         {
             var v = queue[i];
             MatchResult? r;
-            if (v.Deleted || !v.Data.Enabled)
-            {
-                continue;
-            }
             try
             {
                 r = v.Match(trictx, context.Automation.MultiLines);
@@ -170,7 +166,7 @@ public class AutomationService : IAutomationService
             {
                 context.Automation.Triggers.RemoveTrigger(data.ID);
             }
-            if (data.OneShot)
+            if (data.OmitFromOutput)
             {
                 InfoService.OmitOutput(context);
             }

@@ -249,7 +249,7 @@ public class Telnet : IMudConnection
                 {
                     bytesRead = stream.Read(buffer, 0, buffer.Length);
                 }
-                catch (IOException ex) when (ex.InnerException is SocketException sx && sx.NativeErrorCode == 10053)
+                catch (IOException)
                 {
                     Disconnected();
                     return;
