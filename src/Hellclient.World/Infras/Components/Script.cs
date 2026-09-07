@@ -20,6 +20,7 @@ public class Script
     {
         this.Data = new ScriptData();
         this.Status = string.Empty;
+        this.Engine.Close();
         this.Engine = new NopScriptEngine();
     }
     public bool CanRun() => this.Engine is not NopScriptEngine;
