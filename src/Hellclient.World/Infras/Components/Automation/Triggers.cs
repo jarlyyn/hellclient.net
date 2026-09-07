@@ -127,10 +127,7 @@ public class Triggers
         var queue = new List<AutomationTrigger>();
         All.Values.ToList().ForEach(t =>
         {
-            if (!t.Deleted && t.Data.Enabled)
-            {
-                queue.Add(t);
-            }
+            queue.Add(t);
         });
         queue.Sort((a, b) => a.Data.Sequence.CompareTo(b.Data.Sequence));
         cachedQueue = queue;
