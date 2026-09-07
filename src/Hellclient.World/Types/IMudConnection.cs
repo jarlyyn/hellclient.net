@@ -5,7 +5,7 @@ public interface IMudConnection
 {
     public string Host { get; set; }
     public int Port { get; set; }
-    public void Connect(string host, int port);
+    public void Connect(string host, int port, string proxytype, string proxyhost, int proxyport, string proxyusername, string proxypassword);
     public void Disconnect();
     public void Send(byte[] data);
     public EventHandler<byte>? OnDataReceived { get; set; }

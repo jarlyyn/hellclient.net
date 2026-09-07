@@ -167,7 +167,26 @@ public class ConnService : IConnService
         {
             context.TType = [];
         }
-        context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0);
+        var proxy = context.Config.Data.Proxy.Trim();
+        var proxytype = "";
+        var proxyhost = "";
+        var proxyport = 0;
+        var proxyusername = "";
+        var proxypassword = "";
+        if (proxy != "")
+        {
+            var u=Uri.TryCreate(proxy, UriKind.Absolute, out var uri) ? uri : null;
+            if (u != null)
+            {
+                proxytype = u.Scheme;
+                proxyhost = u.Host;
+                proxyport = u.Port;
+            }
+            var ui=u.UserInfo.Split(':');
+            if (ui.Length > 0) proxyusername = ui[0];
+            if (ui.Length > 1) proxypassword = ui[1];
+        }
+        context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0, proxytype, proxyhost, proxyport, proxyusername, proxypassword);
     }
     public void Stop(WorldContext context)
     {
