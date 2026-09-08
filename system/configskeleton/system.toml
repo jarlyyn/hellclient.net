@@ -33,4 +33,4 @@ LinesPerScreen=0
 #最大多行匹配行数，等于0则为程序默认,小于0为禁用
 MaxRecent=0
 #返回给服务器的客户端信息，留空不返回
-TerminalType="Hellclient"
+TerminalType="Hellclient.net"
