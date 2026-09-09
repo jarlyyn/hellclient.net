@@ -37,7 +37,7 @@ public partial class V8ScriptService
             return;
         }
 #pragma warning disable CS8974 // 将方法组转换为非委托类型
-        AppendToWorldFastProxy(local, world, "print", a.Print);
+        AppendToWorld(local, world, "print", a.Print);
         AppendToWorld(local, world, "Note", a.Note);
         AppendToWorld(local, world, "SendImmediate", a.SendImmediate);
         AppendToWorld(local, world, "Send", a.Send);

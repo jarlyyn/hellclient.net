@@ -16,13 +16,17 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
 {
     private V8ScriptEngine _runtime { get; init; } = runtime;
     private ScriptAPI _api { get; init; } = api;
-    public void Print (bool asConstructor, in V8FastArgs args, in V8FastResult result)
+    public void Print(params object[] args)
     {
+
         var msg = new List<string>();
-        for (var i=0;i<args.Count;i++)
+        foreach (var v in args)
         {
-                msg.Add(args.GetString(i));
+            if (v != null)
+            {
+                msg.Add(v.ToString() ?? "");
                 continue;
+            }
         }
         _api.Note(string.Join(" ", msg));
     }
