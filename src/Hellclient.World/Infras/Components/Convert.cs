@@ -57,8 +57,8 @@ public class Convert : IConvert
         }
         line.Type = Line.LineTypeReal;
         OnLine?.Invoke(this, line);
-        var pl = Line.New();
-        pl.Type = Line.LineTypePrompt;
-        OnPrompt?.Invoke(this, pl);
+        // var pl = Line.New();
+        // pl.Type = Line.LineTypePrompt;
+        // OnPrompt?.Invoke(this, pl);
     }
 }

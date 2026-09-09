@@ -310,7 +310,6 @@ public class MetronomeService : IMetronomeService
     public void Reset(WorldContext context)
     {
         context.Metronome.Sent.Clear();
-        Task.Run(async () => await nextTick(context));
     }
 }
 

@@ -41,13 +41,10 @@ public class ConnService : IConnService
         };
         context.Convert.Debounce = new Debounce(DefaultDebounceDuration, () =>
         {
-            Task.Run(() =>
+            if (context.Connection.IsConnected())
             {
-                if (context.Connection.IsConnected())
-                {
-                    context.Convert.Prompt();
-                }
-            });
+                context.Convert.Prompt();
+            }
         });
         Listen(context);
     }
@@ -74,7 +71,7 @@ public class ConnService : IConnService
         {
             context.Lock.Release();
         }
-        Task.Run(() => context.Convert.Debounce!.Exec());
+        context.Convert.Debounce!.Exec();
     }
 
     private void Listen(WorldContext context)

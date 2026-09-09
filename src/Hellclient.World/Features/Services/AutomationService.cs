@@ -83,7 +83,7 @@ public class AutomationService : IAutomationService
     {
         context.EventBus.LineEvent += (_, line) => OnLine(context, line);
         context.EventBus.CloseEvent += (_, _) => OnClose(context);
-        context.Automation.Timers.OnFire += (_, timer) => Task.Run(async () => await OnTimer(context, timer));
+        context.Automation.Timers.OnFire += async (_, timer) => await OnTimer(context, timer);
         // Install automation service to the world context
     }
     private void OnClose(WorldContext context)
@@ -92,8 +92,6 @@ public class AutomationService : IAutomationService
     }
     public async Task OnTimer(WorldContext context, Timer timer)
     {
-        _ = Task.Run(async () =>
-        {
             await context.Lock.WaitAsync();
             try
             {
@@ -103,7 +101,6 @@ public class AutomationService : IAutomationService
             {
                 context.Lock.Release();
             }
-        });
     }
     public void OnLine(WorldContext context, Line? line)
     {

@@ -224,7 +224,7 @@ public class TitanService : ITitanService
 
         if (bc.Global)
         {
-            Task.Run(() => context.HellSwitch.Broadcast(Encoding.UTF8.GetBytes($"{bc.Channel} {bc.Message}")));
+            context.HellSwitch.Broadcast(Encoding.UTF8.GetBytes($"{bc.Channel} {bc.Message}"));
         }
     }
     private void onRequest(TitanContext context, IWorld world, World.Types.Message msg)
