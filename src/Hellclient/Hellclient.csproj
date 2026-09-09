@@ -13,6 +13,7 @@
     <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
     <DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <InvariantGlobalization>true</InvariantGlobalization>
 
   </PropertyGroup>
   <!-- 兼容 Hellclient的表现-->
@@ -23,7 +24,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- 性能问题 -->
-    <RuntimeHostConfigurationOption Include="DOTNET_ThreadPool_UnfairSemaphoreSpinLimit" Value="0" />
+    <!-- <RuntimeHostConfigurationOption Include="DOTNET_ThreadPool_UnfairSemaphoreSpinLimit" Value="0" /> -->
     <TrimmerRootAssembly Include="System.Security.Cryptography" />
     <ProjectReference Include="..\Hellclient.Core\Hellclient.Core.csproj" />
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />

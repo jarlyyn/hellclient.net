@@ -92,6 +92,8 @@ public class AutomationService : IAutomationService
     }
     public async Task OnTimer(WorldContext context, Timer timer)
     {
+        _ = Task.Run(async () =>
+        {
             await context.Lock.WaitAsync();
             try
             {
@@ -101,6 +103,7 @@ public class AutomationService : IAutomationService
             {
                 context.Lock.Release();
             }
+        });
     }
     public void OnLine(WorldContext context, Line? line)
     {

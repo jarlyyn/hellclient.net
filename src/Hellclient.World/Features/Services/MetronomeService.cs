@@ -290,7 +290,7 @@ public class MetronomeService : IMetronomeService
         {
             while (await context.Metronome.ticker.WaitForNextTickAsync())
             {
-                play(context);
+                _ = Task.Run(() => play(context));
             }
         }
     }

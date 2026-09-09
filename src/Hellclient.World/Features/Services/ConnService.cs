@@ -41,10 +41,14 @@ public class ConnService : IConnService
         };
         context.Convert.Debounce = new Debounce(DefaultDebounceDuration, () =>
         {
-            if (context.Connection.IsConnected())
+            Task.Run(() =>
             {
-                context.Convert.Prompt();
-            }
+
+                if (context.Connection.IsConnected())
+                {
+                    context.Convert.Prompt();
+                }
+            });
         });
         Listen(context);
     }
