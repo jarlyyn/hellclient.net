@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using NWebDav.Server;
+using Microsoft.Extensions.FileProviders.Physical;
 
 namespace Hellclient.WebUI;
 
@@ -27,7 +28,8 @@ public class WebUI
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(
-                Path.Combine(Deployment.Instance.ResourcesPath, "public")),
+                Path.Combine(Deployment.Instance.ResourcesPath, "public"), ExclusionFilters.Sensitive
+),
             RequestPath = "/public"
         });
         app.MapGet("/", async context =>
