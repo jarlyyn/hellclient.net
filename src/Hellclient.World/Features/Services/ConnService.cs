@@ -71,7 +71,7 @@ public class ConnService : IConnService
         {
             context.Lock.Release();
         }
-        context.Convert.Debounce!.Exec();
+        Task.Run(() => context.Convert.Debounce!.Exec());
     }
 
     private void Listen(WorldContext context)
