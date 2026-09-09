@@ -4,19 +4,19 @@ namespace Hellclient.Core.Infras.Components;
 
 public class Adapter
 {
-    public Dictionary<string, Action<Message>> Handlers { get; set; } = new();
-    public void RegisterHandler(string msgType, Action<Message> handler)
+    public Dictionary<string, Func<Message, Task>> Handlers { get; set; } = new();
+    public void RegisterHandler(string msgType, Func<Message, Task> handler)
     {
         Handlers[msgType] = handler;
     }
-    public bool Exec(Message msg)
+    public async Task<bool> Exec(Message msg)
     {
         var handler= Handlers.TryGetValue(msg.Type, out var h) ? h : null;
         if (handler == null)
         {
             return false;
         }
-        handler(msg);
+        await handler(msg);
         return true;
     }
 }

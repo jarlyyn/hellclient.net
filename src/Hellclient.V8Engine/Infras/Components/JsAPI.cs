@@ -6,6 +6,7 @@ using Hellclient.Script.Infras.Components.API;
 using Hellclient.World.Cores;
 using Hellclient.World.Utils;
 using Microsoft.ClearScript.V8;
+using Microsoft.ClearScript.V8.FastProxy;
 using Microsoft.ClearScript.JavaScript;
 using Microsoft.ClearScript;
 
@@ -15,17 +16,13 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
 {
     private V8ScriptEngine _runtime { get; init; } = runtime;
     private ScriptAPI _api { get; init; } = api;
-    public void Print(params object[] args)
+    public void Print (bool asConstructor, in V8FastArgs args, in V8FastResult result)
     {
-
         var msg = new List<string>();
-        foreach (var v in args)
+        for (var i=0;i<args.Count;i++)
         {
-            if (v != null)
-            {
-                msg.Add(v.ToString() ?? "");
+                msg.Add(args.GetString(i));
                 continue;
-            }
         }
         _api.Note(string.Join(" ", msg));
     }

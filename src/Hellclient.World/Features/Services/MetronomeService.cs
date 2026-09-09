@@ -275,21 +275,24 @@ public class MetronomeService : IMetronomeService
     public void startTick(WorldContext context)
     {
         stopTick(context);
-        Task.Run(() => nextTick(context));
-    }
-    public async Task nextTick(WorldContext context)
-    {
         var interval = context.Metronome.Interval;
         if (interval <= TimeSpan.Zero)
         {
             interval = Metronome.DefaultInterval;
         }
         context.Metronome.ticker = new PeriodicTimer(interval);
-        if (await context.Metronome.ticker.WaitForNextTickAsync())
+
+        Task.Run(async () => await nextTick(context));
+    }
+    public async Task nextTick(WorldContext context)
+    {
+        if (context.Metronome.ticker != null)
         {
-            play(context);
+            while (await context.Metronome.ticker.WaitForNextTickAsync())
+            {
+                play(context);
+            }
         }
-        _ = Task.Run(() => nextTick(context));
     }
     public void Push(WorldContext context, List<Command> cmds, bool grouped)
     {

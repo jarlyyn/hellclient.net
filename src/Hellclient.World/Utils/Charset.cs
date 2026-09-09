@@ -26,7 +26,7 @@ public class CharsetUtil
             case "gb18030":
             case "windows-936":
             case "WINDOWS-936":
-                return Encoding.GetEncoding("GB18030").GetBytes(data);
+                return GBEncoding.GetBytes(data);
             case "utf8":
             case "UTF8":
                 return Encoding.UTF8.GetBytes(data);
@@ -34,6 +34,7 @@ public class CharsetUtil
                 throw new NotSupportedException($"Charset {charset} is not supported.");
         }
     }
+    public static Encoding GBEncoding { get; } = Encoding.GetEncoding("GB18030");
     public static string ToUtf8(string charset, byte[] data)
     {
         switch (charset)
@@ -46,7 +47,7 @@ public class CharsetUtil
             case "gb18030":
             case "windows-936":
             case "WINDOWS-936":
-                return Encoding.GetEncoding("GB18030").GetString(data);
+                return GBEncoding.GetString(data);
             case "utf8":
             case "UTF8":
                 return Encoding.UTF8.GetString(data);

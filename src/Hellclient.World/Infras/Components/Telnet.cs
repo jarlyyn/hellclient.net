@@ -236,40 +236,42 @@ public class Telnet : IMudConnection
     {
         OnDisconnected?.Invoke(this, EventArgs.Empty);
     }
-    private void listen()
+    private async Task listen()
     {
         _cts = new CancellationTokenSource();
         using (NetworkStream stream = _client.GetStream())
         {
             byte[] buffer = new byte[1];
-            while (_client.Connected)
+            try
             {
-                int bytesRead = 0;
-                try
-                {
-                    bytesRead = stream.Read(buffer, 0, buffer.Length);
-                }
-                catch (IOException)
-                {
-                    Disconnected();
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    Logger(ex);
-                    Disconnected();
-                    return;
-                }
 
-                if (bytesRead == 0)
+                while (_client.Connected)
                 {
-                    break;
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+
+                    if (bytesRead == 0)
+                    {
+                        break;
+                    }
+
+                    OnByte(buffer[0]);
+
                 }
-
-                OnByte(buffer[0]);
-
             }
-            Disconnected();
+            catch (IOException)
+            {
+                return;
+            }
+            catch (Exception ex)
+            {
+                Logger(ex);
+                return;
+            }
+            finally
+            {
+                Disconnected();
+            }
         }
 
     }
@@ -293,7 +295,7 @@ public class Telnet : IMudConnection
         }
         _client.Connect(host, port);
         Connected();
-        Task.Run(listen);
+        Task.Run(async () => await listen());
     }
     public void Disconnect()
     {
@@ -305,19 +307,19 @@ public class Telnet : IMudConnection
         }
     }
 
-    public void Send(byte[] data)
+    public async Task Send(byte[] data)
     {
         if (_client.Connected)
         {
-            _client.GetStream().Write(data, 0, data.Length);
+            await _client.GetStream().WriteAsync(data, 0, data.Length);
         }
     }
     public bool IsConnected()
     {
         return _client.Connected;
     }
-    public void SendTelnetCommand(TelnetCommand command)
+    public async Task SendTelnetCommand(TelnetCommand command)
     {
-        Send(command.ToByteArray());
+        await Send(command.ToByteArray());
     }
 }

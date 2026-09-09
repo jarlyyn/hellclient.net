@@ -1822,12 +1822,12 @@ public class TitanService : ITitanService
     {
         context.HellSwitch.OnGlobalMessage += (sender, e) => OnGlobalMessage(context, e);
         context.HellSwitch.OnSwitchStatusChange += (sender, e) => OnSwitchStatusChange(context, e);
-        context.HellSwitch.Start();
+        Task.Run(() => context.HellSwitch.Start());
     }
     public void Stop(TitanContext context)
     {
         context.HellSwitch.OnGlobalMessage = null;
         context.HellSwitch.OnSwitchStatusChange = null;
-        context.HellSwitch.Stop();
+        Task.Run(() => context.HellSwitch.Stop());
     }
 }

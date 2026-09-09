@@ -64,7 +64,6 @@ public class ConnService : IConnService
                 return;
             }
             context.Convert.AppendBuffer(data);
-
             if (ScriptService.HandleBuffer(context, context.Convert.GetBuffer()))
             {
                 context.Convert.Publish(true);

@@ -11,7 +11,7 @@ public partial class Prophet
         public Prophet Prophet { get; init; } = p;
         public string CmdType { get; init; } = cmdtype;
 
-        public void RoomAdapter(Message m)
+        public async Task RoomAdapter(Message m)
         {
             if (m.Room != "" && m.Room == Prophet.GetCurrent())
             {
@@ -19,10 +19,10 @@ public partial class Prophet
                 data.CommandType = CmdType;
                 data.CommandData = JsonContext.Serialize(m.Data);
                 var msg = data.Encode();
-                Prophet.SendToUser(msg);
+                await Prophet.SendToUser(msg);
             }
         }
-        public void ConsoleAdapter(Message m)
+        public async Task ConsoleAdapter(Message m)
         {
             if (m.Room != "" && m.Room == Prophet.GetCurrent())
             {
@@ -30,10 +30,10 @@ public partial class Prophet
                 data.CommandType = CmdType;
                 data.CommandData = JsonContext.Serialize(m.Data);
                 var msg = data.Encode();
-                Prophet.SendToUser(msg);
+                await Prophet.SendToUser(msg);
             }
         }
-        public void UserAdapter(Message m)
+        public async Task UserAdapter(Message m)
         {
             if (m.Room == "")
             {
@@ -41,20 +41,20 @@ public partial class Prophet
                 data.CommandType = CmdType;
                 data.CommandData = JsonContext.Serialize(m.Data);
                 var msg = data.Encode();
-                Prophet.SendToUser(msg);
+                await Prophet.SendToUser(msg);
             }
         }
     }
 
-    private Action<Message> newRoomAdapter(string cmdtype)
+    private Func<Message,Task> newRoomAdapter(string cmdtype)
     {
         return new ProphetAdapter(this, cmdtype).RoomAdapter;
     }
-    private Action<Message> newConsoleAdapter(string cmdtype)
+    private Func<Message,Task> newConsoleAdapter(string cmdtype)
     {
         return new ProphetAdapter(this, cmdtype).ConsoleAdapter;
     }
-    private Action<Message> newUserAdapter(string cmdtype)
+    private Func<Message,Task> newUserAdapter(string cmdtype)
     {
         return new ProphetAdapter(this, cmdtype).UserAdapter;
     }

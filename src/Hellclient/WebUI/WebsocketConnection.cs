@@ -61,11 +61,18 @@ public class WebsocketConnection : IConnection
     }
     public async Task Send(byte[] data)
     {
-        await _socket.SendAsync(
-            new ArraySegment<byte>(data, 0, data.Count()),
-            System.Net.WebSockets.WebSocketMessageType.Text,
-            true,
-            System.Threading.CancellationToken.None);
+        try
+        {
+            await _socket.SendAsync(
+                new ArraySegment<byte>(data, 0, data.Count()),
+                System.Net.WebSockets.WebSocketMessageType.Text,
+                true,
+                System.Threading.CancellationToken.None);
+        }
+        catch (Exception)
+        {
+        }
+
 
     }
     public string ID()

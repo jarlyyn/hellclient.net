@@ -1,6 +1,7 @@
 using Microsoft.ClearScript.V8;
 using Hellclient.V8Engine.Features.States;
 using System.Dynamic;
+using Microsoft.ClearScript.V8.FastProxy;
 
 namespace Hellclient.V8Engine.Features.Services;
 
@@ -15,6 +16,17 @@ public partial class V8ScriptService
             world[name] = call;
         }
     }
+    private void AppendToWorldFastProxy(V8ScriptEngine engine, Microsoft.ClearScript.ScriptObject world, string name, V8FastHostFunctionInvoker call)
+    {
+        var func=new V8FastHostFunction(0,call);
+        engine.AddHostObject(name, func);
+        world[name.ToLower()] = func;
+        if (name.ToLower() != name)
+        {
+            world[name] = func;
+        }
+    }
+
     private void initJsAPI(V8EngineContext context)
     {
         var local = context.Runtime;
@@ -25,7 +37,7 @@ public partial class V8ScriptService
             return;
         }
 #pragma warning disable CS8974 // 将方法组转换为非委托类型
-        AppendToWorld(local, world, "print", a.Print);
+        AppendToWorldFastProxy(local, world, "print", a.Print);
         AppendToWorld(local, world, "Note", a.Note);
         AppendToWorld(local, world, "SendImmediate", a.SendImmediate);
         AppendToWorld(local, world, "Send", a.Send);

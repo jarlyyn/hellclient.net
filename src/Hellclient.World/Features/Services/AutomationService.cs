@@ -83,18 +83,18 @@ public class AutomationService : IAutomationService
     {
         context.EventBus.LineEvent += (_, line) => OnLine(context, line);
         context.EventBus.CloseEvent += (_, _) => OnClose(context);
-        context.Automation.Timers.OnFire += (_, timer) => Task.Run(() => OnTimer(context, timer));
+        context.Automation.Timers.OnFire += (_, timer) => Task.Run(async () => await OnTimer(context, timer));
         // Install automation service to the world context
     }
     private void OnClose(WorldContext context)
     {
         context.Automation.Timers.Flush();
     }
-    public void OnTimer(WorldContext context, Timer timer)
+    public async Task OnTimer(WorldContext context, Timer timer)
     {
-        Task.Run(() =>
+        _ = Task.Run(async () =>
         {
-            context.Lock.Wait();
+            await context.Lock.WaitAsync();
             try
             {
                 ScriptService.SendTimer(context, timer);

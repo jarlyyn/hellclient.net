@@ -23,7 +23,7 @@ public partial class Prophet
 
     public void Enter(IConnection conn) => ProphetService.Enter(Context, conn);
 
-    public void SendToUser(byte[] data) => ProphetService.SendToUser(Context, data);
+    public async Task SendToUser(byte[] data) => await ProphetService.SendToUser(Context, data);
     public void OnMessage(ConnectionMessage msg) => Task.Run(() => Context.Handlers.Exec(msg));
     public void OnOpen(IConnection conn) => ProphetService.OnOpen(Context, conn);
     public void OnClose(IConnection conn) => ProphetService.OnClose(Context, conn);

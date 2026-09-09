@@ -32,8 +32,11 @@ public class Users
             Identities.Remove(id);
         }
     }
-    public void SendByID(string id, byte[] data)
+    public async Task SendByID(string id, byte[] data)
     {
-        _conn(id)?.Send(data);
+        if (_conn(id) is IConnection conn)
+        {
+            await conn.Send(data);
+        }
     }
 }

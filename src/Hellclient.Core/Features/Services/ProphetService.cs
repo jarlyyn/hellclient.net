@@ -14,7 +14,7 @@ namespace Hellclient.Core.Features.Services;
 public interface IProphetService
 {
     void Enter(ProphetContext ctx, IConnection conn);
-    void SendToUser(ProphetContext ctx, byte[] data);
+    Task SendToUser(ProphetContext ctx, byte[] data);
     void Send(ProphetContext ctx, IConnection conn, string msgtype, object data);
     void Change(ProphetContext ctx, string roomid);
     void OnCmdChange(ProphetContext ctx, IConnection conn, SeparatedCommand cmd);
@@ -96,7 +96,7 @@ public class ProphetService : IProphetService
     public IUserPasswordRepo UserPasswordRepo { get; init; }
     public void Publish(ProphetContext ctx, Types.Message message)
     {
-        Task.Run(() => ctx.Adapter.Exec(message));
+        Task.Run(async () => await ctx.Adapter.Exec(message));
     }
     public void OnOpen(ProphetContext ctx, IConnection conn)
     {
@@ -114,6 +114,7 @@ public class ProphetService : IProphetService
     }
     public void OnClose(ProphetContext ctx, IConnection conn)
     {
+        ctx.Users.Logout("user", conn);
         conn.OnClose = null;
         conn.OnMessage = null;
     }
@@ -149,9 +150,9 @@ public class ProphetService : IProphetService
         ctx.Users.Login("user", conn);
         OnOpen(ctx, conn);
     }
-    public void SendToUser(ProphetContext ctx, byte[] data)
+    public async Task SendToUser(ProphetContext ctx, byte[] data)
     {
-        ctx.Users.SendByID("user", data);
+        await ctx.Users.SendByID("user", data);
     }
     public static readonly byte[] SeparatorDefault = new byte[] { 32 };
     public void Send(ProphetContext ctx, IConnection conn, string msgtype, object data)

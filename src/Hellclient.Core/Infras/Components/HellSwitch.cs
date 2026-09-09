@@ -38,7 +38,7 @@ public class HellSwitch
         while (true)
         {
             await ReconnectTimer.WaitForNextTickAsync();
-            Start();
+            await Start();
         }
     }
     private async Task close()
@@ -137,9 +137,9 @@ public class HellSwitch
         await close();
         OnSwitchStatusChange?.Invoke(this, StatusDisconnected);
     }
-    public void Start()
+    public async Task Start()
     {
-        Lock.Wait();
+        await Lock.WaitAsync();
         try
         {
             if (_conn != null)
@@ -158,13 +158,13 @@ public class HellSwitch
             {
                 _conn.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(ui)));
             }
-            _conn.ConnectAsync(u, CancellationToken.None).Wait();
-            Task.Run(Listen);
+            await _conn.ConnectAsync(u, CancellationToken.None);
+            _ = Task.Run(Listen);
             OnSwitchStatusChange?.Invoke(this, StatusConnected);
         }
         catch (Exception)
         {
-            close().Wait();
+            await close();
             OnSwitchStatusChange?.Invoke(this, StatusDisconnected);
         }
         finally
@@ -172,14 +172,14 @@ public class HellSwitch
             Lock.Release();
         }
     }
-    public void Stop()
+    public async Task Stop()
     {
-        Lock.Wait();
+        await Lock.WaitAsync();
         try
         {
             if (_conn != null)
             {
-                _conn.CloseAsync(WebSocketCloseStatus.NormalClosure, "Stopping", CancellationToken.None).Wait();
+                await _conn.CloseAsync(WebSocketCloseStatus.NormalClosure, "Stopping", CancellationToken.None);
             }
 
         }
