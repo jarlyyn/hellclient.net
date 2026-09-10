@@ -231,6 +231,7 @@ public class Telnet : IMudConnection
     }
     private void Connected()
     {
+        reset();
         OnConnected?.Invoke(this, EventArgs.Empty);
     }
     private void Disconnected()
