@@ -35,10 +35,6 @@ public class ConnService : IConnService
         {
             context.EventBus.DisconnectedEvent?.Invoke(this, EventArgs.Empty);
         };
-        context.Convert.OnPrompt += (sender, line) =>
-        {
-            context.EventBus.PromptEvent?.Invoke(this, line);
-        };
         Listen(context);
     }
     private void OnByte(WorldContext context, byte data)

@@ -9,7 +9,6 @@ public interface IConvert
 {
     public string Charset { get; set; }
     public event EventHandler<Line>? OnLine;
-    public event EventHandler<Line>? OnPrompt;
     public byte[] GetBuffer();
     //废弃
     public void SendPrompt();
@@ -28,7 +27,6 @@ public class Convert : IConvert
     private readonly Line EmptyLine = Line.NewWithType(Line.LineTypeReal);
     public List<byte> _buffer = new List<byte>();
     public event EventHandler<Line>? OnLine;
-    public event EventHandler<Line>? OnPrompt;
     public byte[] GetBuffer()
     {
         return _buffer.ToArray();
