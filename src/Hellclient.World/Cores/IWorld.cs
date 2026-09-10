@@ -205,5 +205,6 @@ public interface IWorld
     public List<Line> GetHUDContent();
     public bool UpdateHUDContent(int start, List<Line> content);
 
+    public void InsertAnsi(string data);
     public void Dispose();
 }

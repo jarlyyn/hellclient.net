@@ -201,6 +201,8 @@ public partial class V8ScriptService
         AppendToWorld(local, world, "Milliseconds", a.Milliseconds);
         AppendToWorld(local, world, "OmitOutput", a.OmitOutput);
         AppendToWorld(local, world, "PrintSystem", a.PrintSystem);
+        AppendToWorld(local, world, "InsertAnsi", a.InsertAnsi);
+
 #pragma warning restore CS8974 // 将方法组转换为非委托类型
       ((IDictionary<string, object>)local.Script)["world"] = world;
     }

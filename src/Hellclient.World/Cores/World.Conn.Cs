@@ -7,6 +7,7 @@ public partial class World
         public void DoConnectServer() => Service.ConnService.Connect(Context);
         public void DoCloseServer() => Service.ConnService.Close(Context);
         public bool GetConnConnected() => Service.ConnService.IsConnected(Context);
+        public void InsertAnsi(string data) => Service.ConvertService.InsertAnsi(Context, data);
         public void DoPrint(string msg) => Service.ConvertService.DoPrint(Context, msg);
         public void DoPrintSystem(string msg) => Service.ConvertService.DoPrintSystem(Context, msg);
         public void DoPrintGlobalBroadcastIn(string msg)=> Service.ConvertService.DoPrintGlobalBroadcastIn(Context, msg);

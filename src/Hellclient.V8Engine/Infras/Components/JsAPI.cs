@@ -1611,4 +1611,10 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
         _api.OmitOutput();
         return null;
     }
+    public object? InsertAnsi(params object[] args)
+    {
+        var data = GetStringArg(args, 0);
+        _api.InsertAnsi(data);
+        return null;
+    }
 }

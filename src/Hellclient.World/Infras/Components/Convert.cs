@@ -16,17 +16,44 @@ public interface IConvert
     //废弃
     public void PublishPrompt();
     public void AppendBuffer(byte data);
+    public void InsertAnsi(string data);
+
+    public void Reset();
 }
 public class Convert : IConvert
 {
+
     public void SendPrompt()
     {
         // OnPrompt?.Invoke(this, PromptLine ?? EmptyLine);
     }
     public string Charset { get; set; } = CharsetUtil.UTF8;
-    private readonly Line EmptyLine = Line.NewWithType(Line.LineTypeReal);
     public List<byte> _buffer = new List<byte>();
     public event EventHandler<Line>? OnLine;
+    private List<Line> PendingLines { get; set; } = new();
+    public void InsertAnsi(string data)
+    {
+        var needStart = PendingLines.Count == 0;
+        var line = AnsiHelpers.Parse(data);
+        if (line is not null)
+        {
+            line.Type = Line.LineTypeReal;
+            PendingLines.Add(line);
+            if (needStart)
+            {
+                ExecLines();
+            }
+        }
+    }
+    private void ExecLines()
+    {
+        while (PendingLines.Count > 0)
+        {
+            var current = PendingLines[0];
+            PendingLines.RemoveAt(0);
+            OnLine?.Invoke(this, current);
+        }
+    }
     public byte[] GetBuffer()
     {
         return _buffer.ToArray();
@@ -38,15 +65,14 @@ public class Convert : IConvert
     public void PublishPrompt()
     {
     }
+    public void Reset()
+    {
+        _buffer.Clear();
+    }
     public void Publish()
     {
-        var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
+        var data = CharsetUtil.ToUtf8(Charset, _buffer.ToArray());
         _buffer.Clear();
-        if (line is null)
-        {
-            return;
-        }
-        line.Type = Line.LineTypeReal;
-        OnLine?.Invoke(this, line);
+        InsertAnsi(data);
     }
 }
