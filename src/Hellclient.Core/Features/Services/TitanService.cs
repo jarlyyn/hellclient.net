@@ -224,7 +224,7 @@ public class TitanService : ITitanService
 
         if (bc.Global)
         {
-            Task.Run(() => context.HellSwitch.Broadcast(Encoding.UTF8.GetBytes($"{bc.Channel} {bc.Message}")));
+            context.HellSwitch.Broadcast(Encoding.UTF8.GetBytes($"{bc.Channel} {bc.Message}"));
         }
     }
     private void onRequest(TitanContext context, IWorld world, World.Types.Message msg)
@@ -1795,9 +1795,9 @@ public class TitanService : ITitanService
                     {
                         foreach (var v in context.Worlds.Values)
                         {
-                            Task.Run(() =>
+                            Task.Run(async () =>
                             {
-                                v.Lock.Wait();
+                                await v.Lock.WaitAsync();
                                 try
                                 {
                                     v.DoSendBroadcastToScript(bc);
@@ -1820,14 +1820,14 @@ public class TitanService : ITitanService
     }
     public void Start(TitanContext context)
     {
-        context.HellSwitch.OnGlobalMessage += (sender, e) => OnGlobalMessage(context, e);
-        context.HellSwitch.OnSwitchStatusChange += (sender, e) => OnSwitchStatusChange(context, e);
-        Task.Run(() => context.HellSwitch.Start());
+        context.HellSwitch.OnGlobalMessage += (sender, e) => Task.Run(() => OnGlobalMessage(context, e));
+        context.HellSwitch.OnSwitchStatusChange += (sender, e) => Task.Run(() => OnSwitchStatusChange(context, e));
+        Task.Run(context.HellSwitch.Start);
     }
     public void Stop(TitanContext context)
     {
         context.HellSwitch.OnGlobalMessage = null;
         context.HellSwitch.OnSwitchStatusChange = null;
-        Task.Run(() => context.HellSwitch.Stop());
+        Task.Run(context.HellSwitch.Stop);
     }
 }

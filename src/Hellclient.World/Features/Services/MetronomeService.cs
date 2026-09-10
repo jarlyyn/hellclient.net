@@ -205,50 +205,42 @@ public class MetronomeService : IMetronomeService
     }
     public void play(WorldContext context)
     {
-        try
+        if (!context.Connection.IsConnected())
         {
-            context.Lock.Wait();
-            if (!context.Connection.IsConnected())
-            {
-                return;
-            }
-            clean(context);
-            var b = getBeats(context);
-            while (context.Metronome.Queue.Count != 0 && context.Metronome.Sent.Count < b)
-            {
-                var cmds = context.Metronome.Queue[0];
-                if (b - context.Metronome.Sent.Count < (cmds?.Count ?? 0))
-                {
-                    //避免cmds长于beats时永远不发送
-                    if (context.Metronome.Sent.Count() != 0)
-                    {
-                        return;
-                    }
-                }
-                context.Metronome.Queue.RemoveAt(0);
-                if (cmds is null || cmds.Count == 0)
-                {
-                    continue;
-                }
-                foreach (var cmd in cmds)
-                {
-                    try
-                    {
-                        ConvertService.DoSend(context, cmd);
-                        var t = DateTime.Now;
-                        context.Metronome.Sent.Add(t);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogService.HandleConverterError(context, ex);
-                        return;
-                    }
-                }
-            }
+            return;
         }
-        finally
+        clean(context);
+        var b = getBeats(context);
+        while (context.Metronome.Queue.Count != 0 && context.Metronome.Sent.Count < b)
         {
-            context.Lock.Release();
+            var cmds = context.Metronome.Queue[0];
+            if (b - context.Metronome.Sent.Count < (cmds?.Count ?? 0))
+            {
+                //避免cmds长于beats时永远不发送
+                if (context.Metronome.Sent.Count() != 0)
+                {
+                    return;
+                }
+            }
+            context.Metronome.Queue.RemoveAt(0);
+            if (cmds is null || cmds.Count == 0)
+            {
+                continue;
+            }
+            foreach (var cmd in cmds)
+            {
+                try
+                {
+                    ConvertService.DoSend(context, cmd);
+                    var t = DateTime.Now;
+                    context.Metronome.Sent.Add(t);
+                }
+                catch (Exception ex)
+                {
+                    LogService.HandleConverterError(context, ex);
+                    return;
+                }
+            }
         }
     }
 
@@ -290,14 +282,22 @@ public class MetronomeService : IMetronomeService
         {
             while (await context.Metronome.ticker.WaitForNextTickAsync())
             {
-                _ = Task.Run(() => play(context));
+                await context.Lock.WaitAsync();
+                try
+                {
+                    play(context);
+                }
+                finally
+                {
+                    context.Lock.Release();
+                }
             }
         }
     }
     public void Push(WorldContext context, List<Command> cmds, bool grouped)
     {
         append(context, cmds, grouped);
-        Task.Run(() => play(context));
+        play(context);
     }
     public void InstallTo(WorldContext context)
     {

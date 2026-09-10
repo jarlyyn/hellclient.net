@@ -19,7 +19,7 @@ public partial class Prophet
                 data.CommandType = CmdType;
                 data.CommandData = JsonContext.Serialize(m.Data);
                 var msg = data.Encode();
-                _ =  Prophet.SendToUser(msg);
+                _ =  Task.Run(async () => await Prophet.SendToUser(msg));
             }
         }
         public async Task ConsoleAdapter(Message m)
@@ -30,7 +30,7 @@ public partial class Prophet
                 data.CommandType = CmdType;
                 data.CommandData = JsonContext.Serialize(m.Data);
                 var msg = data.Encode();
-                _ =  Prophet.SendToUser(msg);
+                _ =  Task.Run(async () => await Prophet.SendToUser(msg));
             }
         }
         public async Task UserAdapter(Message m)
@@ -41,7 +41,7 @@ public partial class Prophet
                 data.CommandType = CmdType;
                 data.CommandData = JsonContext.Serialize(m.Data);
                 var msg = data.Encode();
-                _ = Prophet.SendToUser(msg);
+                _ = Task.Run(async () => await Prophet.SendToUser(msg));
             }
         }
     }
