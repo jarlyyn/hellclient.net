@@ -190,6 +190,7 @@ public class Telnet : IMudConnection
                         default:
                             currentcmd = data;
                             status = StatusCmd;
+                            OnCommandReceived?.Invoke(this, new TelnetCommand(data, [data]));
                             break;
                     }
                 }

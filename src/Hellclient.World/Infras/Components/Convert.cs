@@ -10,28 +10,21 @@ public interface IConvert
     public string Charset { get; set; }
     public event EventHandler<Line>? OnLine;
     public event EventHandler<Line>? OnPrompt;
-    public Debounce? Debounce { get; set; }
-
     public byte[] GetBuffer();
-    public void Prompt();
-    public void Publish(bool force);
+    public void SendPrompt();
+    public void Publish();
+    public void PublishPrompt();
     public void AppendBuffer(byte data);
 }
 public class Convert : IConvert
 {
-    public void Prompt()
+    public void SendPrompt()
     {
-        var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
-        if (line is null)
-        {
-            return;
-        }
-        line.Type = Line.LineTypePrompt;
-        OnPrompt?.Invoke(this, line);
+        OnPrompt?.Invoke(this, PromptLine?? EmptyLine);
     }
     public string Charset { get; set; } = CharsetUtil.UTF8;
-    public Debounce? Debounce { get; set; }
-
+    private readonly Line EmptyLine = Line.NewWithType(Line.LineTypeReal);
+    public Line? PromptLine { get; set; } = null;
     public List<byte> _buffer = new List<byte>();
     public event EventHandler<Line>? OnLine;
     public event EventHandler<Line>? OnPrompt;
@@ -43,22 +36,28 @@ public class Convert : IConvert
     {
         _buffer.Add(data);
     }
-    public void Publish(bool force)
+    public void PublishPrompt()
     {
-        // Debounce?.Discard();
         var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
-        if (force || line is not null)
-        {
-            _buffer.Clear();
-        }
         if (line is null)
         {
             return;
         }
+        _buffer.Clear();
+        PromptLine = line;
+        line.Type = Line.LineTypePrompt;
+        SendPrompt();
+    }
+    public void Publish()
+    {
+        var line = AnsiHelpers.Parse(CharsetUtil.ToUtf8(Charset, _buffer.ToArray()));
+        _buffer.Clear();
+        if (line is null)
+        {
+            return;
+        }
+        PromptLine = null;
         line.Type = Line.LineTypeReal;
         OnLine?.Invoke(this, line);
-        // var pl = Line.New();
-        // pl.Type = Line.LineTypePrompt;
-        // OnPrompt?.Invoke(this, pl);
     }
 }

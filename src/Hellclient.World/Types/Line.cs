@@ -146,4 +146,10 @@ public class Line
             ID = SimpleID.Instance.GenerateID(),
         };
     }
+    public static Line NewWithType(int type)
+    {
+        var line = New();
+        line.Type = type;
+        return line;
+    }
 }
