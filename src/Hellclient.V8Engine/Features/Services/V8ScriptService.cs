@@ -27,8 +27,8 @@ public interface IV8ScriptService
     public void OnLoseFocus(V8EngineContext context);
     public void OnKeyUp(V8EngineContext context, string key);
     public bool OnSubneg(V8EngineContext context, byte code, byte[] data);
-    public bool OnLine(V8EngineContext context, string line);
-    public void OnAfterLine(V8EngineContext context, string line);
+    public bool OnLine(V8EngineContext context, string line, string ansi);
+    public void OnAfterLine(V8EngineContext context, string line, string ansi);
     public bool OnSend(V8EngineContext context, string message);
 }
 public partial class V8ScriptService : IV8ScriptService
@@ -267,19 +267,19 @@ public partial class V8ScriptService : IV8ScriptService
         }
         return callByName(context, context.Events.OnSubneg, code, data) is bool result && result;
     }
-    public bool OnLine(V8EngineContext context, string line)
+    public bool OnLine(V8EngineContext context, string line, string ansi)
     {
         if (context.Events.OnLine == "")
         {
             return false;
         }
-        return JsAPI.ConvertBool(callByName(context, context.Events.OnLine, line));
+        return JsAPI.ConvertBool(callByName(context, context.Events.OnLine, line, ansi));
     }
-    public void OnAfterLine(V8EngineContext context, string line)
+    public void OnAfterLine(V8EngineContext context, string line, string ansi)
     {
         if (context.Events.OnAfterLine != "")
         {
-            callByName(context, context.Events.OnAfterLine, line);
+            callByName(context, context.Events.OnAfterLine, line, ansi);
         }
     }
     public bool OnSend(V8EngineContext context, string message)

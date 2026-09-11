@@ -112,9 +112,10 @@ public class AutomationService : IAutomationService
             return;
         }
         var text = line.ToPlainText();
+        var ansi = ConvertService.LastAnsi(context);
         context.Automation.ReadyForLine();
         context.Automation.MultiLinesAppend(text);
-        if (ScriptService.HandleLine(context, text))
+        if (ScriptService.HandleLine(context, text, ansi))
         {
             return;
         }
@@ -187,7 +188,7 @@ public class AutomationService : IAutomationService
                 break;
             }
         }
-        ScriptService.HandleAfterLine(context, text);
+        ScriptService.HandleAfterLine(context, text, ansi);
     }
     public MatchResult? GetTriggerWildcard(WorldContext context, string name)
     {

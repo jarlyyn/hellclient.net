@@ -71,11 +71,11 @@ public class NopScriptEngine : IScriptEngine
     {
         
     }
-    public bool OnLine(string line)
+    public bool OnLine(string line,string ansi)
     {
         return false;
     }
-    public void OnAfterLine(string line)
+    public void OnAfterLine(string line,string ansi)
     {
         
     }

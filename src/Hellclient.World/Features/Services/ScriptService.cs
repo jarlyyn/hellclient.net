@@ -18,8 +18,8 @@ public interface IScriptService
     public void SendHUDClick(WorldContext context, Click click);
     public void HandleFocus(WorldContext context);
     public void HandleLoseFocus(WorldContext context);
-    public bool HandleLine(WorldContext context, string line);
-    public void HandleAfterLine(WorldContext context, string line);
+    public bool HandleLine(WorldContext context, string line,string ansi);
+    public void HandleAfterLine(WorldContext context, string line,string ansi);
     public bool HandleSend(WorldContext context, string message);
     public void ReloadPermissions(WorldContext context);
     public PlainOptions PluginOptions(WorldContext context);
@@ -153,13 +153,13 @@ public class ScriptService : IScriptService
     {
         return context.Script.CanRun() ? context.Script.Data.Type : "";
     }
-    public bool HandleLine(WorldContext context, string line)
+    public bool HandleLine(WorldContext context, string line, string ansi)
     {
-        return context.Script.Engine.OnLine(line);
+        return context.Script.Engine.OnLine(line, ansi);
     }
-    public void HandleAfterLine(WorldContext context, string line)
+    public void HandleAfterLine(WorldContext context, string line, string ansi)
     {
-        context.Script.Engine.OnAfterLine(line);
+        context.Script.Engine.OnAfterLine(line, ansi);
     }
     public bool HandleSend(WorldContext context, string message)
     {

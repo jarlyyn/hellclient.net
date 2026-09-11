@@ -36,8 +36,8 @@ public class V8JsScriptEngine : IScriptEngine
     public void OnKeyUp(string key) => Service.OnKeyUp(Context, key);
     public bool OnSubneg(byte code, byte[] data) => Service.OnSubneg(Context, code, data);
     public void Run(string script) => Service.Run(Context, script);
-    public bool OnLine(string line) => Service.OnLine(Context, line);
-    public void OnAfterLine(string line) => Service.OnAfterLine(Context, line);
+    public bool OnLine(string line,string ansi) => Service.OnLine(Context, line, ansi);
+    public void OnAfterLine(string line,string ansi) => Service.OnAfterLine(Context, line, ansi);
     public bool OnSend(string message) => Service.OnSend(Context, message);
 }
 
