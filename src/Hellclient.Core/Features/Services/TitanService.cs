@@ -145,7 +145,9 @@ public class TitanService : ITitanService
                 return world;
             }
             world = context.WorldFactory.CreateWorld(id, createPaths(context, id));
-            context.Worlds[id] = world;
+            InstallTo(context, world!);
+            context.Worlds[id] = world!;
+            world.EventBus.ReadyEvent?.Invoke(this, EventArgs.Empty);
             return world;
         }
     }
