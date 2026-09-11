@@ -17,7 +17,7 @@ public interface IConvert
     public void PublishPrompt();
     public void AppendBuffer(byte data);
     public void AddAnsi(string data);
-    public string LastAnsi{get;}
+    public string LastAnsi{get;set;}
     public void Reset();
 }
 public class Convert : IConvert

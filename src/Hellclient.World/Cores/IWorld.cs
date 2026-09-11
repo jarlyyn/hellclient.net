@@ -207,6 +207,7 @@ public interface IWorld
 
     public void AddAnsi(string data);
     public string LastAnsi();
+    public void ResetAnsi();
 
     public void Dispose();
 }

@@ -9,6 +9,7 @@ public partial class World
         public bool GetConnConnected() => Service.ConnService.IsConnected(Context);
         public void AddAnsi(string data) => Service.ConvertService.AddAnsi(Context, data);
         public string LastAnsi() => Service.ConvertService.LastAnsi(Context);
+        public void ResetAnsi() => Service.ConvertService.ResetAnsi(Context);
 
         public void DoPrint(string msg) => Service.ConvertService.DoPrint(Context, msg);
         public void DoPrintSystem(string msg) => Service.ConvertService.DoPrintSystem(Context, msg);

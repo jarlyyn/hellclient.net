@@ -1697,6 +1697,7 @@ public class ScriptAPI(IWorld world)
                 var word = new Word();
                 word.Text = t;
                 line.Words.Add(word);
+                World.ResetAnsi();
                 World.EventBus.LineEvent?.Invoke(this, line);
             }
         });
@@ -1714,6 +1715,7 @@ public class ScriptAPI(IWorld world)
             foreach (var line in list)
             {
                 line.ID = SimpleID.Instance.GenerateID();
+                World.ResetAnsi();
                 World.EventBus.LineEvent?.Invoke(this, line);
             }
         });

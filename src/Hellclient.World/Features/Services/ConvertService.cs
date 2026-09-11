@@ -10,6 +10,7 @@ public interface IConvertService
     public void DoSend(WorldContext context, Command cmd);
     public void AddAnsi(WorldContext context, string data);
     public string LastAnsi(WorldContext context);
+    public void ResetAnsi(WorldContext context);
     public void DoPrint(WorldContext context, string msg);
     public void DoPrintSystem(WorldContext context, string msg);
     public void DoPrintLocalBroadcastIn(WorldContext context, string msg);
@@ -56,7 +57,10 @@ public class ConvertService : IConvertService
     {
         return context.Convert.LastAnsi;
     }
-
+    public void ResetAnsi(WorldContext context)
+    {
+        context.Convert.LastAnsi = "";
+    }
     public void DoPrintEcho(WorldContext context, Command cmd)
     {
         var line = Line.New();
