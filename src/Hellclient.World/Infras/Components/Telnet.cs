@@ -243,7 +243,7 @@ public class Telnet : IMudConnection
         _cts = new CancellationTokenSource();
         using (NetworkStream stream = _client.GetStream())
         {
-            byte[] buffer = new byte[1];
+            byte[] buffer = new byte[4096];
             try
             {
 
@@ -257,7 +257,10 @@ public class Telnet : IMudConnection
                         break;
                     }
 
-                    OnByte(buffer[0]);
+                    for (int i = 0; i < bytesRead; i++)
+                    {
+                        OnByte(buffer[i]);
+                    }
 
                 }
             }
