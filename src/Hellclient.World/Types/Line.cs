@@ -136,7 +136,6 @@ public class Line
         }
         return result;
     }
-
     public static Line New()
     {
         return new Line
@@ -153,7 +152,11 @@ public class Line
         return line;
     }
 }
-
+public class LineWithStyle(Line line,Word? style)
+{
+    public Line Line { get; set; } = line;
+    public Word? Style { get; set; } = style;
+}
 public class AnsiLine(Line line,string ansi)
 {
     public Line Line { get; set; } = line;

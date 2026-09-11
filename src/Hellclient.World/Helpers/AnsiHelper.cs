@@ -6,7 +6,7 @@ namespace Hellclient.World.Helpers;
 
 public static class AnsiHelpers
 {
-    public static Line? Parse(string input)
+    public static LineWithStyle? Parse(string input, Word? style)
     {
         AnsiStringParser parser = new();
         var result = Line.New();
@@ -24,7 +24,7 @@ public static class AnsiHelpers
             return null;
         }
 
-        var current = new Word();
+        var current = style?.Inherit() ?? new Word();
         result.Words.Add(current);
         foreach (var element in elements)
         {
@@ -75,11 +75,12 @@ public static class AnsiHelpers
                     break;
             }
         }
+        var newStyle = result.Words.Count > 0 ? result.Words.Last().Inherit() : style;
         if (result.Words.Count > 0 && result.Words.Last().Text.Length == 0)
         {
             result.Words.RemoveAt(result.Words.Count - 1);
         }
-        return result;
+        return new LineWithStyle(result, newStyle);
     }
     private static void applyFunctionD(Word w, Line line, AnsiControlSequence cs)
     {

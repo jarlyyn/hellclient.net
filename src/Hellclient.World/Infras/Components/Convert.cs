@@ -17,7 +17,7 @@ public interface IConvert
     public void PublishPrompt();
     public void AppendBuffer(byte data);
     public void AddAnsi(string data);
-    public string LastAnsi{get;set;}
+    public string LastAnsi { get; set; }
     public void Reset();
 }
 public class Convert : IConvert
@@ -29,16 +29,17 @@ public class Convert : IConvert
     }
     public string Charset { get; set; } = CharsetUtil.UTF8;
     public List<byte> _buffer = new List<byte>();
+    private Word? Style { get; set; }
     public event EventHandler<Line>? OnLine;
     private List<AnsiLine> PendingLines { get; set; } = new();
     public string LastAnsi { get; set; } = "";
     public void AddAnsi(string data)
     {
-        var line = AnsiHelpers.Parse(data);
-        if (line is not null)
+        var lineStyle = AnsiHelpers.Parse(data, Style);
+        if (lineStyle is not null)
         {
-            line.Type = Line.LineTypeReal;
-            PendingLines.Add(new AnsiLine(line, data));
+            lineStyle.Line.Type = Line.LineTypeReal;
+            PendingLines.Add(new AnsiLine(lineStyle.Line, data));
             if (PendingLines.Count == 1)
             {
                 ExecLines();
@@ -68,6 +69,8 @@ public class Convert : IConvert
     }
     public void Reset()
     {
+        Style = null;
+        LastAnsi = "";
         _buffer.Clear();
     }
     public void Publish()
