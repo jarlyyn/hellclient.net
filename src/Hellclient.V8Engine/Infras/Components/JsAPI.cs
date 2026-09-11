@@ -1617,4 +1617,8 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
         _api.InsertAnsi(data);
         return null;
     }
+    public object? LastAnsi(params object[] args)
+    {
+        return _api.LastAnsi();
+    }
 }

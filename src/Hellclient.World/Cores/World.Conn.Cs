@@ -8,11 +8,13 @@ public partial class World
         public void DoCloseServer() => Service.ConnService.Close(Context);
         public bool GetConnConnected() => Service.ConnService.IsConnected(Context);
         public void InsertAnsi(string data) => Service.ConvertService.InsertAnsi(Context, data);
+        public string LastAnsi() => Service.ConvertService.LastAnsi(Context);
+
         public void DoPrint(string msg) => Service.ConvertService.DoPrint(Context, msg);
         public void DoPrintSystem(string msg) => Service.ConvertService.DoPrintSystem(Context, msg);
-        public void DoPrintGlobalBroadcastIn(string msg)=> Service.ConvertService.DoPrintGlobalBroadcastIn(Context, msg);
-        public void DoPrintLocalBroadcastOut(string msg)=> Service.ConvertService.DoPrintLocalBroadcastOut(Context, msg);
-        public void DoPrintGlobalBroadcastOut(string msg)=> Service.ConvertService.DoPrintGlobalBroadcastOut(Context, msg);
-        public void DoPrintRequest(string msg)=> Service.ConvertService.DoPrintRequest(Context, msg);
+        public void DoPrintGlobalBroadcastIn(string msg) => Service.ConvertService.DoPrintGlobalBroadcastIn(Context, msg);
+        public void DoPrintLocalBroadcastOut(string msg) => Service.ConvertService.DoPrintLocalBroadcastOut(Context, msg);
+        public void DoPrintGlobalBroadcastOut(string msg) => Service.ConvertService.DoPrintGlobalBroadcastOut(Context, msg);
+        public void DoPrintRequest(string msg) => Service.ConvertService.DoPrintRequest(Context, msg);
 
 }

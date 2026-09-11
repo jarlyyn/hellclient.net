@@ -1895,4 +1895,8 @@ public class ScriptAPI(IWorld world)
     {
         World.InsertAnsi(data);
     }
+    public string LastAnsi()
+    {
+        return World.LastAnsi();
+    }
 }

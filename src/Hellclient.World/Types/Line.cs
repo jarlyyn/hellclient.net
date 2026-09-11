@@ -153,3 +153,9 @@ public class Line
         return line;
     }
 }
+
+public class AnsiLine(Line line,string ansi)
+{
+    public Line Line { get; set; } = line;
+    public string Ansi { get; set; } = ansi;
+}

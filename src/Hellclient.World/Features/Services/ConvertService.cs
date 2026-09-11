@@ -9,6 +9,7 @@ public interface IConvertService
     //转换服务，byte与line/Command的转换和处理
     public void DoSend(WorldContext context, Command cmd);
     public void InsertAnsi(WorldContext context, string data);
+    public string LastAnsi(WorldContext context);
     public void DoPrint(WorldContext context, string msg);
     public void DoPrintSystem(WorldContext context, string msg);
     public void DoPrintLocalBroadcastIn(WorldContext context, string msg);
@@ -50,6 +51,10 @@ public class ConvertService : IConvertService
     public void InsertAnsi(WorldContext context, string data)
     {
         context.Convert.InsertAnsi(data);
+    }
+    public string LastAnsi(WorldContext context)
+    {
+        return context.Convert.LastAnsi;
     }
 
     public void DoPrintEcho(WorldContext context, Command cmd)

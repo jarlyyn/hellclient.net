@@ -18,7 +18,7 @@ public partial class V8ScriptService
     }
     private void AppendToWorldFastProxy(V8ScriptEngine engine, Microsoft.ClearScript.ScriptObject world, string name, V8FastHostFunctionInvoker call)
     {
-        var func=new V8FastHostFunction(0,call);
+        var func = new V8FastHostFunction(0, call);
         engine.AddHostObject(name, func);
         world[name.ToLower()] = func;
         if (name.ToLower() != name)
@@ -202,8 +202,10 @@ public partial class V8ScriptService
         AppendToWorld(local, world, "OmitOutput", a.OmitOutput);
         AppendToWorld(local, world, "PrintSystem", a.PrintSystem);
         AppendToWorld(local, world, "InsertAnsi", a.InsertAnsi);
+        AppendToWorld(local, world, "LastAnsi", a.LastAnsi);
+
 
 #pragma warning restore CS8974 // 将方法组转换为非委托类型
-      ((IDictionary<string, object>)local.Script)["world"] = world;
+        ((IDictionary<string, object>)local.Script)["world"] = world;
     }
 }

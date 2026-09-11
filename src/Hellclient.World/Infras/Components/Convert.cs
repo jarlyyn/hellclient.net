@@ -17,7 +17,7 @@ public interface IConvert
     public void PublishPrompt();
     public void AppendBuffer(byte data);
     public void InsertAnsi(string data);
-
+    public string LastAnsi{get;}
     public void Reset();
 }
 public class Convert : IConvert
@@ -30,16 +30,16 @@ public class Convert : IConvert
     public string Charset { get; set; } = CharsetUtil.UTF8;
     public List<byte> _buffer = new List<byte>();
     public event EventHandler<Line>? OnLine;
-    private List<Line> PendingLines { get; set; } = new();
+    private List<AnsiLine> PendingLines { get; set; } = new();
+    public string LastAnsi { get; set; } = "";
     public void InsertAnsi(string data)
     {
-        var needStart = PendingLines.Count == 0;
         var line = AnsiHelpers.Parse(data);
         if (line is not null)
         {
             line.Type = Line.LineTypeReal;
-            PendingLines.Add(line);
-            if (needStart)
+            PendingLines.Add(new AnsiLine(line, data));
+            if (PendingLines.Count == 1)
             {
                 ExecLines();
             }
@@ -51,7 +51,8 @@ public class Convert : IConvert
         {
             var current = PendingLines[0];
             PendingLines.RemoveAt(0);
-            OnLine?.Invoke(this, current);
+            LastAnsi = current.Ansi;
+            OnLine?.Invoke(this, current.Line);
         }
     }
     public byte[] GetBuffer()

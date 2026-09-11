@@ -184,6 +184,7 @@ public class ConnService : IConnService
             }
         }
         context.Connection.Connect(context.Config.Data.Host, int.TryParse(context.Config.Data.Port, out int port) ? port : 0, proxytype, proxyhost, proxyport, proxyusername, proxypassword);
+        context.Convert.Reset();
         context.Connection.SendTelnetCommand(TelnetCommand.Wont(TelnetCommand.OptionSGA));
         context.Connection.SendTelnetCommand(TelnetCommand.Will(TelnetCommand.OptionEOR));
     }
