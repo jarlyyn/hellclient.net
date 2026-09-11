@@ -71,7 +71,7 @@ public class InfoService : IInfoService
     }
     public List<Line> GetRecentLines(WorldContext context, int count)
     {
-        return context.Info.Lines.GetRecentItems(count);
+        return context.Info.Recent.GetRecentItems(count);
     }
     public ClientInfo ClientInfo(WorldContext context)
     {
