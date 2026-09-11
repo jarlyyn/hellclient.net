@@ -18,7 +18,6 @@ public interface IScriptService
     public void SendHUDClick(WorldContext context, Click click);
     public void HandleFocus(WorldContext context);
     public void HandleLoseFocus(WorldContext context);
-    public bool HandleBuffer(WorldContext context, byte[] buffer);
     public bool HandleLine(WorldContext context, string line);
     public void HandleAfterLine(WorldContext context, string line);
     public bool HandleSend(WorldContext context, string message);
@@ -104,11 +103,6 @@ public class ScriptService : IScriptService
     {
         SetCreator(context, "losefocus", "");
         context.Script.Engine.OnLoseFocus();
-    }
-    public bool HandleBuffer(WorldContext context, byte[] buffer)
-    {
-        SetCreator(context, "buffer", "");
-        return context.Script.Engine.OnBuffer(buffer);
     }
     public void SetCreator(WorldContext context, string creator, string type)
     {

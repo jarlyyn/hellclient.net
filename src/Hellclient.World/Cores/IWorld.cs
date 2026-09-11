@@ -95,7 +95,6 @@ public interface IWorld
     public int GetLineCount();
     public void DoSendHUDClickToScript(Click click);
     public void DoSendBroadcastToScript(Broadcast broadcast);
-    public bool HandleBuffer(byte[] buffer);
     public bool HandleSubneg(byte[] buffer);
     public void HandleFocus();
     public void HandleLoseFocus();

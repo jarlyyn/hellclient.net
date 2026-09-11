@@ -23,7 +23,6 @@ public interface IV8ScriptService
     public void OnHUDClick(V8EngineContext context, Click c);
     public void OnResponse(V8EngineContext context, Message msg);
     public void OnAssist(V8EngineContext context, string script);
-    public bool OnBuffer(V8EngineContext context, byte[] data);
     public void OnFocus(V8EngineContext context);
     public void OnLoseFocus(V8EngineContext context);
     public void OnKeyUp(V8EngineContext context, string key);
@@ -238,27 +237,6 @@ public partial class V8ScriptService : IV8ScriptService
     public void OnAssist(V8EngineContext context, string script)
     {
         callByName(context, script);
-    }
-    public bool OnBuffer(V8EngineContext context, byte[] data)
-    {
-        if (context.Events.OnBuffer == "")
-        {
-            return false;
-        }
-        var l = data.Length;
-        if (l < context.Events.OnBufferMin || l > context.Events.OnBufferMax)
-        {
-            return false;
-        }
-        if (data != null)
-        {
-            return callByName(context, context.Events.OnBuffer, Encoding.UTF8.GetString(data), data) is bool result && result;
-
-        }
-        else
-        {
-            return callByName(context, context.Events.OnBuffer, null, null) is bool result && result;
-        }
     }
     public void OnFocus(V8EngineContext context)
     {

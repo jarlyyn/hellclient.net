@@ -203,7 +203,7 @@ public class ScriptBridgeService : IScriptBridgeService
             ConvertService.DoPrintSubneg(context, $"[{data[0]}] {string.Join(" ", data.Skip(1).Select(b => b.ToString("X2")))}");
         }
         ScriptService.SetCreator(context, "subneg", "");
-        return context.Script.Engine.OnBuffer(data);
+        return context.Script.Engine.OnSubneg(data[0],data[1..]);
     }
 
 }

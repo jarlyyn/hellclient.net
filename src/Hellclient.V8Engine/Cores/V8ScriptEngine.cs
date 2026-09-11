@@ -31,7 +31,6 @@ public class V8JsScriptEngine : IScriptEngine
     public void OnHUDClick(Click c) => Service.OnHUDClick(Context, c);
     public void OnResponse(Message msg) => Service.OnResponse(Context, msg);
     public void OnAssist(string script) => Service.OnAssist(Context, script);
-    public bool OnBuffer(byte[] data) => Service.OnBuffer(Context, data);
     public void OnFocus() => Service.OnFocus(Context);
     public void OnLoseFocus() => Service.OnLoseFocus(Context);
     public void OnKeyUp(string key) => Service.OnKeyUp(Context, key);

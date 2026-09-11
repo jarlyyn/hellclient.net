@@ -51,10 +51,6 @@ public class NopScriptEngine : IScriptEngine
     }
     public void OnAssist(string script)
     {}
-    public bool OnBuffer(byte[] data)
-    {
-        return false;
-    }
     public void OnFocus()
     {
         

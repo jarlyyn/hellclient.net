@@ -13,7 +13,6 @@ public interface IScriptEngine
     public void OnHUDClick(Click c );
     public void OnResponse(Message msg);
     public void OnAssist(string script );
-    public bool OnBuffer(byte[] data);
     public void OnFocus();
     public void OnLoseFocus();
     public void OnKeyUp(string key);

@@ -39,27 +39,22 @@ public class ConnService : IConnService
     }
     private void OnByte(WorldContext context, byte data)
     {
-        context.Lock.Wait();
-        try
-        {
 
-            if (data == 13 || data == 10)
+        if (data == 13 || data == 10)
+        {
+            context.Lock.Wait();
+            try
             {
 
                 context.Convert.Publish();
                 return;
             }
-            context.Convert.AppendBuffer(data);
-            if (ScriptService.HandleBuffer(context, context.Convert.GetBuffer()))
+            finally
             {
-                context.Convert.Publish();
-                return;
+                context.Lock.Release();
             }
         }
-        finally
-        {
-            context.Lock.Release();
-        }
+        context.Convert.AppendBuffer(data);
     }
 
     private void Listen(WorldContext context)
