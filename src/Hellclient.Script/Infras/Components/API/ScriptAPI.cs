@@ -1891,9 +1891,9 @@ public class ScriptAPI(IWorld world)
     {
         World.DoOmitOutput();
     }
-    public void InsertAnsi(string data)
+    public void AddAnsi(string data)
     {
-        World.InsertAnsi(data);
+        World.AddAnsi(data);
     }
     public string LastAnsi()
     {

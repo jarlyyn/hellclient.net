@@ -1611,10 +1611,10 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
         _api.OmitOutput();
         return null;
     }
-    public object? InsertAnsi(params object[] args)
+    public object? AddAnsi(params object[] args)
     {
         var data = GetStringArg(args, 0);
-        _api.InsertAnsi(data);
+        _api.AddAnsi(data);
         return null;
     }
     public object? LastAnsi(params object[] args)

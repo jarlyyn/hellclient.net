@@ -16,7 +16,7 @@ public interface IConvert
     //废弃
     public void PublishPrompt();
     public void AppendBuffer(byte data);
-    public void InsertAnsi(string data);
+    public void AddAnsi(string data);
     public string LastAnsi{get;}
     public void Reset();
 }
@@ -32,7 +32,7 @@ public class Convert : IConvert
     public event EventHandler<Line>? OnLine;
     private List<AnsiLine> PendingLines { get; set; } = new();
     public string LastAnsi { get; set; } = "";
-    public void InsertAnsi(string data)
+    public void AddAnsi(string data)
     {
         var line = AnsiHelpers.Parse(data);
         if (line is not null)
@@ -74,6 +74,6 @@ public class Convert : IConvert
     {
         var data = CharsetUtil.ToUtf8(Charset, _buffer.ToArray());
         _buffer.Clear();
-        InsertAnsi(data);
+        AddAnsi(data);
     }
 }

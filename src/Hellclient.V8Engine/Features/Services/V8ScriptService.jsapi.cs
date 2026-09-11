@@ -201,7 +201,7 @@ public partial class V8ScriptService
         AppendToWorld(local, world, "Milliseconds", a.Milliseconds);
         AppendToWorld(local, world, "OmitOutput", a.OmitOutput);
         AppendToWorld(local, world, "PrintSystem", a.PrintSystem);
-        AppendToWorld(local, world, "InsertAnsi", a.InsertAnsi);
+        AppendToWorld(local, world, "AddAnsi", a.AddAnsi);
         AppendToWorld(local, world, "LastAnsi", a.LastAnsi);
 
 
