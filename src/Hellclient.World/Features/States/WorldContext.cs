@@ -49,4 +49,5 @@ public class WorldContext
     public required ILogger logger { get; init; }
     // 脚本引擎创建器
     public required Func<string, IScriptEngine> EngineCreator { get; init; }
+    public Mapper Mapper { get; set; } = new Mapper();
 }

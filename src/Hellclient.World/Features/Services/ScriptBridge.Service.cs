@@ -114,6 +114,7 @@ public class ScriptBridgeService : IScriptBridgeService
         InfoService.SetSummary(context, []);
         HudService.SetSize(context, 0);
         ScriptService.SetCreator(context, "", "");
+        context.Mapper.Reset();
         AutomationService.DoDeleteTimerByType(context, false);
         AutomationService.DoDeleteAliasByType(context, false);
         AutomationService.DoDeleteTriggerByType(context, false);

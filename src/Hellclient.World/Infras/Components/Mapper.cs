@@ -1,4 +1,4 @@
-namespace Hellclient.World.Components;
+namespace Hellclient.World.Infras.Components;
 
 using Hellclient.World.Infras.Adapters;
 using Hellclient.World.Types;
