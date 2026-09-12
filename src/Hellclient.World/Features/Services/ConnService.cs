@@ -111,7 +111,7 @@ public class ConnService : IConnService
                 case TelnetCommand.CmdGoAhead:
                 case TelnetCommand.CmdEndOfRecord:
                     context.Convert.Publish();
-                    break;
+                    return;
                 case TelnetCommand.CmdSubnegotiation:
                     if (cmd.Data.Length > 0)
                     {
