@@ -1053,6 +1053,10 @@ public class ScriptAPI(IWorld world)
 
     public List<string> SplitN(string text, string sep, int n)
     {
+        if (n < 0)
+        {
+            return text.Split(sep).ToList();
+        }
         return text.Split(sep, n).ToList();
     }
 
@@ -1840,14 +1844,12 @@ public class ScriptAPI(IWorld world)
         mod.Exists = true;
         foreach (var f in files)
         {
-            if (Directory.Exists(f))
-            {
-                mod.FolderList.Add(f);
-            }
-            else
-            {
-                mod.FileList.Add(f);
-            }
+            mod.FileList.Add(f);
+        }
+        var folders = Directory.GetDirectories(modpath);
+        foreach (var f in folders)
+        {
+            mod.FolderList.Add(f);
         }
         mod.FolderList.Sort();
         mod.FileList.Sort();

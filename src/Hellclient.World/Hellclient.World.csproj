@@ -11,6 +11,7 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="PCRE.NET" Version="1.6.0" />
     <PackageReference Include="Tomlyn" Version="2.10.1" />
     <PackageReference Include="Microlithix.AnsiParser" Version="1.0.0" />
   </ItemGroup>

@@ -195,7 +195,7 @@ class Walking
             {
                 if (!walked.ContainsKey(ve.To) && validateExit(ve))
                 {
-                    forwarding.Append(this.step(ve));
+                    forwarding.Add(this.step(ve));
                 }
             }
         }
@@ -205,7 +205,7 @@ class Walking
             {
                 if (!walked.ContainsKey(ve.To) && validateExit(ve))
                 {
-                    forwarding.Append(this.step(ve));
+                    forwarding.Add(this.step(ve));
                 }
             }
         }
@@ -213,7 +213,7 @@ class Walking
         {
             if (!walked.ContainsKey(vf.To) && validateExit(vf))
             {
-                forwarding.Append(FlyStep(vf));
+                forwarding.Add(FlyStep(vf));
             }
         }
         if (forwarding.Count == 0)
@@ -258,7 +258,7 @@ class Walking
                 forwarding.RemoveAt(0);
                 var room = rooms.GetRoom(fstep.To);
                 var texits = rooms.GetTemporaryPaths(fstep.To);
-                if (!walked.ContainsKey(fstep.To) || (room is null && texits is null))
+                if (walked.ContainsKey(fstep.To) || (room is null && texits is null))
                 {
                     continue;
 

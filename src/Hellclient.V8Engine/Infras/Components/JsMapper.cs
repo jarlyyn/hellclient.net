@@ -13,7 +13,9 @@ public class JsWalkAllResult(WalkAllResult result)
     public ScriptObject Convert(V8ScriptEngine _engine)
     {
         var m = _engine.Evaluate("({})") as Microsoft.ClearScript.ScriptObject ?? throw new Exception("Failed to create script object");
-        m["steps"] = Result.Steps.Select(step => new JsStep(step).Convert(_engine)).ToArray();
+        var steps=_engine.Evaluate("([])") as Microsoft.ClearScript.ScriptObject ?? throw new Exception("Failed to create script object");
+        Result.Steps.ForEach(step => steps.InvokeMethod("push", new JsStep(step).Convert(_engine)));
+        m["steps"] =steps;
         m["walked"] = Result.Walked;
         m["notwalked"] = Result.NotWalked;
         return m;
@@ -29,10 +31,10 @@ public class JsStep(Step step)
         {
             throw new Exception("Failed to create script object");
         }
-        m["To"] = step.To;
-        m["From"] = step.From;
-        m["Command"] = step.Command;
-        m["Delay"] = step.Delay;
+        m["to"] = step.To;
+        m["from"] = step.From;
+        m["command"] = step.Command;
+        m["delay"] = step.Delay;
         return m;
     }
 }
@@ -196,7 +198,13 @@ public class JsMapper(Mapper mapper, V8ScriptEngine engine)
         var to = JsAPI.GetStringArrayArg(args, 2);
         var opt = OptionFromJS(JsAPI.GetArg(args, 3));
         var path = _mapper.GetPath(form, fly, to, opt);
-        return path;
+        if (path == null)
+        {
+            return null;
+        }
+        var steps=_engine.Evaluate("([])") as Microsoft.ClearScript.ScriptObject ?? throw new Exception("Failed to create script object");
+        path.ForEach(step => steps.InvokeMethod("push", new JsStep(step).Convert(_engine)));
+        return steps;
     }
     public Object? AddPath(params object[] args)
     {

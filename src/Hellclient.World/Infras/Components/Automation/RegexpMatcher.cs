@@ -1,19 +1,19 @@
 using Hellclient.World.Types;
-using System.Text.RegularExpressions;
+using PCRE;
 namespace Hellclient.World.Components.Automation;
 
 public class RegexpMatcher : IMatcher
 {
     public RegexpMatcher(string pattern, bool ignoreCase)
     {
-        RegexOptions options = RegexOptions.None;
+        PcreOptions options = PcreOptions.None;
         if (ignoreCase)
         {
-            options |= RegexOptions.IgnoreCase;
+            options |= PcreOptions.IgnoreCase;
         }
-        this._matcher = new Regex(pattern, options);
+        this._matcher = new PcreRegex(pattern, options);
     }
-    private Regex _matcher { get; init; }
+    private PcreRegex _matcher { get; init; }
     public MatchResult? Match(string message)
     {
         var result = _matcher.Match(message);
@@ -22,8 +22,14 @@ public class RegexpMatcher : IMatcher
             return null;
         }
         var r = new MatchResult();
-        r.List = result.Groups.Cast<Group>().Select(g => g.Value).ToList();
-        r.Named = result.Groups.Cast<Group>().Where(g => !string.IsNullOrEmpty(g.Name)).ToDictionary(g => g.Name, g => g.Value);
+        result.Groups.ToList().ForEach(g =>
+        {
+            r.List.Add(g.Value);
+        });
+        _matcher.PatternInfo.GroupNames.ToList().ForEach(name =>
+        {
+            r.Named.Add(name, result.Groups[name].Value);
+        });
         return r;
     }
 }
