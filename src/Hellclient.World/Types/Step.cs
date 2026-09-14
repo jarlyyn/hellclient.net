@@ -2,7 +2,7 @@ namespace Hellclient.World.Types;
 
 public class Step
 {
-    public static Step Empty { get; } = new Step();
+    public static Step EmptyStep { get; } = new Step();
     public string To { get; set; } = string.Empty;
     public string From { get; set; } = string.Empty;
     public string Command { get; set; } = string.Empty;

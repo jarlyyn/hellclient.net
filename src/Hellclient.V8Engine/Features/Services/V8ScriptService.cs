@@ -57,6 +57,7 @@ public partial class V8ScriptService : IV8ScriptService
         initUserinput(context);
         initHTTP(context);
         initSnapshot(context);
+        initMapper(context);
     }
     public void handleError(V8EngineContext context, Exception ex)
     {

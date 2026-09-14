@@ -38,5 +38,6 @@ public partial class World : IWorld
     }
     private IWorldService Service { get; init; }
     public WorldEventBus EventBus { get => Context.EventBus; }
+    public Mapper Mapper { get => Context.Mapper; }
     public WorldContext Context { get; init; }
 }

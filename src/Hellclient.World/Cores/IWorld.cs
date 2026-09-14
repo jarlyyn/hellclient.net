@@ -10,6 +10,7 @@ public interface IWorld
     public SemaphoreSlim Lock { get; }
     public string ID { get; }
     public WorldEventBus EventBus { get; }
+    public Mapper Mapper { get; }
     public int GetMaxHistory();
     public int GetMaxLines();
     public int GetMaxRecent();

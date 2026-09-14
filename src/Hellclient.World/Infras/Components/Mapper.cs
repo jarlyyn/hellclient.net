@@ -127,15 +127,6 @@ public class Option
     public List<string> Whitelist { get; set; } = new();
     public List<List<string>> BlockedPath { get; set; } = new();
 }
-public class Step
-{
-    public static Step EmptyStep { get; } = new Step();
-    public string To { get; set; } = "";
-    public string From { get; set; } = "";
-    public string Command { get; set; } = "";
-    public int Delay { get; set; } = 0;
-    public int remain { get; set; } = 0;
-}
 class Walking
 {
     public Dictionary<string, bool> tags = new();
@@ -162,7 +153,7 @@ class Walking
             From = p.From,
             Command = p.Command,
             Delay = length,
-            remain = length
+            Remain = length
         };
     }
     public Step FlyStep(WalkPath p)
@@ -276,8 +267,8 @@ class Walking
                 {
                     continue;
                 }
-                fstep.remain--;
-                if (fstep.remain > 0)
+                fstep.Remain--;
+                if (fstep.Remain > 0)
                 {
                     newExits.Add(fstep);
                     continue;
@@ -367,12 +358,6 @@ class Walking
     }
 }
 
-public class WalkAllResult
-{
-    public List<Step> Steps { get; set; } = new();
-    public List<string> Walked { get; set; } = new();
-    public List<string> NotWalked { get; set; } = new();
-}
 class WalkAll
 {
     public List<string> Targets { get; set; } = new();
@@ -538,6 +523,10 @@ public class Mapper
         }
         Rooms.rooms.Remove(id);
         return true;
+    }
+    public List<string> GetRoomID(string name)
+    {
+        return Rooms.GetRoomID(name);
     }
     public string GetRoomName(string id)
     {

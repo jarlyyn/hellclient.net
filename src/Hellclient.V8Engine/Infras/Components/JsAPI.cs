@@ -88,6 +88,28 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
                 return new List<string>();
         }
     }
+    public static List<String> StringArrayFromObject(ScriptObject? obj)
+    {
+        var result = new List<string>();
+        LoadArray(obj).ForEach(item => result.Add(item?.ToString() ?? ""));
+        return result;
+    }
+    public static List<ScriptObject> LoadArray(ScriptObject? obj)
+    {
+        var result = new List<ScriptObject>();
+        if (obj != null)
+        {
+            for (int i = 0; i < (obj.GetProperty("length") as int? ?? 0); i++)
+            {
+                var item = obj.GetProperty(i) as ScriptObject;
+                if (item != null)
+                {
+                    result.Add(item);
+                }
+            }
+        }
+        return result;
+    }
     public static List<string> GetStringArrayArg(object[] args, int idx)
     {
         return ConvertStringArray(GetArg(args, idx));
@@ -918,7 +940,18 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     public object? NewGetModInfoAPI(params object[] args)
     {
         var mod = _api.GetModInfo();
-        return mod;
+        if (mod == null)
+        {
+            return null;
+        }
+        var result = _runtime.Evaluate("({})") as Microsoft.ClearScript.ScriptObject ?? throw new InvalidOperationException("Failed to create script object");
+        result["Enabled"] = mod.Enabled;
+        result["Exists"] = mod.Exists;
+        result["FolderList"] = _runtime.Evaluate("[]") as Microsoft.ClearScript.ScriptObject;
+        mod.FolderList.ForEach(folder => (result["FolderList"] as Microsoft.ClearScript.ScriptObject)?.InvokeMethod("push", folder));
+        result["FileList"] = _runtime.Evaluate("[]") as Microsoft.ClearScript.ScriptObject;
+        mod.FileList.ForEach(file => (result["FileList"] as Microsoft.ClearScript.ScriptObject)?.InvokeMethod("push", file));
+        return result;
     }
     public object? NewHasFileAPI(params object[] args)
     {
