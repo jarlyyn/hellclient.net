@@ -12,10 +12,11 @@ public class PythonEngine : IScriptEngine
     public PythonEngine(IWorld world)
     {
         Python.Runtime.PythonEngine.Initialize();
-        Python.Runtime.PythonEngine.BeginAllowThreads();
+        var thread = Python.Runtime.PythonEngine.BeginAllowThreads();
         using (Python.Runtime.Py.GIL())
         {
             this.Context = new PythonEngineContext(world);
+            this.Context.ThreadState = thread;
             Service.InstallTo(Context);
         }
     }

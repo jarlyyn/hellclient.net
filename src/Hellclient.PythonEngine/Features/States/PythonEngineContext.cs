@@ -19,5 +19,5 @@ public class PythonEngineContext
     public PyModule Scope { get; set; } = Py.CreateScope();
     public PyAPI PyAPI { get; init; }
     public ScriptEvents Events { get; set; } = new ScriptEvents();
-
+    public nint ThreadState { get; set; }
 }

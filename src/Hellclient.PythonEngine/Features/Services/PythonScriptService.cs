@@ -45,42 +45,41 @@ public partial class PythonScriptService : IPythonScriptService
     }
     public void Open(PythonEngineContext context)
     {
-        using (Python.Runtime.Py.GIL())
+        var data = context.World.GetScriptData()!;
+        context.Events.OnOpen = data.OnOpen;
+        context.Events.OnClose = data.OnClose;
+        context.Events.OnConnect = data.OnConnect;
+        context.Events.OnDisconnect = data.OnDisconnect;
+        context.Events.OnBroadcast = data.OnBroadcast;
+        context.Events.OnResponse = data.OnResponse;
+        context.Events.OnHUDClick = data.OnHUDClick;
+        context.Events.OnBuffer = data.OnBuffer;
+        context.Events.OnSubneg = data.OnSubneg;
+        context.Events.OnBufferMax = data.OnBufferMax;
+        context.Events.OnBufferMin = data.OnBufferMin;
+        context.Events.OnFocus = data.OnFocus;
+        context.Events.OnLoseFocus = data.OnLoseFocus;
+        context.Events.OnKeyUp = data.OnKeyUp;
+        context.Events.OnLine = data.OnLine;
+        context.Events.OnAfterLine = data.OnAfterLine;
+        context.Events.OnSend = data.OnSend;
+        var entry = Path.Combine(context.World.GetPluginOptions().Location, "main.py");
+        var entrydata = File.ReadAllText(entry);
+        try
         {
-            var data = context.World.GetScriptData()!;
-            context.Events.OnOpen = data.OnOpen;
-            context.Events.OnClose = data.OnClose;
-            context.Events.OnConnect = data.OnConnect;
-            context.Events.OnDisconnect = data.OnDisconnect;
-            context.Events.OnBroadcast = data.OnBroadcast;
-            context.Events.OnResponse = data.OnResponse;
-            context.Events.OnHUDClick = data.OnHUDClick;
-            context.Events.OnBuffer = data.OnBuffer;
-            context.Events.OnSubneg = data.OnSubneg;
-            context.Events.OnBufferMax = data.OnBufferMax;
-            context.Events.OnBufferMin = data.OnBufferMin;
-            context.Events.OnFocus = data.OnFocus;
-            context.Events.OnLoseFocus = data.OnLoseFocus;
-            context.Events.OnKeyUp = data.OnKeyUp;
-            context.Events.OnLine = data.OnLine;
-            context.Events.OnAfterLine = data.OnAfterLine;
-            context.Events.OnSend = data.OnSend;
-            var entry = Path.Combine(context.World.GetPluginOptions().Location, "main.py");
-            var entrydata = File.ReadAllText(entry);
-            try
+            using (Python.Runtime.Py.GIL())
             {
-                {
-                    context.Scope.Exec(entrydata);
-                }
+
+                context.Scope.Exec(entrydata);
                 if (data.OnOpen != "")
                 {
                     callByName(context, data.OnOpen);
                 }
             }
-            catch (Exception ex)
-            {
-                handleError(context, ex);
-            }
+        }
+        catch (Exception ex)
+        {
+            handleError(context, ex);
         }
     }
     private PyObject? callByName(PythonEngineContext context, string funcname, params PyObject[] args)
@@ -116,13 +115,15 @@ public partial class PythonScriptService : IPythonScriptService
     }
     public void Close(PythonEngineContext context)
     {
-        using (Python.Runtime.Py.GIL())
+        if (context.Events.OnClose != "")
         {
-            if (context.Events.OnClose != "")
+            using (Python.Runtime.Py.GIL())
             {
+
                 callByName(context, context.Events.OnClose);
             }
         }
+        Python.Runtime.PythonEngine.EndAllowThreads(context.ThreadState);
         context.Scope.Dispose();
     }
     public void OnConnect(PythonEngineContext context)
