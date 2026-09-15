@@ -113,6 +113,7 @@ public class InfoService : IInfoService
     public void AddHistory(WorldContext context, string line)
     {
         context.Info.History.Add(line);
+        Task.Run(() => context.EventBus.HistoriesEvent?.Invoke(this, context.Info.History.GetAllItems()));
     }
     public List<string> GetHistories(WorldContext context)
     {
