@@ -65,21 +65,21 @@ public partial class PythonScriptService : IPythonScriptService
         context.Events.OnSend = data.OnSend;
         var entry = Path.Combine(context.World.GetPluginOptions().Location, "main.py");
         var entrydata = File.ReadAllText(entry);
-        try
+        using (Python.Runtime.Py.GIL())
         {
-            using (Python.Runtime.Py.GIL())
-            {
 
+            try
+            {
                 context.Scope.Exec(entrydata);
                 if (data.OnOpen != "")
                 {
                     callByName(context, data.OnOpen);
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            handleError(context, ex);
+            catch (Exception ex)
+            {
+                handleError(context, ex);
+            }
         }
     }
     private PyObject? callByName(PythonEngineContext context, string funcname, params PyObject[] args)
@@ -115,16 +115,17 @@ public partial class PythonScriptService : IPythonScriptService
     }
     public void Close(PythonEngineContext context)
     {
-        if (context.Events.OnClose != "")
+        using (Python.Runtime.Py.GIL())
         {
-            using (Python.Runtime.Py.GIL())
+
+            if (context.Events.OnClose != "")
             {
 
                 callByName(context, context.Events.OnClose);
             }
+            context.Scope.Dispose();
         }
-        Python.Runtime.PythonEngine.EndAllowThreads(context.ThreadState);
-        context.Scope.Dispose();
+
     }
     public void OnConnect(PythonEngineContext context)
     {

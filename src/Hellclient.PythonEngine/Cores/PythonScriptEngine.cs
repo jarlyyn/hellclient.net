@@ -5,20 +5,41 @@ using Hellclient.World.Types;
 using Hellclient.World.Configs;
 using Hellclient.PythonEngine.Features.Services;
 using Hellclient.PythonEngine.Features.States;
+using Python.Runtime;
 namespace Hellclient.PythonEngine.Cores;
 
 public class PythonEngine : IScriptEngine
 {
+    public static volatile bool Inited = false;
+    public static nint ThreadState { get; set; }
+
     public PythonEngine(IWorld world)
     {
-        Python.Runtime.PythonEngine.Initialize();
-        var thread = Python.Runtime.PythonEngine.BeginAllowThreads();
+
+        if (Inited == false)
+        {
+            var pythonhome = Environment.GetEnvironmentVariable("PYTHONHOME");
+            if (pythonhome != null)
+            {
+                Python.Runtime.PythonEngine.PythonHome = pythonhome;
+            }
+            var pythonpath = Environment.GetEnvironmentVariable("PYTHONPATH");
+            if (pythonpath != null)
+            {
+                Python.Runtime.PythonEngine.PythonPath = pythonpath;
+            }
+            Python.Runtime.PythonEngine.Initialize();
+            ThreadState = Python.Runtime.PythonEngine.BeginAllowThreads();
+            Inited = true;
+            Console.WriteLine("Python Engine Path:");
+            Console.WriteLine(Python.Runtime.PythonEngine.PythonPath);
+        }
         using (Python.Runtime.Py.GIL())
         {
             this.Context = new PythonEngineContext(world);
-            this.Context.ThreadState = thread;
             Service.InstallTo(Context);
         }
+
     }
     public IPythonScriptService Service { get; set; } = new PythonScriptService();
     private PythonEngineContext Context { get; init; }

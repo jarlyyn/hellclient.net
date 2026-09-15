@@ -17,7 +17,7 @@ public class PythonEngineContext
     }
     public IWorld World { get; init; }
     public PyModule Scope { get; set; } = Py.CreateScope();
+    public PyDict Global { get; set; } = new PyDict();
     public PyAPI PyAPI { get; init; }
     public ScriptEvents Events { get; set; } = new ScriptEvents();
-    public nint ThreadState { get; set; }
 }
