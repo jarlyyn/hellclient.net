@@ -4,6 +4,7 @@ using Hellclient.Core.WebApp;
 using Hellclient.World.Configs;
 using Hellclient.WebUI;
 using Hellclient.V8Engine.Cores;
+using Hellclient.PythonEngine.Cores;
 using Hellclient.Helpers;
 
 
@@ -11,6 +12,7 @@ Application.Instance.Init();
 Application.Instance.Config();
 CharsetUtil.InstallEncodingProvider();
 V8ScriptEngineFactory.Install();
+PythonEngineFactory.Install();
 WebUI.Instance.Init();
 Console.WriteLine($"Hellclient version {AppVersion.Version.FullVersionCode()} (API {AppVersion.APIVersion.FullVersionCode()})");
 Console.WriteLine($"Listening http on {AppConfig.System.Addr}");

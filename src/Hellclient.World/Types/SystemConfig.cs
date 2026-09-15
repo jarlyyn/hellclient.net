@@ -19,5 +19,6 @@ public class SystemConfig
     public int MaxRecent { get; set; } = 0;
     public int LinesPerScreen { get; set; } = 0;
     public long ConnectTimeout { get; set; } = 0;
+    public Dictionary<string, string> Environments { get; set; } = new ();
 
 }

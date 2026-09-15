@@ -34,3 +34,7 @@ LinesPerScreen=0
 MaxRecent=0
 #返回给服务器的客户端信息，留空不返回
 TerminalType="Hellclient.net"
+[Environments]
+#PYTHONNET_PYDLL="path/to/pythonnet.dll"
+#PYTHONHOME=""
+#PYTHONPATH=""

@@ -1,6 +1,6 @@
 using Hellclient.Script.Infras.Components.API;
 using Hellclient.V8Engine.Infras.Components;
-using Hellclient.V8Engine.Types;
+using Hellclient.Script.Types;
 using Hellclient.World.Cores;
 using Microsoft.ClearScript.V8;
 
