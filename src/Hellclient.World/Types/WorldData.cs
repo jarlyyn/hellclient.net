@@ -2,6 +2,8 @@ namespace Hellclient.World.Types;
 
 public class WorldData
 {
+    public const string DefaultCommandStackCharacter = ";";
+    public const string DefaultScriptPrefix = "/";
     public string Host { get; set; } = string.Empty;
     public string Port { get; set; } = string.Empty;
     public string Charset { get; set; } = string.Empty;
@@ -23,5 +25,12 @@ public class WorldData
     public List<Alias> Aliases { get; set; } = new List<Alias>();
     public bool AutoSave { get; set; } = false;
     public bool IgnoreBatchCommand { get; set; } = false;
-
+    public static WorldData New()
+    {
+        return new WorldData()
+        {
+            CommandStackCharacter = DefaultCommandStackCharacter,
+            ScriptPrefix = DefaultScriptPrefix,
+        };
+    }
 }

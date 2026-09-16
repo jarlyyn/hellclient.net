@@ -10,6 +10,7 @@ Metronome.SetBeats(10)
 class GameAPI:
     World =world #游戏API
     Metronome=Metronome #节拍器API
+    Userinput=Userinput #用户界面操作
 
 def onOpen():
     pass
@@ -32,7 +33,7 @@ def onLine(text,ansi):
 def onAfterLine(text,ansi):
     pass
 def onSend(text):
-    pass
+    return False
 
 def onTimer(name):
     pass
