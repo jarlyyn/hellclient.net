@@ -59,11 +59,18 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     public static List<string> ConvertStringArray(PyObject? arg)
     {
         var result = new List<string>();
-        if (arg != null && arg is PyList pl)
+        if (arg != null && !arg.IsNone() && PyList.IsListType(arg))
         {
-            foreach (PyObject item in pl)
+            using (Py.GIL())
             {
-                result.Add(item?.ToString() ?? "");
+                var pl = PyList.AsList(arg);
+                if (pl != null && !pl.IsNone())
+                {
+                    foreach (PyObject item in pl)
+                    {
+                        result.Add(item?.ToString() ?? "");
+                    }
+                }
             }
         }
         return result;
@@ -77,11 +84,18 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     public static List<PyObject> LoadArray(PyObject? obj)
     {
         var result = new List<PyObject>();
-        if (obj != null && obj is PyList pl)
+        if (obj != null && !obj.IsNone() && PyList.IsListType(obj))
         {
-            foreach (PyObject item in pl)
+            using (Py.GIL())
             {
-                result.Add(item);
+                var pl = PyList.AsList(obj);
+                if (pl != null && !pl.IsNone())
+                {
+                    foreach (PyObject item in pl)
+                    {
+                        result.Add(item);
+                    }
+                }
             }
         }
         return result;
@@ -758,7 +772,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     public PyObject? GetTriggerList(params PyObject[] args)
     {
         var list = _api.GetTriggerList();
-        var result= new PyList();
+        var result = new PyList();
         foreach (var v in list)
         {
             result.Append(v.ToPython());
@@ -896,13 +910,13 @@ public class PyAPI(ScriptAPI api, PyModule scope)
         {
             return null;
         }
-        var result=new PyDict();
+        var result = new PyDict();
         result["Enabled"] = mod.Enabled.ToPython();
         result["Exists"] = mod.Exists.ToPython();
-        var fl=new PyList();
+        var fl = new PyList();
         result["FolderList"] = fl;
         mod.FolderList.ForEach(folder => fl.Append(folder.ToPython()));
-        var fl2=new PyList();
+        var fl2 = new PyList();
         result["FileList"] = fl2;
         mod.FileList.ForEach(file => fl2.Append(file.ToPython()));
         return result;

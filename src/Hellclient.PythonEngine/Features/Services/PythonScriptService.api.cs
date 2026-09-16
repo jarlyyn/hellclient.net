@@ -5,15 +5,19 @@ using Python.Runtime;
 
 namespace Hellclient.PythonEngine.Features.Services;
 
+public class WorldAPI
+{
+    
+}
 public partial class PythonScriptService
 {
-    private void AppendToWorld(PyModule scope, PyDict world, string name, PyObject call)
+    private void AppendToWorld(PyModule scope, PyObject world, string name, PyObject call)
     {
         scope.Set(name, call);
-        world[name.ToLower()] = call;
+        world.SetAttr(name.ToLower(), call);
         if (name.ToLower() != name)
         {
-            world[name] = call;
+            world.SetAttr(name, call);
         }
     }
 
@@ -21,11 +25,7 @@ public partial class PythonScriptService
     {
         var local = context.Scope;
         var a = context.PyAPI;
-        using var world = new PyDict();
-        if (world == null)
-        {
-            return;
-        }
+        var world=(new WorldAPI()).ToPython();
 #pragma warning disable CS8974 // 将方法组转换为非委托类型
         AppendToWorld(local, world, "print", PyObject.FromManagedObject(a.Print));
         AppendToWorld(local, world, "Note", PyObject.FromManagedObject(a.Note));

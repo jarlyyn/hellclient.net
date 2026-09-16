@@ -34,6 +34,7 @@ public partial class PythonScriptService : IPythonScriptService
     public void InstallTo(PythonEngineContext context)
     {
         initPyAPI(context);
+        initMetronome(context);
     }
     public void handleError(PythonEngineContext context, Exception ex)
     {
