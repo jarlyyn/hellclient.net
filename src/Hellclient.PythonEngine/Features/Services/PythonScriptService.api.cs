@@ -193,7 +193,7 @@ public partial class PythonScriptService
         AppendToWorld(local, world, "PrintSystem", PyObject.FromManagedObject(a.PrintSystem));
         AppendToWorld(local, world, "AddAnsi", PyObject.FromManagedObject(a.AddAnsi));
         AppendToWorld(local, world, "LastAnsi", PyObject.FromManagedObject(a.LastAnsi));
-
+        AppendToWorld(local, world, "GetScriptPath", PyObject.FromManagedObject(a.GetScriptPath));
 
 #pragma warning restore CS8974 // 将方法组转换为非委托类型
         local.Set("world", world);

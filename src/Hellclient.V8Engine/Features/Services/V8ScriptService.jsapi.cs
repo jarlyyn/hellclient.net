@@ -203,6 +203,7 @@ public partial class V8ScriptService
         AppendToWorld(local, world, "PrintSystem", a.PrintSystem);
         AppendToWorld(local, world, "AddAnsi", a.AddAnsi);
         AppendToWorld(local, world, "LastAnsi", a.LastAnsi);
+        AppendToWorld(local, world, "GetScriptPath", a.GetScriptPath);
 
 
 #pragma warning restore CS8974 // 将方法组转换为非委托类型

@@ -791,7 +791,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? GetTriggerList(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var list = _api.GetTriggerList();
         var result = new PyList();
         foreach (var v in list)
@@ -1196,12 +1196,12 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? BoldColour(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         return _api.BoldColour(GetIntArg(args, 0)).ToPython();
     }
     public PyObject? NormalColour(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         return _api.NormalColour(GetIntArg(args, 0)).ToPython();
     }
 
@@ -1239,7 +1239,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
 
     public PyObject? GetInfo(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         return _api.GetInfo(GetIntArg(args, 0)).ToPython();
     }
     public PyObject? GetTimerInfo(params PyObject[] args)
@@ -1418,7 +1418,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? GetGlobalOption(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var result = _api.GetGlobalOption(GetStringArg(args, 0));
         switch (GetStringArg(args, 0))
         {
@@ -1437,7 +1437,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
 
     public PyObject? CheckPermissions(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var items = GetStringArrayArg(args, 0);
         return _api.CheckPermissions(items).ToPython();
     }
@@ -1600,7 +1600,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? RestoreAliases(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var data = GetStringArg(args, 0);
         var byUser = GetBoolArg(args, 1);
         _api.RestoreAliases(data, byUser);
@@ -1608,7 +1608,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? SetHUDSize(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var size = GetIntArg(args, 0);
         _api.SetHUDSize(size);
 
@@ -1616,7 +1616,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? GetHUDContent(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var content = _api.GetHUDContent();
         return content.ToPython();
     }
@@ -1628,7 +1628,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
     }
     public PyObject? UpdateHUD(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var start = GetIntArg(args, 0);
         var content = GetStringArg(args, 1);
         var result = _api.UpdateHUD(start, content);
@@ -1648,7 +1648,7 @@ public class PyAPI(ScriptAPI api, PyModule scope)
 
     public PyObject? SetPriority(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var value = GetIntArg(args, 0);
         _api.SetPriority(value);
         return null;
@@ -1683,20 +1683,26 @@ public class PyAPI(ScriptAPI api, PyModule scope)
 
     public PyObject? OmitOutput(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         _api.OmitOutput();
         return null;
     }
     public PyObject? AddAnsi(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         var data = GetStringArg(args, 0);
         _api.AddAnsi(data);
         return null;
     }
     public PyObject? LastAnsi(params PyObject[] args)
     {
-        using var _ = Py.GIL();        
+        using var _ = Py.GIL();
         return _api.LastAnsi().ToPython();
     }
+    public PyObject? GetScriptPath(params PyObject[] args)
+    {
+        using var _ = Py.GIL();
+        return _api.GetScriptPath().ToPython();
+    }
+
 }

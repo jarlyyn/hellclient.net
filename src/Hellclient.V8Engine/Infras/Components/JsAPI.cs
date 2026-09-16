@@ -1648,4 +1648,9 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     {
         return _api.LastAnsi();
     }
+    public object? GetScriptPath(params object[] args)
+    {
+        return _api.GetScriptPath();
+    }
+
 }
