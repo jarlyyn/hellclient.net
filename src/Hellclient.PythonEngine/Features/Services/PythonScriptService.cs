@@ -35,6 +35,7 @@ public partial class PythonScriptService : IPythonScriptService
     {
         initPyAPI(context);
         initMetronome(context);
+        initUserinput(context);
     }
     public void handleError(PythonEngineContext context, Exception ex)
     {
