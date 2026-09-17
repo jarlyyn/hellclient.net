@@ -35,6 +35,7 @@ MaxRecent=0
 #返回给服务器的客户端信息，留空不返回
 TerminalType="Hellclient.net"
 [Environments]
-#PYTHONNET_PYDLL="path/to/pythonnet.dll"
+## Python dll的路径，在dinwos下注意路径分割符和转移冲突，需要使用\\
+#PYTHONNET_PYDLL="/usr/lib/x86_64-linux-gnu/libpython3.14.so"
 #PYTHONHOME=""
 #PYTHONPATH=""

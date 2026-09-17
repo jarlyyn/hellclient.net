@@ -49,6 +49,7 @@
   <ItemGroup>
     <ResourcesFiles Include="..\..\resources\**\*" />
     <SystemFiles Include="..\..\system\**\*" />
+    <ConfigFile Include="..\..\system\configskeleton\system.toml" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
