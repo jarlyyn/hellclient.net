@@ -87,7 +87,7 @@ public class PythonEngineFactory : IScriptEngineFactory
         {
             throw new Exception($"Script {ID} already exists");
         }
-        Directory.CreateDirectory(Path.Combine(Deployment.Instance.ScriptsPath, ID));
+        Directory.CreateDirectory(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script"));
         var data = File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "python.toml"));
         File.WriteAllText(Path.Combine(Deployment.Instance.ScriptsPath, ID, "script.toml"), data);
         var scriptdata = File.ReadAllText(Path.Combine(Deployment.Instance.SystemPath, "template", "script", "main.py"));
