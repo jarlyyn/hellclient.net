@@ -32,8 +32,8 @@
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!$(DefineConstants.Contains('nov8'))">
-    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj" >
-          <NoWarn>$(NoWarn);IL2104</NoWarn>
+    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj">
+      <NoWarn>$(NoWarn);IL2104</NoWarn>
     </ProjectReference>
     <TrimmerRootAssembly Include="ClearScript.Core" />
     <TrimmerRootAssembly Include="ClearScript.V8" />
@@ -84,5 +84,9 @@
     <Copy SourceFiles="@(SystemFiles)"
       DestinationFolder="$(PublishDir)\..\system\%(RecursiveDir)"
       SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ConfigFile)"
+      DestinationFolder="$(PublishDir)\..\config\system.toml"
+      SkipUnchangedFiles="true" />
+
   </Target>
 </Project>
