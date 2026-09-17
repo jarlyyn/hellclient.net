@@ -13,7 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
-    <ProjectReference Include="..\Hellclient.Script\Hellclient.Script.csproj" />    
+    <ProjectReference Include="..\Hellclient.Script\Hellclient.Script.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="pythonnet" Version="3.1.0" />

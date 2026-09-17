@@ -13,6 +13,7 @@ public partial class V8ScriptService
     public void initUserinput(V8EngineContext context)
     {
         using var m = new JsUserinput(context.World, context.Runtime).Convert();
-        ((IDictionary<string, object>)context.Runtime.Script)["Userinput"] = m!;
+        // ((IDictionary<string, object>)context.Runtime.Script)["Userinput"] = m!;
+        ((Microsoft.ClearScript.ScriptObject)context.Runtime.Global).SetProperty("Userinput", m);
     }
 }

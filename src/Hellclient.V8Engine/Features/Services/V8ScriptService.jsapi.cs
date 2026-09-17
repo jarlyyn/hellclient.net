@@ -207,6 +207,6 @@ public partial class V8ScriptService
 
 
 #pragma warning restore CS8974 // 将方法组转换为非委托类型
-        ((IDictionary<string, object>)local.Script)["world"] = world;
+        ((Microsoft.ClearScript.ScriptObject)local.Global).SetProperty("world", world);
     }
 }

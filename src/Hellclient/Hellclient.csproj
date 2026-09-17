@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
     <!-- <PublishAot>true</PublishAot> -->
-    <TrimMode>partial</TrimMode>
+    <TrimMode>full</TrimMode>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <OptimizationPreference>Size</OptimizationPreference>
@@ -27,14 +27,23 @@
     <!-- 性能问题 -->
     <RuntimeHostConfigurationOption Include="DOTNET_ThreadPool_UnfairSemaphoreSpinLimit" Value="0" />
     <TrimmerRootAssembly Include="System.Security.Cryptography" />
+    <TrimmerRootAssembly Include="Microsoft.CSharp" />
     <ProjectReference Include="..\Hellclient.Core\Hellclient.Core.csproj" />
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!$(DefineConstants.Contains('nov8'))">
-    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj" />
+    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj" >
+          <NoWarn>$(NoWarn);IL2104</NoWarn>
+    </ProjectReference>
+    <TrimmerRootAssembly Include="ClearScript.Core" />
+    <TrimmerRootAssembly Include="ClearScript.V8" />
+    <TrimmerRootAssembly Include="Hellclient.V8Engine" />
   </ItemGroup>
   <ItemGroup Condition="!$(DefineConstants.Contains('nopy'))">
     <ProjectReference Include="..\Hellclient.PythonEngine\Hellclient.PythonEngine.csproj" />
+    <TrimmerRootAssembly Include="Python.Runtime" />
+    <TrimmerRootAssembly Include="Hellclient.PythonEngine" />
+
   </ItemGroup>
 
   <ItemGroup>
