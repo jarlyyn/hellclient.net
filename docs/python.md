@@ -54,6 +54,14 @@ asyncio.run_coroutine_threadsafe(timer.start(), _loop)
 
 但处于多python游戏资源管理的复杂度，并不是很建议使用这种方式。
 
+特别注意。
+
+相对而言，可以认为 hellclient.net和 python空间是完全独立的两个程序，只是因为在一个进程内，可以很有效率的进行进程内通信互相调用。
+
+hellclient.net支持传递一个代表当前游戏的命名空间，以及绑定到当前游戏的一些API给python，执行代码，对python内容没有任何控制力。
+
+在python端创建的后台线程，当前版本，在前台游戏关闭后，甚至所有游戏都关闭后，依然会持续保持运行，无法从hellclient.net程序内进行控制，需要严格的在python端进行控制。
+
 ## 模块更新
 
 在进行代码维护时，经常需要把代码放在子包内，并经常重新加载最新的子包。

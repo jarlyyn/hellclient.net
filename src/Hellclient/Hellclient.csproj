@@ -85,7 +85,7 @@
       DestinationFolder="$(PublishDir)\..\system\%(RecursiveDir)"
       SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(ConfigFile)"
-      DestinationFolder="$(PublishDir)\..\config\system.toml"
+      DestinationFolder="$(PublishDir)\..\config"
       SkipUnchangedFiles="true" />
 
   </Target>
