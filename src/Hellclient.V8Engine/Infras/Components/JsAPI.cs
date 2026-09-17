@@ -1,13 +1,7 @@
-using System.IO.Pipelines;
 using System.Text;
-using System.Text.Unicode;
-using Hellclient.V8Engine.Cores;
 using Hellclient.Script.Infras.Components.API;
-using Hellclient.World.Cores;
 using Hellclient.World.Utils;
 using Microsoft.ClearScript.V8;
-using Microsoft.ClearScript.V8.FastProxy;
-using Microsoft.ClearScript.JavaScript;
 using Microsoft.ClearScript;
 
 namespace Hellclient.V8Engine.Infras.Components;
@@ -1654,4 +1648,9 @@ public class JsAPI(ScriptAPI api, V8ScriptEngine runtime)
     {
         return _api.LastAnsi();
     }
+    public object? GetScriptPath(params object[] args)
+    {
+        return _api.GetScriptPath();
+    }
+
 }

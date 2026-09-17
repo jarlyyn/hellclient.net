@@ -4,9 +4,10 @@
 ## Get latest from `dotnet new gitignore`
 
 
-appdata/
-config/
-debug/
+/appdata/
+/config/
+/debug/
+/dist/
 .vscode/
 # dotenv files
 .env

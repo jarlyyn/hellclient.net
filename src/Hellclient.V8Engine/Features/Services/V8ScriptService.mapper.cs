@@ -10,6 +10,7 @@ public partial class V8ScriptService
     public void initMapper(V8EngineContext context)
     {
         using var m = new JsMapper(context.World.Mapper, context.Runtime).Convert();
-        ((IDictionary<string, object>)context.Runtime.Script)["Mapper"] = m;
+        // ((IDictionary<string, object>)context.Runtime.Script)["Mapper"] = m;
+        ((Microsoft.ClearScript.ScriptObject)context.Runtime.Global).SetProperty("Mapper", m);
     }
 }

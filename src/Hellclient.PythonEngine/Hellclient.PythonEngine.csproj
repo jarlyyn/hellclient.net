@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
-    <ServerGarbageCollection>false</ServerGarbageCollection>
     <OptimizationPreference>Size</OptimizationPreference>
     <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
     <DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>
@@ -14,12 +14,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
     <ProjectReference Include="..\Hellclient.Script\Hellclient.Script.csproj" />
-    <!-- <TrimmerRootAssembly Include="Microsoft.ClearScript" /> -->
-    <!-- <TrimmerRootAssembly Include="Microsoft.ClearScript.V8" /> -->
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ClearScript.V8" Version="7.5.1" />
-    <PackageReference Include="Microsoft.ClearScript.V8.Native.linux-x64" Version="7.5.1" />
-    <PackageReference Include="Microsoft.ClearScript.V8.Native.win-x64" Version="7.5.1" />
+    <PackageReference Include="pythonnet" Version="3.1.0" />
   </ItemGroup>
+
 </Project>

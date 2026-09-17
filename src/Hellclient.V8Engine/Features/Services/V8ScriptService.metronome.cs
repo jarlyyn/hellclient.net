@@ -10,6 +10,7 @@ public partial class V8ScriptService
     public void initMetronome(V8EngineContext context)
     {
         using var m = new JsMetronome(context.World, context.Runtime).Convert();
-        ((IDictionary<string, object>)context.Runtime.Script)["Metronome"] = m;
+        // ((IDictionary<string, object>)context.Runtime.Script)["Metronome"] = m;
+        ((Microsoft.ClearScript.ScriptObject)context.Runtime.Global).SetProperty("Metronome", m);
     }
 }

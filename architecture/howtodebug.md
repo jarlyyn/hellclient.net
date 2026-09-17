@@ -28,8 +28,24 @@ https://learn.microsoft.com/zh-cn/visualstudio/subscriptions/vs-c-sharp-dev-kit
 
 ## 打包发布
 
-在 src目录下，dotnet publish,然后可执行文件会生成在对应操作系统和架构的默认位置
+在 src/Hellclient目录下，dotnet publish,然后可执行文件会生成在对应操作系统和架构的默认位置
 
-新建一个目录，把编译生成的可执行文件和v8 dll/so 放在  bin目录下
+使用如下指令发布一个全新干净的程序包
 
-把resources和system目录也复制进去，就完成了。
+```
+dotnet publish -p:dist=你要发布的目录
+```
+
+## 编译选项
+
+禁用v8引擎:nov8
+
+```
+dotnet publish -p:dist=你要发布的目录 -p:nov8=1
+```
+
+禁用python引擎:nopy
+
+```
+dotnet publish -p:dist=你要发布的目录 -p:nopy=1
+```

@@ -8,6 +8,8 @@ public partial class V8ScriptService
     private void initHTTP(V8EngineContext context)
     {
         using var m = new JsHttp(context.World, context.Runtime).Convert();
-        ((IDictionary<string, object>)context.Runtime.Script)["HTTP"] = m;
+        // ((IDictionary<string, object>)context.Runtime.Script)["HTTP"] = m;
+        ((Microsoft.ClearScript.ScriptObject)context.Runtime.Global).SetProperty("HTTP", m);
+
     }
 }

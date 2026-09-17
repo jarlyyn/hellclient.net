@@ -1903,4 +1903,8 @@ public class ScriptAPI(IWorld world)
     {
         return World.LastAnsi();
     }
+    public string GetScriptPath()
+    {
+        return Path.Combine(World.GetScriptPath(), World.GetScriptID());
+    }
 }

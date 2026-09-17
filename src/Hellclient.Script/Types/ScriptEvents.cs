@@ -1,4 +1,4 @@
-namespace Hellclient.V8Engine.Types;
+namespace Hellclient.Script.Types;
 
 public class ScriptEvents
 {

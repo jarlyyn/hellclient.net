@@ -4,9 +4,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- <PublishTrimmed>true</PublishTrimmed> -->
+    <PublishTrimmed>true</PublishTrimmed>
     <!-- <PublishAot>true</PublishAot> -->
-    <!-- <TrimMode>full</TrimMode> -->
+    <TrimMode>full</TrimMode>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <OptimizationPreference>Size</OptimizationPreference>
@@ -14,20 +14,79 @@
     <DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <AssemblyName>hellclient</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(nov8)'!=''">
+    <DefineConstants>$(DefineConstants);nov8</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(nopy)'!=''">
+    <DefineConstants>$(DefineConstants);nopy</DefineConstants>
+  </PropertyGroup>
 
-  </PropertyGroup>
-  <!-- 兼容 Hellclient的表现-->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\debug</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <!-- 性能问题 -->
     <RuntimeHostConfigurationOption Include="DOTNET_ThreadPool_UnfairSemaphoreSpinLimit" Value="0" />
     <TrimmerRootAssembly Include="System.Security.Cryptography" />
+    <TrimmerRootAssembly Include="Microsoft.CSharp" />
     <ProjectReference Include="..\Hellclient.Core\Hellclient.Core.csproj" />
     <ProjectReference Include="..\Hellclient.World\Hellclient.World.csproj" />
-    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj" />
   </ItemGroup>
+  <ItemGroup Condition="!$(DefineConstants.Contains('nov8'))">
+    <ProjectReference Include="..\Hellclient.V8Engine\Hellclient.V8Engine.csproj">
+      <NoWarn>$(NoWarn);IL2104</NoWarn>
+    </ProjectReference>
+    <TrimmerRootAssembly Include="ClearScript.Core" />
+    <TrimmerRootAssembly Include="ClearScript.V8" />
+    <TrimmerRootAssembly Include="Hellclient.V8Engine" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(DefineConstants.Contains('nopy'))">
+    <ProjectReference Include="..\Hellclient.PythonEngine\Hellclient.PythonEngine.csproj" />
+    <TrimmerRootAssembly Include="Python.Runtime" />
+    <TrimmerRootAssembly Include="Hellclient.PythonEngine" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ResourcesFiles Include="..\..\resources\**\*" />
+    <SystemFiles Include="..\..\system\**\*" />
+    <ConfigFile Include="..\..\system\configskeleton\system.toml" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <!-- 兼容 Hellclient的表现-->
+      <PropertyGroup>
+        <OutputPath>..\..\debug</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(PublishDir)'=='' And $(dist)!=''">
+      <PropertyGroup>
+        <PublishDir>$(dist)\bin</PublishDir>
+        <CopyResources>true</CopyResources>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="'$(Configuration)'!='Debug'">
+        <PublishDir>..\..\bin</PublishDir>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Target Condition="'$(Configuration)'!='Debug'" Name="ExplainVariables" AfterTargets="AfterBuild">
+    <Message Condition="'$(dist)' == ''"
+      Text="Use -p:dist=FOLDER_PATH to specify the full release distribution folder"
+    />
+  </Target>
+  <Target Condition="'$(CopyResources)'=='true'" Name="CopyFilesOnPublish" AfterTargets="Publish">
+    <Copy SourceFiles="@(ResourcesFiles)"
+      DestinationFolder="$(PublishDir)\..\resources\%(RecursiveDir)"
+      SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SystemFiles)"
+      DestinationFolder="$(PublishDir)\..\system\%(RecursiveDir)"
+      SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ConfigFile)"
+      DestinationFolder="$(PublishDir)\..\config"
+      SkipUnchangedFiles="true" />
+
+  </Target>
 </Project>

@@ -792,15 +792,19 @@ public class TitanService : ITitanService
         {
             return false;
         }
-        world.EventBus.ReadyEvent?.Invoke(this, EventArgs.Empty);
-        try
+        Task.Run(() =>
         {
-            world.DoConnectServer();
-        }
-        catch (Exception ex)
-        {
-            world.HandleConnError(ex);
-        }
+            try
+            {
+
+                world.EventBus.ReadyEvent?.Invoke(this, EventArgs.Empty);
+                world.DoConnectServer();
+            }
+            catch (Exception ex)
+            {
+                world.HandleConnError(ex);
+            }
+        });
         return true;
     }
 

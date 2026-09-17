@@ -17,5 +17,6 @@ public class ConfigsService:IConfigsService
     {
         var systemConfig = Repo.LoadSystemConfig();
         AppConfig.System = systemConfig;
+        systemConfig.Environments.ToList().ForEach(kv => Environment.SetEnvironmentVariable(kv.Key, kv.Value));
     }
 }
