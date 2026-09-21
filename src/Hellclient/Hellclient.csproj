@@ -7,7 +7,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <!-- <PublishAot>true</PublishAot> -->
     <TrimMode>full</TrimMode>
-    <PublishSingleFile>true</PublishSingleFile>
+    <PublishSingleFile Condition="$(nosf)==''">true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <OptimizationPreference>Size</OptimizationPreference>
     <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
@@ -15,6 +15,7 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <InvariantGlobalization>true</InvariantGlobalization>
     <AssemblyName>hellclient</AssemblyName>
+    <EnableVirtualThreads>true</EnableVirtualThreads>
   </PropertyGroup>
   <PropertyGroup Condition="'$(nov8)'!=''">
     <DefineConstants>$(DefineConstants);nov8</DefineConstants>

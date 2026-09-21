@@ -792,12 +792,12 @@ public class TitanService : ITitanService
         {
             return false;
         }
+        world.EventBus.ReadyEvent?.Invoke(this, EventArgs.Empty);
         Task.Run(() =>
         {
             try
             {
 
-                world.EventBus.ReadyEvent?.Invoke(this, EventArgs.Empty);
                 world.DoConnectServer();
             }
             catch (Exception ex)
