@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -146,14 +147,24 @@ public class Telnet : IMudConnection
 
     public EventHandler? OnDisconnected { get; set; }
     public EventHandler? OnConnected { get; set; }
+    private bool Compressed = false;
     private void reset()
     {
+        Compressed = false;
         _buffer.Clear();
         status = StatusNormal;
     }
     private void Publish(byte data)
     {
         OnDataReceived?.Invoke(this, data);
+    }
+    private void StartCompress()
+    {
+        if (!Compressed)
+        {
+            Compressed = true;
+            DataStream = new ZLibStream(_client.GetStream(), CompressionMode.Decompress);
+        }
     }
     private void OnByte(byte data)
     {
@@ -217,9 +228,14 @@ public class Telnet : IMudConnection
                 }
                 else if (data == TelnetCommand.CmdEndSubnegotiation)
                 {
-                    OnCommandReceived?.Invoke(this, new TelnetCommand(TelnetCommand.CmdSubnegotiation, _buffer.ToArray()));
+                    var content = _buffer.ToArray();
+                    OnCommandReceived?.Invoke(this, new TelnetCommand(TelnetCommand.CmdSubnegotiation, content));
                     _buffer.Clear();
                     status = StatusNormal;
+                    if (content.Length == 1 && content[0] == TelnetCommand.CmdMCCP2)
+                    {
+                        StartCompress();
+                    }
                 }
                 else
                 {
@@ -238,28 +254,34 @@ public class Telnet : IMudConnection
     {
         OnDisconnected?.Invoke(this, EventArgs.Empty);
     }
+    private Stream? DataStream = null;
     private async Task listen()
     {
         _cts = new CancellationTokenSource();
-        using (NetworkStream stream = _client.GetStream())
+        using (NetworkStream rawstream = _client.GetStream())
         {
+            DataStream = rawstream;
             byte[] buffer = new byte[4096];
             try
             {
-
                 while (_client.Connected)
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    int bytesRead = await DataStream.ReadAsync(buffer, 0, buffer.Length);
 
 
                     if (bytesRead == 0)
                     {
                         break;
                     }
-
+                    var currentCompressed = Compressed;
                     for (int i = 0; i < bytesRead; i++)
                     {
                         OnByte(buffer[i]);
+                        if (currentCompressed != Compressed)
+                        {
+                            break;
+                        }
+
                     }
 
                 }
@@ -309,6 +331,12 @@ public class Telnet : IMudConnection
             _cts.Cancel();
             _client.Close();
             _client.Dispose();
+            if (Compressed && DataStream is ZLibStream)
+            {
+                Compressed = false;
+                (DataStream as ZLibStream)?.Dispose();
+                DataStream = null;
+            }
         }
     }
 

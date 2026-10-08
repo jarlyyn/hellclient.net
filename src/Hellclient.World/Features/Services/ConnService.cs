@@ -97,6 +97,16 @@ public class ConnService : IConnService
                         case TelnetCommand.OptionGMCP:
                             context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionGMCP));
                             break;
+                        case TelnetCommand.OptionMCCP2:
+                            if (AppConfig.System.DisableCompress == false)
+                            {
+                                context.Connection.SendTelnetCommand(TelnetCommand.Do(TelnetCommand.OptionMCCP2));
+                            }
+                            else
+                            {
+                                context.Connection.SendTelnetCommand(TelnetCommand.Dont(TelnetCommand.OptionMCCP2));
+                            }
+                            break;
                         default:
                             break;
                     }

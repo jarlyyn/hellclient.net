@@ -19,12 +19,14 @@ public class TelnetCommand(byte command, byte[] data)
     public const byte CmdEndOfRecord = 239;
     public const byte CmdSubnegotiation = 250;
     public const byte CmdEndSubnegotiation = 240;
+    public const byte CmdMCCP2 = 86;
     public const byte CmdGMCP = 201;
     public const byte OptionEcho = 1;
     public const byte OptionTerminalType = 24;
     public const byte OptionGMCP = 201;
     public const byte OptionSGA = 3;
     public const byte OptionEOR = 25;
+    public const byte OptionMCCP2 = 86;
     public static TelnetCommand Do(byte option) => new TelnetCommand(CmdDo, [option]);
     public static TelnetCommand Dont(byte option) => new TelnetCommand(CmdDont, [option]);
     public static TelnetCommand Will(byte option) => new TelnetCommand(CmdWill, [option]);
