@@ -288,11 +288,13 @@ public class Telnet : IMudConnection
             }
             catch (IOException)
             {
+                _cts.Cancel();
                 return;
             }
             catch (Exception ex)
             {
                 Logger(ex);
+                _cts.Cancel();
                 return;
             }
             finally
